@@ -1,6 +1,6 @@
 # << APP NAME >>
 
-> Developed by [Caitlin Estrada](https://github.com/caitlinestrada27), Elizabeth (Lizzie) Coats, Sanjana Gopalswamy, and Yi (Charlotte) Tsui for COMP 426: Modern Web Programming at UNC-Chapel Hill.
+> Developed by [Caitlin Estrada](https://github.com/caitlinestrada27), [Elizabeth (Lizzie) Coats](https://github.com/escoats), [Sanjana Gopalswamy](https://github.com/sgopal08), and [Yi (Charlotte) Tsui](https://github.com/charlottetsui) for COMP 426: Modern Web Programming at UNC-Chapel Hill.
 
 
 ![TypeScript](https://img.shields.io/badge/-TypeScript-05122A?style=flat&logo=typescript)
