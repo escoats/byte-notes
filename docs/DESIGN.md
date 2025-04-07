@@ -1,67 +1,66 @@
 # Design Document
 
-> Written by: <YOUR NAMES> for COMP 426: Modern Web Programming at UNC-Chapel Hill.
+> Written by: Caitlin Estrada, Elizabeth (Lizzie) Coats, Sanjana Gopalswamy, and Yi (Charlotte) Tsui for COMP 426: Modern Web Programming at UNC-Chapel Hill.
 
 ## Feature Plan
 
-*Replace this with your feature plan. Write a bit more detail under each heading from before (description, user, purpose). Also, add a fourth section to each with some technical notes on how you may implement each feature and any other backend or frontend notes you may need.*
+### Feature 1: Markdown & LaTeX Notes -> Preview
 
-### Feature 1: ___
+**Description:** Write notes in Markdown and LaTex on the "Edit" tab, then toggle to the "Preview" button to see a polished file. 
 
-**Description:**
+**User(s):** Any user with a ByteNote account who wishes to utilize writing notes in Markdown and LaTex
 
-**User(s):**
+**Purpose:** Quickly convert notation into a formatted, readable document using familiar markup languages
 
-**Purpose:**
+**Technical Notes:** The save button should trigger an action to add the Markdown file to a bucket in the database or update its contents
 
-**Technical Notes:**
+### Feature 2: Embedded Code Compiler
 
-### Feature 2: ___
+**Description:** Write and execute code directly in the browser. Dropdown menu to select the language and a "Run" button to quickly see the output.
 
-**Description:**
+**User(s):** Any user with a ByteNote account
+ 
+**Purpose:** This allows the user to test code and keep notes on syntax, implementation, etc. coupled with their Markdown notes instead of switching between an online note-taking service and an IDE such as VSCode.
 
-**User(s):**
+**Technical Notes:** Planning to explore some online compilers. As a backup, Stackblitz offers the option to embed projects in a browser page.
 
-**Purpose:**
+### Feature 3: Create notebooks, chapters, and pages to store notes
 
-**Technical Notes:**
+**Description:** Users can access their notes on the home page via the sidebar. The sidebar is organized by notebooks with chapters inside and notes inside those chapters. To add a new item, the user presses the +New button and chooses a Notebook, Chapter, or Page then is prompted to choose a name and location for the new file to be stored.
 
-### Feature 3: ___
+**User(s):** Any users who wants to create multiple notebooks with mutliple chapters and multiple pages.
 
-**Description:**
+**Purpose:** Storing notes inside of folders like this allows users to collapse some notes that are not currently relevant and organize their notes by the categories they see fit. 
 
-**User(s):**
+**Technical Notes:** The notebooks, chapters, and pages are stored in a sidebar. Shadcn has built in designs for sidebars that we took and tweaked to make our prototype. We will reference these docs and any other publically avaliable TypeScript libraries that include documentation on how to create a sidebar in a web application. 
 
-**Purpose:**
+### Feature 4: Profile, Login, Signout
 
-**Technical Notes:**
+**Description:** User should have a profile with profile picture, username, and password. To access their account they are automatically directed to the login page. If they don't have an account yet, they can sign up for one. Once they're signed in their profile picture is visible and their notes are saved to their profile.
 
-### Feature 4: ___
+**User(s):** Any student, teacher, professional, or otherwise who wants to use ByteNotes for their Computer Science needs!
 
-**Description:**
+**Purpose:** The purpose is to facilitate sharing of notes and save notes behind a password so they are not publically available to non-users when not shared.
 
-**User(s):**
+**Technical Notes:** The implementation for the profile, login, and signup will rely on the Shadcn built in designs and similar functionality to A06 Oriole. This implementation should be even simpler because ByteNotes will not support followers and following.
 
-**Purpose:**
+### Feature 5: Publish Notes & Share with Friends 
 
-**Technical Notes:**
+**Description:** User can publish their notes for other users to view and share publicly.
 
-### Feature 5: ___
+**User(s):** Any student, teacher, professional who wants to share and view each other's notes.
 
-**Description:**
+**Purpose:** Allow users to share notes with each other to spread information and ideas. 
 
-**User(s):**
-
-**Purpose:**
-
-**Technical Notes:**
-
-*Feel free to add more here if needed.*
+**Technical Notes:** For the purposes of simplicity, users will not be able to edit notes that they do not own.
 
 ## Backend Database Schema
 
-*Replace this with a photo or PDF link of your backend database schema. Please add a short description for important design considerations.
+Pages are organized in a hierarchy of page —> chapter —> notebook, where a page is a single entity consisting of one text and one code file, a chapter is a collection of pages, and a notebook is a collection of chapters. Text and code files themselves are stored in buckets.
+
+![supabase-schema-uyufrtmhbwgoheazioka (2)](https://github.com/user-attachments/assets/13e6f8ae-6573-491c-b59c-02816af351d2)
+
 
 ## High-Fidelity Prototype
 
-*Replace this with an embedded Figma project here.*
+[https://www.figma.com/design/0uimSokjWaHRPHdh7h2zzL/Team-03-Wireframes-?node-id=4706-90&t=P1R7eYGloKA17xBQ-1](https://www.figma.com/proto/0uimSokjWaHRPHdh7h2zzL/Team-03-Wireframes!?node-id=4728-153&t=WFSTCrTUN8VRCXRn-1&scaling=scale-down&content-scaling=fixed&page-id=4706%3A90)
