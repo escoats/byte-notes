@@ -1,4 +1,4 @@
-# << APP NAME >>
+# BYTE NOTES
 
 > Developed by [Caitlin Estrada](https://github.com/caitlinestrada27), [Elizabeth (Lizzie) Coats](https://github.com/escoats), [Sanjana Gopalswamy](https://github.com/sgopal08), and [Yi (Charlotte) Tsui](https://github.com/charlottetsui) for COMP 426: Modern Web Programming at UNC-Chapel Hill.
 
