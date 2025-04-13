@@ -15,6 +15,7 @@ import { GetServerSidePropsContext } from "next";
 import { createSupabaseServerClient } from "@/utils/supabase/server-props";
 import { createSupabaseComponentClient } from "@/utils/supabase/component";
 import { useRouter } from "next/router";
+import { FilePen } from "lucide-react";
 
 {
   /* TODO: Need to access user data */
@@ -92,11 +93,13 @@ export default function HomePage() {
           </DialogContent>
         </Dialog>
       </header>
-      <div className="flex flex-col">
-        <FilePen/>
-        <h1 className="font-bold">No notes selected</h1>
-        <h2 className="font-bold text-gray-400">Select a note from the side bar or create a new one to get started.</h2>
-      </div>
+        <div className="flex flex-col flex-1 items-center justify-center text-center -mt-10">
+          <FilePen strokeWidth={1.5}className="h-[90px] w-[90px] m-4"/>
+          <h1 className="font-bold text-lg mb-1">No Note Selected</h1>
+          <h2 className="font-bold text-gray-400 text-md max-w-[380px]">
+            Select a note from the sidebar or create a new one to get started.
+          </h2>
+        </div>
     </div>
   );
 }
