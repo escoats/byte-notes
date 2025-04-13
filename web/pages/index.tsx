@@ -15,7 +15,7 @@ import { GetServerSidePropsContext } from "next";
 import { createSupabaseServerClient } from "@/utils/supabase/server-props";
 import { createSupabaseComponentClient } from "@/utils/supabase/component";
 import { useRouter } from "next/router";
-import { FilePen } from "lucide-react";
+import { FilePen, Globe, Save, Send } from "lucide-react";
 
 {
   /* TODO: Need to access user data */
@@ -93,13 +93,37 @@ export default function HomePage() {
           </DialogContent>
         </Dialog>
       </header>
-        <div className="flex flex-col flex-1 items-center justify-center text-center -mt-10">
-          <FilePen strokeWidth={1.5}className="h-[90px] w-[90px] m-4"/>
-          <h1 className="font-bold text-lg mb-1">No Note Selected</h1>
-          <h2 className="font-bold text-gray-400 text-md max-w-[380px]">
-            Select a note from the sidebar or create a new one to get started.
-          </h2>
+      {/* Subheader */}
+      <div className="relative flex items-center h-[60px] px-6 border-b border-border bg-background">
+        {/* Centered text */}
+        <p className="absolute left-1/2 -translate-x-1/2 text-center">
+          {/* TODO: update to be dynamic */}
+          COMP426/Backend/L21-FinalProjects
+        </p>
+
+        {/* Right-aligned buttons */}
+        <div className="ml-auto flex gap-2">
+          <Button variant="ghost" className="flex flex-row items-center gap-1">
+            <Send />
+            Send
+          </Button>
+          <Button variant="ghost" className="flex flex-row items-center gap-1">
+            <Globe />
+            Publish
+          </Button>
+          <Button variant="ghost" className="flex flex-row items-center gap-1">
+            <Save />
+            Save
+          </Button>
         </div>
+      </div>
+      <div className="flex flex-col flex-1 items-center justify-center text-center -mt-10">
+        <FilePen strokeWidth={1.5} className="h-[90px] w-[90px] m-4" />
+        <h1 className="font-bold text-lg mb-1">No Note Selected</h1>
+        <h2 className="font-bold text-gray-400 text-md max-w-[380px]">
+          Select a note from the sidebar or create a new one to get started.
+        </h2>
+      </div>
     </div>
   );
 }
