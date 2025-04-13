@@ -28,7 +28,7 @@ export default function LoginPage() {
     if (error) {
       console.log("Login error:", error.message);
       alert(error);
-      // return;
+      return;
     }
 
     // redirect to home page

@@ -32,6 +32,7 @@ export default function SignUpPage() {
     if (error) {
       console.log("Sign up error:", error.message);
       alert(error);
+      return;
     }
 
     // redirect to home page
