@@ -8,9 +8,7 @@ import { AtSign, Link } from "lucide-react";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
-{
-  /* TODO: decide between Dialog and Profile Page */
-}
+/* TODO: decide between Dialog and Profile Page */
 export default function ProfilePage() {
   // Create necessary hooks for clients and providers.
   const router = useRouter();

@@ -8,11 +8,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Laugh, Link } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { User } from "@supabase/supabase-js";
 
 {
   /* TODO: Need to access user date */
@@ -56,6 +54,12 @@ export default function HomePage() {
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="photo" className="">
+                  Upload photo
+                </Label>
+                <Input id="photo" type="file" className="col-span-3" />
+              </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="name" className="text-right">
                   Name
