@@ -16,7 +16,6 @@ export default function SignUpPage() {
   const queryClient = useQueryClient();
   // Create states for each field in the form.
   const [name, setName] = useState("");
-  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -25,7 +24,7 @@ export default function SignUpPage() {
     const { error } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { name, username } },
+      options: { data: { name } },
     });
 
     // authentication error
@@ -73,22 +72,6 @@ export default function SignUpPage() {
               placeholder="Ajay Gandecha"
               required
             />
-          </div>
-
-          {/* Username / Handle */}
-          <div className="grid gap-2">
-            <Label htmlFor="handle">Username</Label>
-            <div className="relative">
-              <AtSign className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                id="handle"
-                className="pl-8"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="ajay"
-                required
-              />
-            </div>
           </div>
 
           {/* Email */}
