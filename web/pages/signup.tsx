@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { createClient } from "@/utils/supabase/component";
+import { createSupabaseComponentClient } from "@/utils/supabase/component";
 import { useQueryClient } from "@tanstack/react-query";
 import { AtSign } from "lucide-react";
 import Link from "next/link";
@@ -12,7 +12,7 @@ import { useState } from "react";
 export default function SignUpPage() {
   // Create necessary hooks for clients and providers.
   const router = useRouter();
-  const supabase = createClient();
+  const supabase = createSupabaseComponentClient();
   const queryClient = useQueryClient();
   // Create states for each field in the form.
   const [name, setName] = useState("");
