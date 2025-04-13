@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 
 {
-  /* TODO: Need to access user date */
+  /* TODO: Need to access user data */
 }
 export default function HomePage() {
   return (
