@@ -13,11 +13,17 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { GetServerSidePropsContext } from "next";
 import { createSupabaseServerClient } from "@/utils/supabase/server-props";
+import { createSupabaseComponentClient } from "@/utils/supabase/component";
+import { useRouter } from "next/router";
 
 {
   /* TODO: Need to access user data */
 }
 export default function HomePage() {
+  // Hook into used depdencies.
+  const supabase = createSupabaseComponentClient();
+  const router = useRouter();
+
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       {/* Header */}
