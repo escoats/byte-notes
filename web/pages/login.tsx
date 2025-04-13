@@ -16,7 +16,6 @@ export default function LoginPage() {
   // Create states for each field in the form.
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmedPassword] = useState("");
 
   const logIn = async () => {
     // https://supabase.com/docs/guides/auth/server-side/nextjs?queryGroups=router&router=pages
@@ -85,8 +84,8 @@ export default function LoginPage() {
             <Input
               id="password"
               type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmedPassword(e.target.value)}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
           </div>

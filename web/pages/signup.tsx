@@ -18,6 +18,7 @@ export default function SignUpPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmedPassword] = useState("");
 
   const signUp = async () => {
     // https://supabase.com/docs/guides/auth/server-side/nextjs?queryGroups=router&router=pages
@@ -107,8 +108,8 @@ export default function SignUpPage() {
             <Input
               id="confirmPassword"
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={confirmPassword}
+              onChange={(e) => setConfirmedPassword(e.target.value)}
               placeholder="Repeat your password"
               required
             />
