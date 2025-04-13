@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { GetServerSidePropsContext } from "next";
 import { createSupabaseServerClient } from "@/utils/supabase/server-props";
+import { FilePen } from "lucide-react";
 
 {
   /* TODO: Need to access user data */
@@ -86,6 +87,11 @@ export default function HomePage() {
           </DialogContent>
         </Dialog>
       </header>
+      <div className="flex flex-col">
+        <FilePen/>
+        <h1 className="font-bold">No notes selected</h1>
+        <h2 className="font-bold text-gray-400">Select a note from the side bar or create a new one to get started.</h2>
+      </div>
     </div>
   );
 }
