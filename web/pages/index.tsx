@@ -34,7 +34,7 @@ export default function HomePage() {
           <img
             src="/ByteNotesLogo.png"
             alt="Byte Notes"
-            className="w-[186px] h-[81px]"
+            className="w-[186px] h-[166px]"
           />
         </div>
         {/* Profile */}
@@ -45,7 +45,7 @@ export default function HomePage() {
                 <AvatarImage src="/ajay.png" alt="@ajay" />
                 <AvatarFallback>AJ</AvatarFallback>
               </Avatar>
-    
+
               <div className="flex flex-col items-start leading-tight">
                 <p className="text-sm font-medium">Ajay</p>
                 <p className="text-xs text-muted-foreground">ajay@cs.unc.edu</p>
