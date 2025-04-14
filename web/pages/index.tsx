@@ -22,6 +22,8 @@ import { getProfileData } from "@/utils/supabase/queries";
 import { FilePen, Globe, Save, Send } from "lucide-react";
 import Layout from "./layout";
 import { userAgent } from "next/server";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 {
   /* TODO: Need to access user data */
@@ -43,7 +45,37 @@ export default function HomePage() {
     },
   });
 
-  const handleChangeEmail = async () => {};
+  // Sets profile data to be empty initally
+
+  const [displayName, setDisplayName] = useState("")
+
+  // As soon as the profile data loads, pre-fill the inputs and populate isEditingDisplay
+  useEffect(() => {
+  if (profileData) {
+    setDisplayName(profileData.display_name || "");
+  }
+  }, [profileData]);
+
+  // Updates the database and 
+  const handleUpdateProfile = async () => {
+    if (!profileData) return;
+
+    if (displayName !== profileData.display_name) {
+      const { error: profileError } = await supabase
+        .from("profile")
+        .update({ display_name: displayName })
+        .eq("id", profileData.id);
+
+      if (profileError) {
+        toast.error(`Error changing display name: ${profileError.message}`);
+        return;
+      }
+
+      toast.success("Display name successfully changed!");
+    }
+
+    await queryClient.refetchQueries({ queryKey: ["user_profile"] });
+  };
 
   // Logs the user out and routes back to the login page
   const handleSignOut = async () => {
@@ -73,10 +105,10 @@ export default function HomePage() {
 
               <div className="flex flex-col items-start leading-tight">
                 <p className="text-sm font-medium">
-                  {profileData && profileData.display_name}
+                  {profileData?.display_name}
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  {profileData && profileData.email}
+                  {profileData?.email}
                 </p>
               </div>
             </Button>
@@ -91,36 +123,29 @@ export default function HomePage() {
             </DialogHeader>
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="photo" className="">
-                  Upload photo
+                <Label htmlFor="photo" className="text-left">
+                  Upload Photo
                 </Label>
                 <Input id="photo" type="file" className="col-span-3" />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="display-name" className="text-right">
+                <Label htmlFor="display-name" className="text-left">
                   Display Name
                 </Label>
                 <Input
                   id="display-name"
                   className="col-span-3"
-                  value={profileData?.display_name}
+                  value={displayName}
+                  placeholder={profileData?.display_name}
+                  onChange={(e) => setDisplayName(e.target.value)}
                 />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="email" className="text-right">
-                  Email
-                </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  className="col-span-3"
-                  value={profileData?.email}
-                />
               </div>
             </div>
             <DialogFooter>
               <DialogClose asChild>
-                <Button variant="outline" className="bg-blue-400">
+                <Button variant="secondary" className="bg-blue-400">
                   Cancel
                 </Button>
               </DialogClose>
@@ -132,8 +157,8 @@ export default function HomePage() {
                 Sign out
               </Button>
               {/* TODO: update to save only changed items in form */}
-              <Button type="submit" className="bg-blue-400">
-                Save changes
+              <Button type="submit" className="bg-blue-400" onClick={handleUpdateProfile}>
+                Update Profile
               </Button>
             </DialogFooter>
           </DialogContent>
@@ -185,7 +210,7 @@ export default function HomePage() {
 }
 
 {
-  /* TODO: decide if we're going to use GetServerSideProps */ ß;
+  /* TODO: decide if we're going to use GetServerSideProps */
 }
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   // Create the supabase context that works specifically on the server and
