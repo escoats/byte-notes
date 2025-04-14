@@ -40,10 +40,12 @@ export default function LoginPage() {
 
   return (
     <div className="flex flex-col min-h-[calc(100svh)] items-center justify-center gap-6 bg-background p-6 md:p-10">
-      <div className="fixed top-2 left-4 w-[186px] h-[81px]">
+      {/* TODO: fix spacing to be in top left corner */}
+      <div className="fixed top-0 left-0 w-[186px]">
         <img
           src="/ByteNotesLogo.png"
-          className="w-full h-full object-contain"
+          alt="ByteNotes Logo"
+          className="w-full object-contain"
         />
       </div>
 

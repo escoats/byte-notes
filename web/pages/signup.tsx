@@ -25,7 +25,9 @@ export default function SignUpPage() {
     const { error } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { display_name: name, email: email, password: password } },
+      options: {
+        data: { display_name: name, email: email, password: password },
+      },
     });
 
     // authentication error
@@ -45,10 +47,11 @@ export default function SignUpPage() {
   return (
     <div className="flex min-h-[calc(100svh)] flex-col items-center justify-center bg-background p-6 md:p-10">
       {/* Fixed Logo */}
+      {/* TODO: fix spacing to be in top left corner */}
       <div className="fixed top-2 left-4 w-[186px] h-[81px]">
         <img
           src="/ByteNotesLogo.png"
-          className="w-full h-full object-contain"
+          className="w-[186px] h-[166px] object-contain"
           alt="Byte Notes Logo"
         />
       </div>
