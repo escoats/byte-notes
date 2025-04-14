@@ -59,11 +59,12 @@ export default function HomePage() {
       {/* Header */}
       <header className="flex items-center h-[115px] px-6 border-b border-border bg-card justify-end">
         {/* Profile */}
+        {/* TODO: wrap dialog in form */}
         <Dialog>
           <DialogTrigger asChild>
             <Button className="flex items-center gap-3 rounded-md px-3 py-1.5 h-14 w-40 justify-end">
               <Avatar className="h-9 w-9">
-                <AvatarImage src="/ajay.png" alt="@ajay" />{" "}
+                <AvatarImage src={profileData?.avatar_url} alt="@ajay" />
                 {/* TODO: update to be dynamic */}
                 <AvatarFallback>
                   {profileData && profileData.display_name[0].toUpperCase()}
@@ -130,6 +131,7 @@ export default function HomePage() {
               >
                 Sign out
               </Button>
+              {/* TODO: update to save only changed items in form */}
               <Button type="submit" className="bg-blue-400">
                 Save changes
               </Button>
@@ -182,6 +184,9 @@ export default function HomePage() {
   );
 }
 
+{
+  /* TODO: decide if we're going to use GetServerSideProps */ ß;
+}
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   // Create the supabase context that works specifically on the server and
   // pass in the context.

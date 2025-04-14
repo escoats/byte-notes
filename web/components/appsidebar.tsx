@@ -175,6 +175,7 @@ export function AppSidebar() {
             + New
           </Button>
         </DropdownMenuTrigger>
+        {/* TODO: Style so New Notebook, etc. text is black and gray when hovered */}
         <DropdownMenuContent className="w-60">
           <DropdownMenuGroup>
             {/* New Notebook */}
@@ -209,6 +210,7 @@ export function AppSidebar() {
                       Cancel
                     </Button>
                   </DialogClose>
+                  {/* TODO: implement Save logic to update database when new notebook is created */}
                   <Button type="submit" className="bg-blue-400">
                     Save
                   </Button>
@@ -257,6 +259,7 @@ export function AppSidebar() {
                       Cancel
                     </Button>
                   </DialogClose>
+                  {/* TODO: implement Save logic to update database when new chapter is created */}
                   <Button type="submit" className="bg-blue-400">
                     Save
                   </Button>
@@ -315,6 +318,7 @@ export function AppSidebar() {
                       Cancel
                     </Button>
                   </DialogClose>
+                  {/* TODO: implement Save logic to update database when new notebook is created */}
                   <Button type="submit" className="bg-blue-400">
                     Save
                   </Button>
