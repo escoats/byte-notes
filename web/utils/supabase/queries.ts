@@ -22,3 +22,9 @@ export const getProfileData = async (
 
   return Profile.parse(data);
 };
+
+// get notebooks by user
+// get chapters by notebook
+// get pages by chapter
+// something for viewing? 
+
