@@ -2,10 +2,11 @@
  * Loads data for a specific profile given its ID
  */
 
-import { SupabaseClient, User } from "@supabase/supabase-js";
-import { Profile } from "./models";
+import { SupabaseClient } from "@supabase/supabase-js";
+import { NotebookTree, Profile } from "./models";
 import { z } from "zod";
 
+// get profile data
 export const getProfileData = async (
   supabase: SupabaseClient,
   profileId: string
@@ -23,7 +24,47 @@ export const getProfileData = async (
   return Profile.parse(data);
 };
 
-// get notebooks by user
-// get chapters by notebook
-// get pages by chapter
-// something for viewing?
+// get notebooks, chapters, and pages for authenicated user
+type NotebookTreeType = z.infer<typeof NotebookTree>;
+export async function getNotebookTreeByUser(
+  supabase: SupabaseClient,
+  userId: string
+): Promise<NotebookTreeType[]> {
+  const { data, error } = await supabase
+    .from("notebook")
+    .select(
+      `
+      id,
+      title,
+      chapter (
+        id,
+        title,
+        page (
+          id,
+          title
+        )
+      )
+    `
+    )
+    .eq("author_id", userId);
+
+  if (error) {
+    console.error("Failed to fetch notebook tree:", error.message);
+    alert(error.message);
+    // return early to avoid mapping data this is null
+    return [];
+  }
+
+  return data.map((notebook) => ({
+    name: notebook.title,
+    id: notebook.id,
+    chapter: notebook.chapter.map((ch) => ({
+      name: ch.title,
+      id: ch.id,
+      page: ch.page.map((pg) => ({
+        name: pg.title,
+        id: pg.id,
+      })),
+    })),
+  }));
+}
