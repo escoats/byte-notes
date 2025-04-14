@@ -22,43 +22,43 @@ import Link from "next/link";
 const notebooks = [
   {
     name: "COMP 426",
-    id: "",
+    id: "234a8903-19d8-4489-8e74-3d15632015fb",
     chapter: [
       {
         name: "Backend",
-        id: "",
+        id: "234a8903-19d8-4489-8e74-3d15632015fb",
         page: [
           {
             name: "L21 - Final Projects",
-            id: "",
+            id: "234a8903-19d8-4489-8e74-3d15632015fb",
           },
           {
             name: "L21 - Final Projects",
-            id: "",
+            id: "234a8903-19d8-4489-8e74-3d15632015fb",
           },
           {
             name: "L21 - Final Projects",
-            id: "",
+            id: "234a8903-19d8-4489-8e74-3d15632015fb",
           },
         ],
       },
       {
         name: "Backend",
-        id: "",
+        id: "234a8903-19d8-4489-8e74-3d15632015fb",
         page: [
           {
             name: "L21 - Final Projects",
-            id: "",
+            id: "234a8903-19d8-4489-8e74-3d15632015fb",
           },
         ],
       },
       {
         name: "Backend",
-        id: "",
+        id: "234a8903-19d8-4489-8e74-3d15632015fb",
         page: [
           {
             name: "L21 - Final Projects",
-            id: "",
+            id: "234a8903-19d8-4489-8e74-3d15632015fb",
           },
         ],
       },
@@ -66,15 +66,15 @@ const notebooks = [
   },
   {
     name: "COMP 426",
-    id: "",
+    id: "234a8903-19d8-4489-8e74-3d15632015fb",
     chapter: [
       {
         name: "Backend",
-        id: "",
+        id: "234a8903-19d8-4489-8e74-3d15632015fb",
         page: [
           {
             name: "L21 - Final Projects",
-            id: "",
+            id: "234a8903-19d8-4489-8e74-3d15632015fb",
           },
         ],
       },
@@ -82,15 +82,15 @@ const notebooks = [
   },
   {
     name: "COMP 426",
-    id: "",
+    id: "234a8903-19d8-4489-8e74-3d15632015fb",
     chapter: [
       {
         name: "Backend",
-        id: "",
+        id: "234a8903-19d8-4489-8e74-3d15632015fb",
         page: [
           {
             name: "L21 - Final Projects",
-            id: "",
+            id: "234a8903-19d8-4489-8e74-3d15632015fb",
           },
         ],
       },
@@ -122,7 +122,9 @@ export function AppSidebar() {
                         <SidebarMenuSub>
                           {chapter.page.map((page, pageIdx) => (
                             <SidebarMenuSubItem key={pageIdx}>
-                              <Link href={`/${page.id}`}>
+                              <Link
+                                href={`/${page.id}`}
+                              >
                                 <p className="text-white text-sm">
                                   {page.name}
                                 </p>
