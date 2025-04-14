@@ -13,11 +13,31 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { GetServerSidePropsContext } from "next";
 import { createSupabaseServerClient } from "@/utils/supabase/server-props";
+import { SupabaseAuthClient } from "@supabase/supabase-js/dist/module/lib/SupabaseAuthClient";
+import { createSupabaseComponentClient } from "@/utils/supabase/component";
+import { useRouter } from "next/router";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { getProfileData } from "@/utils/supabase/queries";
 
 {
   /* TODO: Need to access user data */
 }
 export default function HomePage() {
+  // Create necessary hooks for clients and providers.
+  const supabase = createSupabaseComponentClient();
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  
+  // Fetch user profile data to display in the header
+
+  const { data: profileData } = useQuery({
+    queryKey: ["user_profile"],
+    queryFn: async () => {
+      const { data } = await supabase.auth.getUser();
+      if (!data) return null;
+      return await getProfileData(supabase, data.user!.id);
+    }
+  })
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       {/* Header */}
@@ -35,15 +55,15 @@ export default function HomePage() {
           <DialogTrigger asChild>
             <Button className="flex items-center gap-3 rounded-md px-3 py-1.5 h-14 w-40">
               <div className="text-right leading-tight">
-                <p className="text-sm font-medium">Ajay</p>{" "}
+                <p className="text-sm font-medium">{profileData && profileData.display_name}</p>{" "}
                 {/* TODO: update to be dynamic */}
-                <p className="text-xs text-muted-foreground">@ajay</p>{" "}
+                <p className="text-xs text-muted-foreground">{profileData && profileData.email}</p>{" "}
                 {/* TODO: update to be dynamic */}
               </div>
               <Avatar className="h-9 w-9">
                 <AvatarImage src="/ajay.png" alt="@ajay" />{" "}
                 {/* TODO: update to be dynamic */}
-                <AvatarFallback>AJ</AvatarFallback>
+                <AvatarFallback>{profileData && profileData.display_name[0].toUpperCase()}</AvatarFallback>
               </Avatar>
             </Button>
           </DialogTrigger>
