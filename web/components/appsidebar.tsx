@@ -100,7 +100,15 @@ const notebooks = [
 
 export function AppSidebar() {
   return (
-    <Sidebar className="mt-[115px]">
+    <Sidebar>
+      {/* Logo */}
+      <div className="flex justify-center mr-2.5 -mt-0.5">
+        <img
+          src="/ByteNotesLogo.png"
+          alt="Byte Notes"
+          className="w-[186px] h-[166px]"
+        />
+      </div>
       <SidebarContent>
         {notebooks.map((notebook, notebookIdx) => (
           <SidebarGroup key={notebookIdx}>
