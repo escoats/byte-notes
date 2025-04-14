@@ -41,17 +41,15 @@ export default function HomePage() {
         <Dialog>
           <DialogTrigger asChild>
             <Button className="flex items-center gap-3 rounded-md px-3 py-1.5 h-14 w-40">
-              <div className="text-right leading-tight">
-                <p className="text-sm font-medium">Ajay</p>{" "}
-                {/* TODO: update to be dynamic */}
-                <p className="text-xs text-muted-foreground">@ajay</p>{" "}
-                {/* TODO: update to be dynamic */}
-              </div>
               <Avatar className="h-9 w-9">
-                <AvatarImage src="/ajay.png" alt="@ajay" />{" "}
-                {/* TODO: update to be dynamic */}
+                <AvatarImage src="/ajay.png" alt="@ajay" />
                 <AvatarFallback>AJ</AvatarFallback>
               </Avatar>
+    
+              <div className="flex flex-col items-start leading-tight">
+                <p className="text-sm font-medium">Ajay</p>
+                <p className="text-xs text-muted-foreground">ajay@cs.unc.edu</p>
+              </div>
             </Button>
           </DialogTrigger>
 
@@ -107,7 +105,11 @@ export default function HomePage() {
             <Send />
             Send
           </Button>
-          <Button variant="ghost" className="flex flex-row items-center gap-1">
+          <Button
+            variant="ghost"
+            className="flex flex-row items-center gap-1"
+            /* onClick={handlePublish(projectId)} */
+          >
             <Globe />
             Publish
           </Button>
@@ -117,6 +119,7 @@ export default function HomePage() {
           </Button>
         </div>
       </div>
+      {/* No Note Selected */}
       <div className="flex flex-col flex-1 items-center justify-center text-center -mt-10">
         <FilePen strokeWidth={1.5} className="h-[90px] w-[90px] m-4" />
         <h1 className="font-bold text-lg mb-1">No Note Selected</h1>
@@ -150,3 +153,21 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     props: {},
   };
 }
+
+/* 
+const handlePublish = async (projectId: string) => {
+  const { error } = await supabase
+    .from("projects")
+    .update({ published: true })
+    .eq("id", projectId);
+
+  if (error) {
+    console.error("Publishing failed:", error.message);
+    alert("Failed to publish. Please try again.");
+  } else {
+    console.log("Published successfully!");
+    alert("Project published!");
+    // Optionally update local state to reflect publish status
+  }
+};
+*/
