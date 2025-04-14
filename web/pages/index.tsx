@@ -56,7 +56,8 @@ export default function HomePage() {
   }
   }, [profileData]);
 
-  // Updates the database and 
+  // Updates the database when the user changes their display name or avatar
+  //TODO: Upload photo avtar functionality in handleUpdateProfile:
   const handleUpdateProfile = async () => {
     if (!profileData) return;
 
