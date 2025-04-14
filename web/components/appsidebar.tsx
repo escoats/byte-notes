@@ -37,6 +37,12 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@radix-ui/react-label";
 import { Input } from "./ui/input";
+import { createSupabaseComponentClient } from "@/utils/supabase/component";
+import {
+  getNotebookTreeByUser,
+  getProfileData,
+} from "@/utils/supabase/queries";
+import { useQuery } from "@tanstack/react-query";
 
 // array of user's notebooks
 const notebooks = [
@@ -119,6 +125,25 @@ const notebooks = [
 ];
 
 export function AppSidebar() {
+  const supabase = createSupabaseComponentClient();
+
+  // Get current authenticated user
+  const { data: profileData } = useQuery({
+    queryKey: ["user_profile"],
+    queryFn: async () => {
+      const { data } = await supabase.auth.getUser();
+      if (!data) return null;
+      return await getProfileData(supabase, data.user!.id);
+    },
+  });
+
+  // Get user's notebook + chapter + page tree
+  const { data: notebooks, isLoading: notebooksLoading } = useQuery({
+    queryKey: ["notebook_tree", profileData?.id],
+    enabled: !!profileData?.id, // Only fetch when user data is available
+    queryFn: async () => await getNotebookTreeByUser(supabase, profileData!.id),
+  });
+
   return (
     <Sidebar>
       {/* Logo */}
@@ -131,7 +156,7 @@ export function AppSidebar() {
       </div>
 
       <SidebarContent>
-        {notebooks.map((notebook, notebookIdx) => (
+        {notebooks?.map((notebook, notebookIdx) => (
           <SidebarGroup key={notebookIdx}>
             <SidebarGroupLabel>
               <p className="text-white text-xs">{notebook.name}</p>
