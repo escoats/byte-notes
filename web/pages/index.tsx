@@ -16,6 +16,7 @@ import { createSupabaseServerClient } from "@/utils/supabase/server-props";
 import { createSupabaseComponentClient } from "@/utils/supabase/component";
 import { useRouter } from "next/router";
 import { FilePen, Globe, Save, Send } from "lucide-react";
+import Layout from "./layout";
 
 {
   /* TODO: Need to access user data */
@@ -119,14 +120,17 @@ export default function HomePage() {
           </Button>
         </div>
       </div>
-      {/* No Note Selected */}
-      <div className="flex flex-col flex-1 items-center justify-center text-center -mt-10">
-        <FilePen strokeWidth={1.5} className="h-[90px] w-[90px] m-4" />
-        <h1 className="font-bold text-lg mb-1">No Note Selected</h1>
-        <h2 className="font-bold text-gray-400 text-md max-w-[380px]">
-          Select a note from the sidebar or create a new one to get started.
-        </h2>
-      </div>
+      <Layout>
+        {/* No Notes selected */}
+        <div className="flex flex-col items-center justify-center text-center h-screen w-screen">
+          {/* TODO: fix alignment on no notes text */}
+          <FilePen strokeWidth={1.5} className="h-[90px] w-[90px] m-4" />
+          <h1 className="font-bold text-lg mb-1 text-center">No Note Selected</h1>
+          <h2 className="font-bold text-gray-400 text-md max-w-[380px] text-center">
+            Select a note from the sidebar or create a new one to get started.
+          </h2>
+        </div>
+      </Layout>
     </div>
   );
 }

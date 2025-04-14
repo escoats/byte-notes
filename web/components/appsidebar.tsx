@@ -100,7 +100,7 @@ const notebooks = [
 
 export function AppSidebar() {
   return (
-    <Sidebar>
+    <Sidebar className="mt-[115px]">
       <SidebarContent>
         {notebooks.map((notebook, notebookIdx) => (
           <SidebarGroup key={notebookIdx}>
