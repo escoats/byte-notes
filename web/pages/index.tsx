@@ -1,5 +1,6 @@
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -30,7 +31,7 @@ export default function HomePage() {
   const supabase = createSupabaseComponentClient();
   const router = useRouter();
   const queryClient = useQueryClient();
-  
+
   // Fetch user profile data to display in the header
 
   const { data: profileData } = useQuery({
@@ -39,21 +40,19 @@ export default function HomePage() {
       const { data } = await supabase.auth.getUser();
       if (!data) return null;
       return await getProfileData(supabase, data.user!.id);
-    }
-  })
+    },
+  });
 
-  const handleChangeEmail = async () => {
+  const handleChangeEmail = async () => {};
 
-  }
   // Logs the user out and routes back to the login page
   const handleSignOut = async () => {
-    const { error } = await supabase.auth.signOut()
+    const { error } = await supabase.auth.signOut();
     if (error) {
       window.alert("Failed to sign out: " + error.message);
     }
-    router.push("/login")
-  }
-
+    router.push("/login");
+  };
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
@@ -66,12 +65,18 @@ export default function HomePage() {
               <Avatar className="h-9 w-9">
                 <AvatarImage src="/ajay.png" alt="@ajay" />{" "}
                 {/* TODO: update to be dynamic */}
-                <AvatarFallback>{profileData && profileData.display_name[0].toUpperCase()}</AvatarFallback>
+                <AvatarFallback>
+                  {profileData && profileData.display_name[0].toUpperCase()}
+                </AvatarFallback>
               </Avatar>
 
               <div className="flex flex-col items-start leading-tight">
-                <p className="text-sm font-medium">{profileData && profileData.display_name}</p>
-                <p className="text-xs text-muted-foreground">{profileData && profileData.email}</p>
+                <p className="text-sm font-medium">
+                  {profileData && profileData.display_name}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {profileData && profileData.email}
+                </p>
               </div>
             </Button>
           </DialogTrigger>
@@ -94,17 +99,35 @@ export default function HomePage() {
                 <Label htmlFor="display-name" className="text-right">
                   Display Name
                 </Label>
-                <Input id="display-name" className="col-span-3" value={profileData?.display_name}/>
+                <Input
+                  id="display-name"
+                  className="col-span-3"
+                  value={profileData?.display_name}
+                />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="email" className="text-right">
                   Email
                 </Label>
-                <Input id="email" type="email" className="col-span-3" value={profileData?.email}/>
+                <Input
+                  id="email"
+                  type="email"
+                  className="col-span-3"
+                  value={profileData?.email}
+                />
               </div>
             </div>
             <DialogFooter>
-              <Button type="submit" className="bg-blue-400 align-content-start" onClick={handleSignOut}>
+              <DialogClose asChild>
+                <Button variant="outline" className="bg-blue-400">
+                  Cancel
+                </Button>
+              </DialogClose>
+              <Button
+                type="submit"
+                className="bg-blue-400 align-content-start"
+                onClick={handleSignOut}
+              >
                 Sign out
               </Button>
               <Button type="submit" className="bg-blue-400">
@@ -181,21 +204,3 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     props: {},
   };
 }
-
-/* 
-const handlePublish = async (projectId: string) => {
-  const { error } = await supabase
-    .from("projects")
-    .update({ published: true })
-    .eq("id", projectId);
-
-  if (error) {
-    console.error("Publishing failed:", error.message);
-    alert("Failed to publish. Please try again.");
-  } else {
-    console.log("Published successfully!");
-    alert("Project published!");
-    // Optionally update local state to reflect publish status
-  }
-};
-*/

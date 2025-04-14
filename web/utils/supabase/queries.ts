@@ -3,7 +3,7 @@
  */
 
 import { SupabaseClient, User } from "@supabase/supabase-js";
-import { Profile} from "./models";
+import { Profile } from "./models";
 import { z } from "zod";
 
 export const getProfileData = async (
@@ -26,5 +26,4 @@ export const getProfileData = async (
 // get notebooks by user
 // get chapters by notebook
 // get pages by chapter
-// something for viewing? 
-
+// something for viewing?
