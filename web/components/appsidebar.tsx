@@ -1,0 +1,144 @@
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarMenuSub,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSubItem,
+} from "@/components/ui/sidebar";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { ChevronDown } from "lucide-react";
+import Link from "next/link";
+
+// array of user's notebooks
+const notebooks = [
+  {
+    name: "COMP 426",
+    id: "",
+    chapter: [
+      {
+        name: "Backend",
+        id: "",
+        page: [
+          {
+            name: "L21 - Final Projects",
+            id: "",
+          },
+          {
+            name: "L21 - Final Projects",
+            id: "",
+          },
+          {
+            name: "L21 - Final Projects",
+            id: "",
+          },
+        ],
+      },
+      {
+        name: "Backend",
+        id: "",
+        page: [
+          {
+            name: "L21 - Final Projects",
+            id: "",
+          },
+        ],
+      },
+      {
+        name: "Backend",
+        id: "",
+        page: [
+          {
+            name: "L21 - Final Projects",
+            id: "",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    name: "COMP 426",
+    id: "",
+    chapter: [
+      {
+        name: "Backend",
+        id: "",
+        page: [
+          {
+            name: "L21 - Final Projects",
+            id: "",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    name: "COMP 426",
+    id: "",
+    chapter: [
+      {
+        name: "Backend",
+        id: "",
+        page: [
+          {
+            name: "L21 - Final Projects",
+            id: "",
+          },
+        ],
+      },
+    ],
+  },
+];
+
+export function AppSidebar() {
+  return (
+    <Sidebar>
+      <SidebarContent>
+        {notebooks.map((notebook, notebookIdx) => (
+          <SidebarGroup key={notebookIdx}>
+            <SidebarGroupLabel>
+              <p className="text-white text-xs">{notebook.name}</p>
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {notebook.chapter.map((chapter, chapterIdx) => (
+                  <Collapsible key={chapterIdx}>
+                    <SidebarGroup>
+                      <SidebarGroupLabel asChild>
+                        <CollapsibleTrigger className="flex items-center justify-between w-full">
+                          <p className="text-white text-sm">{chapter.name}</p>
+                          <ChevronDown className="text-white ml-auto transition-transform group-data-[state=open]:rotate-180" />
+                        </CollapsibleTrigger>
+                      </SidebarGroupLabel>
+                      <CollapsibleContent>
+                        <SidebarMenuSub>
+                          {chapter.page.map((page, pageIdx) => (
+                            <SidebarMenuSubItem key={pageIdx}>
+                              <Link href={`/${page.id}`}>
+                                <p className="text-white text-sm">
+                                  {page.name}
+                                </p>
+                              </Link>
+                            </SidebarMenuSubItem>
+                          ))}
+                        </SidebarMenuSub>
+                      </CollapsibleContent>
+                    </SidebarGroup>
+                  </Collapsible>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        ))}
+      </SidebarContent>
+    </Sidebar>
+  );
+}
