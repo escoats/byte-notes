@@ -18,7 +18,10 @@ import { SupabaseAuthClient } from "@supabase/supabase-js/dist/module/lib/Supaba
 import { createSupabaseComponentClient } from "@/utils/supabase/component";
 import { useRouter } from "next/router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getProfileData } from "@/utils/supabase/queries";
+import {
+  getNotebookTreeByUser,
+  getProfileData,
+} from "@/utils/supabase/queries";
 import { FilePen, Globe, Save, Send } from "lucide-react";
 import Layout from "./layout";
 import { userAgent } from "next/server";
@@ -33,7 +36,6 @@ export default function HomePage() {
   const queryClient = useQueryClient();
 
   // Fetch user profile data to display in the header
-
   const { data: profileData } = useQuery({
     queryKey: ["user_profile"],
     queryFn: async () => {
@@ -41,6 +43,13 @@ export default function HomePage() {
       if (!data) return null;
       return await getProfileData(supabase, data.user!.id);
     },
+  });
+
+  // Get user's notebook + chapter + page tree
+  const { data: notebookTree } = useQuery({
+    queryKey: ["notebook_tree"],
+    enabled: !!profileData?.id,
+    queryFn: async () => await getNotebookTreeByUser(supabase, profileData!.id),
   });
 
   const handleChangeEmail = async () => {};
@@ -143,8 +152,9 @@ export default function HomePage() {
       <div className="relative flex items-center h-[60px] px-6 border-b border-border bg-background">
         {/* Centered text */}
         <p className="absolute left-1/2 -translate-x-1/2 text-center">
-          {/* TODO: update to be dynamic */}
-          COMP426/Backend/L21-FinalProjects
+          {/* TODO: update to be dynamic - nothing should be displayed when no note is selected */}
+          {/* {notebookTree?.[0]?.name} / {notebookTree?.[0]?.chapter?.[0]?.name} /
+          {notebookTree?.[0]?.chapter?.[0]?.page?.[0]?.name} */}
         </p>
 
         {/* Right-aligned buttons */}
@@ -185,8 +195,8 @@ export default function HomePage() {
 }
 
 {
-  /* TODO: decide if we're going to use GetServerSideProps */ ß;
-}
+  /* TODO: decide if we're going to use GetServerSideProps 
+
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   // Create the supabase context that works specifically on the server and
   // pass in the context.
@@ -208,4 +218,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   return {
     props: {},
   };
+}
+*/
 }
