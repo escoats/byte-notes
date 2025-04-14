@@ -73,7 +73,7 @@ export default function HomePage() {
           <DialogTrigger asChild>
             <Button className="flex items-center gap-3 rounded-md px-3 py-1.5 h-14 w-40 justify-end">
               <Avatar className="h-9 w-9">
-                <AvatarImage src={profileData?.avatar_url} alt="@ajay" />
+              <AvatarImage src={profileData?.avatar_url ?? ""} alt="@ajay" />
                 {/* TODO: update to be dynamic */}
                 <AvatarFallback>
                   {profileData && profileData.display_name[0].toUpperCase()}
