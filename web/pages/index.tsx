@@ -220,7 +220,7 @@ export default function HomePage() {
   );
 }
 
-{
+
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   // Create the supabase context that works specifically on the server and
@@ -243,6 +243,4 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   return {
     props: {},
   };
-}
-*/
 }
