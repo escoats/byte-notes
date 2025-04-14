@@ -2,8 +2,8 @@
  * Loads data for a specific profile given its ID
  */
 
-import { SupabaseClient, User } from "@supabase/supabase-js";
-import { Profile } from "./models";
+import { SupabaseClient } from "@supabase/supabase-js";
+import { NotebookTree, Profile } from "./models";
 import { z } from "zod";
 
 // get profile data
@@ -24,25 +24,12 @@ export const getProfileData = async (
   return Profile.parse(data);
 };
 
-// for reference only to understand data structure
-type NotebooksData = {
-  name: string;
-  id: string;
-  chapter: {
-    name: string;
-    id: string;
-    page: {
-      name: string;
-      id: string;
-    }[];
-  }[];
-}[];
-
 // get notebooks, chapters, and pages for authenicated user
+type NotebookTreeType = z.infer<typeof NotebookTree>;
 export async function getNotebookTreeByUser(
   supabase: SupabaseClient,
   userId: string
-) {
+): Promise<NotebookTreeType[]> {
   const { data, error } = await supabase
     .from("notebook")
     .select(
@@ -63,6 +50,8 @@ export async function getNotebookTreeByUser(
 
   if (error) {
     console.error("Failed to fetch notebook tree:", error.message);
+    alert(error.message);
+    // return early to avoid mapping data this is null
     return [];
   }
 

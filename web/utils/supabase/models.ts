@@ -43,3 +43,21 @@ export const Share = z.object({
   page_id: z.string(),
   viewer_id: z.string(),
 });
+
+// Schema for Notebook Tree data
+export const NotebookTree = z.object({
+  id: z.string(),
+  name: z.string(),
+  chapter: z.array(
+    z.object({
+      id: z.string(),
+      name: z.string(),
+      page: z.array(
+        z.object({
+          id: z.string(),
+          name: z.string(),
+        })
+      ),
+    })
+  ),
+});

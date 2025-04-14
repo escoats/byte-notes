@@ -138,9 +138,9 @@ export function AppSidebar() {
   });
 
   // Get user's notebook + chapter + page tree
-  const { data: notebooks, isLoading: notebooksLoading } = useQuery({
-    queryKey: ["notebook_tree", profileData?.id],
-    enabled: !!profileData?.id, // Only fetch when user data is available
+  const { data: notebookTree } = useQuery({
+    queryKey: ["notebook_tree"],
+    enabled: !!profileData?.id,
     queryFn: async () => await getNotebookTreeByUser(supabase, profileData!.id),
   });
 
@@ -156,7 +156,7 @@ export function AppSidebar() {
       </div>
 
       <SidebarContent>
-        {notebooks?.map((notebook, notebookIdx) => (
+        {notebookTree?.map((notebook, notebookIdx) => (
           <SidebarGroup key={notebookIdx}>
             <SidebarGroupLabel>
               <p className="text-white text-xs">{notebook.name}</p>
