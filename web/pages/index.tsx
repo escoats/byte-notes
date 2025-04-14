@@ -29,19 +29,11 @@ export default function HomePage() {
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       {/* Header */}
-      <header className="flex items-center justify-between h-[115px] px-6 border-b border-border bg-card">
-        <div className="flex items-center gap-2">
-          {/* Logo */}
-          <img
-            src="/ByteNotesLogo.png"
-            alt="Byte Notes"
-            className="w-[186px] h-[166px]"
-          />
-        </div>
+      <header className="flex items-center h-[115px] px-6 border-b border-border bg-card justify-end">
         {/* Profile */}
         <Dialog>
           <DialogTrigger asChild>
-            <Button className="flex items-center gap-3 rounded-md px-3 py-1.5 h-14 w-40">
+            <Button className="flex items-center gap-3 rounded-md px-3 py-1.5 h-14 w-40 justify-end">
               <Avatar className="h-9 w-9">
                 <AvatarImage src="/ajay.png" alt="@ajay" />
                 <AvatarFallback>AJ</AvatarFallback>
@@ -121,11 +113,13 @@ export default function HomePage() {
         </div>
       </div>
       <Layout>
-        {/* No Notes selected */}
+        {/* No Note Selected */}
         <div className="flex flex-col items-center justify-center text-center h-screen w-screen">
           {/* TODO: fix alignment on no notes text */}
           <FilePen strokeWidth={1.5} className="h-[90px] w-[90px] m-4" />
-          <h1 className="font-bold text-lg mb-1 text-center">No Note Selected</h1>
+          <h1 className="font-bold text-lg mb-1 text-center">
+            No Note Selected
+          </h1>
           <h2 className="font-bold text-gray-400 text-md max-w-[380px] text-center">
             Select a note from the sidebar or create a new one to get started.
           </h2>
