@@ -35,6 +35,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { Label } from "@radix-ui/react-label";
 import { Input } from "./ui/input";
 import { createSupabaseComponentClient } from "@/utils/supabase/component";
@@ -271,11 +280,16 @@ export function AppSidebar() {
                     <Label htmlFor="notebook" className="text-right">
                       Notebook
                     </Label>
-                    <Input
-                      id="notebook"
-                      className="col-span-3"
-                      placeholder="Name of your notebook..."
-                    />
+                      <Select>
+                    <SelectTrigger className="w-[277.25]">
+                      <SelectValue placeholder="Select a notebook" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel>Your notebooks</SelectLabel>
+                      </SelectGroup>
+                    </SelectContent>
+                    </Select>
                   </div>
                 </div>
                 <DialogFooter>
@@ -320,21 +334,16 @@ export function AppSidebar() {
                     <Label htmlFor="chapter" className="text-right">
                       Chapter
                     </Label>
-                    <Input
-                      id="chapter"
-                      className="col-span-3"
-                      placeholder="Name of your chapter..."
-                    />
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="notebook" className="text-right">
-                      Notebook
-                    </Label>
-                    <Input
-                      id="notebook"
-                      className="col-span-3"
-                      placeholder="Name of your notebook..."
-                    />
+                    <Select>
+                    <SelectTrigger className="w-[277.25]">
+                      <SelectValue placeholder="Select a chapter" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel>Your chapters</SelectLabel>
+                      </SelectGroup>
+                    </SelectContent>
+                    </Select>
                   </div>
                 </div>
                 <DialogFooter>
