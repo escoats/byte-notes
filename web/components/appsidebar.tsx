@@ -23,6 +23,7 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "./ui/button";
 import {
@@ -54,6 +55,7 @@ import {
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
+import { BookMarked, List, FileText, Plus } from "lucide-react";
 
 // array of user's notebooks
 const notebooks = [
@@ -353,8 +355,7 @@ export function AppSidebar() {
             + New
           </Button>
         </DropdownMenuTrigger>
-        {/* TODO: Style so New Notebook, etc. text is black and gray when hovered */}
-        <DropdownMenuContent className="w-60">
+        <DropdownMenuContent className="w-60  bg-slate-700">
           <DropdownMenuGroup>
             {/* New Notebook */}
             <Dialog
@@ -362,8 +363,12 @@ export function AppSidebar() {
               onOpenChange={setIsNotebookDialogOpen}
             >
               <DialogTrigger asChild>
-                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                  New Notebook
+                <DropdownMenuItem
+                  onSelect={(e) => e.preventDefault()}
+                  className="flex items-center space-x-2 px-3 py-2 rounded-md text-white hover:text-gray-300 hover:bg-gray-700 transition"
+                >
+                  <BookMarked className="h-4 w-4" />
+                  <span>New Notebook</span>
                 </DropdownMenuItem>
               </DialogTrigger>
               <DialogContent className="sm:max-w-[425px]">
@@ -403,14 +408,19 @@ export function AppSidebar() {
                 </DialogFooter>
               </DialogContent>
             </Dialog>
+            <DropdownMenuSeparator />
             {/* New Chapter */}
             <Dialog
               open={isChapterDialogOpen}
               onOpenChange={setIsChapterDialogOpen}
             >
               <DialogTrigger asChild>
-                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                  New Chapter
+                <DropdownMenuItem
+                  onSelect={(e) => e.preventDefault()}
+                  className="flex items-center space-x-2 px-3 py-2 rounded-md text-white hover:text-gray-300 hover:bg-gray-700 transition"
+                >
+                  <List className="h-4 w-4" />
+                  <span>Chapter</span>
                 </DropdownMenuItem>
               </DialogTrigger>
               <DialogContent className="sm:max-w-[425px]">
@@ -463,7 +473,6 @@ export function AppSidebar() {
                       Cancel
                     </Button>
                   </DialogClose>
-                  {/* TODO: implement Save logic to update database when new chapter is created */}
                   <Button
                     type="submit"
                     className="bg-blue-400"
@@ -474,11 +483,16 @@ export function AppSidebar() {
                 </DialogFooter>
               </DialogContent>
             </Dialog>
+            <DropdownMenuSeparator />
             {/* New Page */}
             <Dialog open={isPageDialogOpen} onOpenChange={setIsPageDialogOpen}>
               <DialogTrigger asChild>
-                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                  New Page
+                <DropdownMenuItem
+                  onSelect={(e) => e.preventDefault()}
+                  className="flex items-center space-x-2 px-3 py-2 rounded-md text-white hover:text-gray-300 hover:bg-gray-700 transition"
+                >
+                  <FileText className="h-4 w-4" />
+                  <span>Page</span>
                 </DropdownMenuItem>
               </DialogTrigger>
               <DialogContent className="sm:max-w-[425px]">
