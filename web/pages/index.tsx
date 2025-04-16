@@ -156,6 +156,17 @@ export default function HomePage() {
     toast("Link copied successfully!");
   }
 
+  // clicking this button should navigate user to view-only published note page
+  function handlePublish(): void {
+    // TODO: @escoats
+    toast("Publish functionality has not been implemented yet.");
+  }
+
+  // TODO: Sprint 2
+  function handleSave(): void {
+    toast("Save functionality has not been implemented yet.");
+  }
+
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       {/* Header */}
@@ -292,12 +303,16 @@ export default function HomePage() {
           <Button
             variant="ghost"
             className="flex flex-row items-center gap-1"
-            /* onClick={handlePublish(projectId)} */
+            onClick={() => handlePublish()}
           >
             <Globe />
             Publish
           </Button>
-          <Button variant="ghost" className="flex flex-row items-center gap-1">
+          <Button
+            variant="ghost"
+            className="flex flex-row items-center gap-1"
+            onClick={() => handleSave()}
+          >
             <Save />
             Save
           </Button>
@@ -321,8 +336,7 @@ export default function HomePage() {
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  // Create the supabase context that works specifically on the server and
-  // pass in the context.
+  // Create the supabase context that works specifically on the server and pass in the context.
   const supabase = createSupabaseServerClient(context);
 
   // Attempt to load the user data

@@ -221,7 +221,7 @@ export function AppSidebar() {
       return;
     }
 
-    toast.success("Notebook created!");
+    toast("Notebook created!");
     setNewNotebookTitle("");
     setIsNotebookDialogOpen(false);
     await queryClient.invalidateQueries({ queryKey: ["notebook_tree"] });
@@ -261,7 +261,7 @@ export function AppSidebar() {
       return;
     }
 
-    toast.success("Chapter created!");
+    toast("Chapter created!");
     setNewChapterTitle("");
     setSelectedNotebookId("");
     setIsChapterDialogOpen(false);
@@ -301,7 +301,7 @@ export function AppSidebar() {
       return;
     }
 
-    toast.success("Page created!");
+    toast("Page created!");
     setNewPageTitle("");
     setSelectedChapterId("");
     setIsPageDialogOpen(false);
@@ -310,7 +310,7 @@ export function AppSidebar() {
 
   // handles renaming item in database when user right clicks in sidebar
   function handleRenameSidebarItem(id: string): void {
-    throw new Error("Function not implemented.");
+    toast("Rename functionality not implemented yet.");
   }
 
   // handles deleting item from database when user right clicks in sidebar
@@ -351,12 +351,13 @@ export function AppSidebar() {
                     {notebook.name}
                   </p>
                 </ContextMenuTrigger>
-                <ContextMenuContent className="w-48">
+                <ContextMenuContent className="w-48 bg-gray-800">
                   <ContextMenuItem
                     onClick={() => handleRenameSidebarItem(notebook.id)}
                   >
                     Rename Notebook
                   </ContextMenuItem>
+                  <DropdownMenuSeparator />
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <ContextMenuItem onSelect={(e) => e.preventDefault()}>
@@ -370,8 +371,8 @@ export function AppSidebar() {
                         </AlertDialogTitle>
                         <AlertDialogDescription>
                           This action cannot be undone. This will permanently
-                          delete the notebook and remove its data from our
-                          servers.
+                          delete the notebook (including all associated pages)
+                          and remove its data from our servers.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
@@ -404,7 +405,7 @@ export function AppSidebar() {
                               <ChevronDown className="ml-auto h-4 w-4 transition-transform group-data-[state=open]:rotate-180" />
                             </CollapsibleTrigger>
                           </ContextMenuTrigger>
-                          <ContextMenuContent className="w-48">
+                          <ContextMenuContent className="w-48 bg-gray-800">
                             <ContextMenuItem
                               onClick={() =>
                                 handleRenameSidebarItem(chapter.id)
@@ -412,6 +413,7 @@ export function AppSidebar() {
                             >
                               Rename Chapter
                             </ContextMenuItem>
+                            <DropdownMenuSeparator />
                             <AlertDialog>
                               <AlertDialogTrigger asChild>
                                 <ContextMenuItem
@@ -465,7 +467,7 @@ export function AppSidebar() {
                                     {page.name}
                                   </Link>
                                 </ContextMenuTrigger>
-                                <ContextMenuContent className="w-48">
+                                <ContextMenuContent className="w-48 bg-gray-800">
                                   <ContextMenuItem
                                     onClick={() =>
                                       handleRenameSidebarItem(page.id)
@@ -473,6 +475,7 @@ export function AppSidebar() {
                                   >
                                     Rename Page
                                   </ContextMenuItem>
+                                  <DropdownMenuSeparator />
                                   <AlertDialog>
                                     <AlertDialogTrigger asChild>
                                       <ContextMenuItem
@@ -723,7 +726,6 @@ export function AppSidebar() {
                       Cancel
                     </Button>
                   </DialogClose>
-                  {/* TODO: implement Save logic to update database when new notebook is created */}
                   <Button
                     type="submit"
                     className="bg-blue-400"
