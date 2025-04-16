@@ -29,9 +29,6 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { SupabaseClient } from "@supabase/supabase-js";
 
-{
-  /* TODO: Need to access user data */
-}
 export default function HomePage() {
   // Create necessary hooks for clients and providers.
   const supabase = createSupabaseComponentClient();
@@ -52,13 +49,13 @@ export default function HomePage() {
 
   // Sets profile data to be empty initally
 
-  const [displayName, setDisplayName] = useState("")
+  const [displayName, setDisplayName] = useState("");
 
   // As soon as the profile data loads, pre-fill the inputs and populate isEditingDisplay
   useEffect(() => {
-  if (profileData) {
-    setDisplayName(profileData.display_name || "");
-  }
+    if (profileData) {
+      setDisplayName(profileData.display_name || "");
+    }
   }, [profileData]);
 
   // Updates the database when the user changes their display name or avatar
@@ -132,7 +129,8 @@ export default function HomePage() {
 
     if (uploadError) throw uploadError;
 
-    const publicUrl = supabase.storage.from("avatars").getPublicUrl(filePath).data.publicUrl;
+    const publicUrl = supabase.storage.from("avatars").getPublicUrl(filePath)
+      .data.publicUrl;
 
     const { error: updateError } = await supabase
       .from("profile")
@@ -151,6 +149,11 @@ export default function HomePage() {
     router.push("/login");
   };
 
+  function sendLink(): void {
+    navigator.clipboard.writeText("https://comp426-25s.github.io");
+    toast("Link copied successfully!");
+  }
+
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       {/* Header */}
@@ -160,13 +163,16 @@ export default function HomePage() {
           <DialogTrigger asChild>
             <Button
               className="flex items-center gap-3 rounded-md px-3 py-1.5 h-14 justify-start max-w-full overflow-hidden"
-              variant="secondary">
+              variant="secondary"
+            >
               <div className="flex items-center gap-3 max-w-full overflow-hidden">
                 <Avatar className="h-9 w-9 shrink-0">
                   <AvatarImage
                     src={
                       profileData?.avatar_url
-                        ? supabase.storage.from("avatars").getPublicUrl(profileData.avatar_url).data.publicUrl
+                        ? supabase.storage
+                            .from("avatars")
+                            .getPublicUrl(profileData.avatar_url).data.publicUrl
                         : ""
                     }
                   />
@@ -176,12 +182,15 @@ export default function HomePage() {
                 </Avatar>
 
                 <div className="flex flex-col items-start leading-tight truncate">
-                  <p className="text-sm font-medium truncate">{profileData?.display_name}</p>
-                  <p className="text-xs text-secondary-foreground truncate">{profileData?.email}</p>
+                  <p className="text-sm font-medium truncate">
+                    {profileData?.display_name}
+                  </p>
+                  <p className="text-xs text-secondary-foreground truncate">
+                    {profileData?.email}
+                  </p>
                 </div>
               </div>
             </Button>
-
           </DialogTrigger>
 
           <DialogContent className="sm:max-w-[425px]">
@@ -205,7 +214,9 @@ export default function HomePage() {
                       accept="image/*"
                       onChange={(e) =>
                         setSelectedFile(
-                          (e.target.files ?? []).length > 0 ? e.target.files![0] : null
+                          (e.target.files ?? []).length > 0
+                            ? e.target.files![0]
+                            : null
                         )
                       }
                     />
@@ -231,8 +242,7 @@ export default function HomePage() {
                   onChange={(e) => setDisplayName(e.target.value)}
                 />
               </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-              </div>
+              <div className="grid grid-cols-4 items-center gap-4"></div>
             </div>
             <DialogFooter>
               <DialogClose asChild>
@@ -247,8 +257,11 @@ export default function HomePage() {
               >
                 Sign out
               </Button>
-              {/* TODO: update to save only changed items in form */}
-              <Button type="submit" className="bg-blue-400" onClick={handleUpdateProfile}>
+              <Button
+                type="submit"
+                className="bg-blue-400"
+                onClick={handleUpdateProfile}
+              >
                 Update Profile
               </Button>
             </DialogFooter>
@@ -266,7 +279,11 @@ export default function HomePage() {
 
         {/* Right-aligned buttons */}
         <div className="ml-auto flex gap-2">
-          <Button variant="ghost" className="flex flex-row items-center gap-1">
+          <Button
+            variant="ghost"
+            className="flex flex-row items-center gap-1"
+            onClick={() => sendLink()}
+          >
             <Send />
             Send
           </Button>
@@ -300,8 +317,6 @@ export default function HomePage() {
     </div>
   );
 }
-
-
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   // Create the supabase context that works specifically on the server and
