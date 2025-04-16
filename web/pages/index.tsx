@@ -153,7 +153,7 @@ export default function HomePage() {
   function sendLink(): void {
     // TODO: @escoats update the link copied to be the published page view
     navigator.clipboard.writeText("https://comp426-25s.github.io");
-    toast("Link copied successfully!");
+    toast("Link copied to clipboard!");
   }
 
   // clicking this button should navigate user to view-only published note page
