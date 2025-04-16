@@ -43,7 +43,7 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
 import { Label } from "@radix-ui/react-label";
 import { Input } from "./ui/input";
 import { createSupabaseComponentClient } from "@/utils/supabase/component";
@@ -148,13 +148,10 @@ export function AppSidebar() {
   const [isChapterDialogOpen, setIsChapterDialogOpen] = useState(false);
   const [selectedNotebookId, setSelectedNotebookId] = useState<string>("");
 
-
   //useStates for creating & setting new page title, opening/closing dialog on creation, and selecting a chapter for the page
   const [newPageTitle, setNewPageTitle] = useState("");
   const [isPageDialogOpen, setIsPageDialogOpen] = useState(false);
   const [selectedChapterId, setSelectedChapterId] = useState<string>("");
-
-
 
   // Get current authenticated user
   const { data: profileData } = useQuery({
@@ -222,7 +219,7 @@ export function AppSidebar() {
       .eq("title", newChapterTitle.trim())
       .eq("notebook_id", selectedNotebookId)
       .maybeSingle();
-      console.log(existing)
+    console.log(existing);
 
     if (checkError) {
       toast.error("Failed to fetch chapter.");
@@ -262,7 +259,7 @@ export function AppSidebar() {
       .eq("title", newPageTitle.trim())
       .eq("chapter_id", selectedChapterId)
       .maybeSingle();
-      console.log(existing)
+    console.log(existing);
 
     if (checkError) {
       toast.error("Failed to fetch page.");
@@ -306,28 +303,36 @@ export function AppSidebar() {
       <SidebarContent>
         {notebookTree?.map((notebook, notebookIdx) => (
           <SidebarGroup key={notebookIdx}>
+            {/* Notebook Title */}
             <SidebarGroupLabel>
-              <p className="text-white text-xs">{notebook.name}</p>
+              <p className="text-[11px] text-gray-400 uppercase tracking-wider px-4 pt-3 pb-1">
+                {notebook.name}
+              </p>
             </SidebarGroupLabel>
+
+            {/* Chapters */}
             <SidebarGroupContent>
-              <SidebarMenu>
+              <SidebarMenu className="space-y-1">
                 {notebook.chapter.map((chapter, chapterIdx) => (
-                  <Collapsible key={chapterIdx}>
+                  <Collapsible key={chapterIdx} className="pl-2 pr-2">
                     <SidebarGroup>
                       <SidebarGroupLabel asChild>
-                        <CollapsibleTrigger className="flex items-center justify-between w-full">
-                          <p className="text-white text-sm">{chapter.name}</p>
-                          <ChevronDown className="text-white ml-auto transition-transform group-data-[state=open]:rotate-180" />
+                        <CollapsibleTrigger className="flex items-center justify-between w-full py-1.5 text-white text-[13px] font-medium hover:bg-gray-800 rounded-md transition pl-2">
+                          {chapter.name}
+                          <ChevronDown className="ml-auto h-4 w-4 transition-transform group-data-[state=open]:rotate-180" />
                         </CollapsibleTrigger>
                       </SidebarGroupLabel>
+
+                      {/* Pages */}
                       <CollapsibleContent>
-                        <SidebarMenuSub>
+                        <SidebarMenuSub className="pl-4 space-y-1">
                           {chapter.page.map((page, pageIdx) => (
-                            <SidebarMenuSubItem key={pageIdx}>
-                              <Link href={`/${page.id}`}>
-                                <p className="text-white text-sm">
-                                  {page.name}
-                                </p>
+                            <SidebarMenuSubItem key={pageIdx} className="pl-1">
+                              <Link
+                                href={`/${page.id}`}
+                                className="block px-2 py-1 text-[13px] text-gray-300 rounded hover:bg-gray-700 hover:text-white transition"
+                              >
+                                {page.name}
                               </Link>
                             </SidebarMenuSubItem>
                           ))}
@@ -352,7 +357,10 @@ export function AppSidebar() {
         <DropdownMenuContent className="w-60">
           <DropdownMenuGroup>
             {/* New Notebook */}
-              <Dialog open={isNotebookDialogOpen} onOpenChange={setIsNotebookDialogOpen}>
+            <Dialog
+              open={isNotebookDialogOpen}
+              onOpenChange={setIsNotebookDialogOpen}
+            >
               <DialogTrigger asChild>
                 <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
                   New Notebook
@@ -396,7 +404,10 @@ export function AppSidebar() {
               </DialogContent>
             </Dialog>
             {/* New Chapter */}
-            <Dialog open={isChapterDialogOpen} onOpenChange={setIsChapterDialogOpen}>
+            <Dialog
+              open={isChapterDialogOpen}
+              onOpenChange={setIsChapterDialogOpen}
+            >
               <DialogTrigger asChild>
                 <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
                   New Chapter
@@ -426,18 +437,23 @@ export function AppSidebar() {
                     <Label htmlFor="notebook" className="text-right">
                       Notebook
                     </Label>
-                    <Select value={selectedNotebookId} onValueChange={setSelectedNotebookId}>
-                    <SelectTrigger className="w-[277.25]">
-                      <SelectValue placeholder="Select a notebook" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectLabel>Your notebooks</SelectLabel>
-                        {notebookTree?.map((nb) => (
-                          <SelectItem key={nb.id} value={nb.id}>{nb.name}</SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
+                    <Select
+                      value={selectedNotebookId}
+                      onValueChange={setSelectedNotebookId}
+                    >
+                      <SelectTrigger className="w-[277.25]">
+                        <SelectValue placeholder="Select a notebook" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel>Your notebooks</SelectLabel>
+                          {notebookTree?.map((nb) => (
+                            <SelectItem key={nb.id} value={nb.id}>
+                              {nb.name}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
                     </Select>
                   </div>
                 </div>
@@ -448,14 +464,18 @@ export function AppSidebar() {
                     </Button>
                   </DialogClose>
                   {/* TODO: implement Save logic to update database when new chapter is created */}
-                  <Button type="submit" className="bg-blue-400" onClick={handleCreateChapter}>
+                  <Button
+                    type="submit"
+                    className="bg-blue-400"
+                    onClick={handleCreateChapter}
+                  >
                     Create
                   </Button>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
             {/* New Page */}
-            <Dialog  open={isPageDialogOpen} onOpenChange={setIsPageDialogOpen}>
+            <Dialog open={isPageDialogOpen} onOpenChange={setIsPageDialogOpen}>
               <DialogTrigger asChild>
                 <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
                   New Page
@@ -485,22 +505,25 @@ export function AppSidebar() {
                     <Label htmlFor="chapter" className="text-right">
                       Chapter
                     </Label>
-                    <Select value={selectedChapterId} onValueChange={setSelectedChapterId}>
-                    <SelectTrigger className="w-[277.25]">
-                      <SelectValue placeholder="Select a chapter" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectLabel>Your chapters</SelectLabel>
-                        {notebookTree?.flatMap((notebook) =>
-                        notebook.chapter.map((chapter) => (
-                          <SelectItem key={chapter.id} value={chapter.id}>
-                            {notebook.name} / {chapter.name}
-                          </SelectItem>
-                        ))
-                      )}
-                      </SelectGroup>
-                    </SelectContent>
+                    <Select
+                      value={selectedChapterId}
+                      onValueChange={setSelectedChapterId}
+                    >
+                      <SelectTrigger className="w-[277.25]">
+                        <SelectValue placeholder="Select a chapter" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel>Your chapters</SelectLabel>
+                          {notebookTree?.flatMap((notebook) =>
+                            notebook.chapter.map((chapter) => (
+                              <SelectItem key={chapter.id} value={chapter.id}>
+                                {notebook.name} / {chapter.name}
+                              </SelectItem>
+                            ))
+                          )}
+                        </SelectGroup>
+                      </SelectContent>
                     </Select>
                   </div>
                 </div>
@@ -511,7 +534,11 @@ export function AppSidebar() {
                     </Button>
                   </DialogClose>
                   {/* TODO: implement Save logic to update database when new notebook is created */}
-                  <Button type="submit" className="bg-blue-400" onClick={handleCreatePage}>
+                  <Button
+                    type="submit"
+                    className="bg-blue-400"
+                    onClick={handleCreatePage}
+                  >
                     Create
                   </Button>
                 </DialogFooter>
