@@ -56,6 +56,23 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
 import { BookMarked, List, FileText, Plus } from "lucide-react";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from "./ui/context-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "./ui/alert-dialog";
 
 // array of user's notebooks
 const notebooks = [
@@ -291,6 +308,27 @@ export function AppSidebar() {
     await queryClient.invalidateQueries({ queryKey: ["notebook_tree"] });
   };
 
+  // handles renaming item in database when user right clicks in sidebar
+  function handleRenameSidebarItem(id: string): void {
+    throw new Error("Function not implemented.");
+  }
+
+  // handles deleting item from database when user right clicks in sidebar
+  async function handleDeleteSidebarItem(
+    id: string,
+    type: string
+  ): Promise<void> {
+    const { error } = await supabase.from(type).delete().eq("id", id);
+
+    if (error) {
+      toast.error(`Failed to delete ${type}.`);
+      return;
+    }
+
+    toast(`${type.charAt(0).toUpperCase() + type.slice(1)} deleted!`);
+    await queryClient.invalidateQueries({ queryKey: ["notebook_tree"] });
+  }
+
   return (
     <Sidebar>
       {/* Logo */}
@@ -307,9 +345,49 @@ export function AppSidebar() {
           <SidebarGroup key={notebookIdx}>
             {/* Notebook Title */}
             <SidebarGroupLabel>
-              <p className="text-[11px] text-gray-400 uppercase tracking-wider px-4 pt-3 pb-1">
-                {notebook.name}
-              </p>
+              <ContextMenu>
+                <ContextMenuTrigger>
+                  <p className="text-[11px] text-gray-400 uppercase tracking-wider px-4 pt-3 pb-1">
+                    {notebook.name}
+                  </p>
+                </ContextMenuTrigger>
+                <ContextMenuContent className="w-48">
+                  <ContextMenuItem
+                    onClick={() => handleRenameSidebarItem(notebook.id)}
+                  >
+                    Rename Notebook
+                  </ContextMenuItem>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <ContextMenuItem onSelect={(e) => e.preventDefault()}>
+                        Delete Notebook
+                      </ContextMenuItem>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>
+                          Are you sure you want to delete this notebook?
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This action cannot be undone. This will permanently
+                          delete the notebook and remove its data from our
+                          servers.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() =>
+                            handleDeleteSidebarItem(notebook.id, "notebook")
+                          }
+                        >
+                          Continue
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </ContextMenuContent>
+              </ContextMenu>
             </SidebarGroupLabel>
 
             {/* Chapters */}
@@ -319,10 +397,58 @@ export function AppSidebar() {
                   <Collapsible key={chapterIdx} className="pl-2 pr-2">
                     <SidebarGroup>
                       <SidebarGroupLabel asChild>
-                        <CollapsibleTrigger className="flex items-center justify-between w-full py-1.5 text-white text-[13px] font-medium hover:bg-gray-800 rounded-md transition pl-2">
-                          {chapter.name}
-                          <ChevronDown className="ml-auto h-4 w-4 transition-transform group-data-[state=open]:rotate-180" />
-                        </CollapsibleTrigger>
+                        <ContextMenu>
+                          <ContextMenuTrigger>
+                            <CollapsibleTrigger className="flex items-center justify-between w-full py-1.5 text-white text-[13px] font-medium hover:bg-gray-800 rounded-md transition pl-2">
+                              {chapter.name}
+                              <ChevronDown className="ml-auto h-4 w-4 transition-transform group-data-[state=open]:rotate-180" />
+                            </CollapsibleTrigger>
+                          </ContextMenuTrigger>
+                          <ContextMenuContent className="w-48">
+                            <ContextMenuItem
+                              onClick={() =>
+                                handleRenameSidebarItem(chapter.id)
+                              }
+                            >
+                              Rename Chapter
+                            </ContextMenuItem>
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <ContextMenuItem
+                                  onSelect={(e) => e.preventDefault()}
+                                >
+                                  Delete Chapter
+                                </ContextMenuItem>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>
+                                    Are you sure you want to delete this
+                                    chapter?
+                                  </AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    This action cannot be undone. This will
+                                    permanently delete the chapter and remove
+                                    its data from our servers.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <AlertDialogAction
+                                    onClick={() =>
+                                      handleDeleteSidebarItem(
+                                        chapter.id,
+                                        "chapter"
+                                      )
+                                    }
+                                  >
+                                    Continue
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          </ContextMenuContent>
+                        </ContextMenu>
                       </SidebarGroupLabel>
 
                       {/* Pages */}
@@ -330,12 +456,62 @@ export function AppSidebar() {
                         <SidebarMenuSub className="pl-4 space-y-1">
                           {chapter.page.map((page, pageIdx) => (
                             <SidebarMenuSubItem key={pageIdx} className="pl-1">
-                              <Link
-                                href={`/${page.id}`}
-                                className="block px-2 py-1 text-[13px] text-gray-300 rounded hover:bg-gray-700 hover:text-white transition"
-                              >
-                                {page.name}
-                              </Link>
+                              <ContextMenu>
+                                <ContextMenuTrigger>
+                                  <Link
+                                    href={`/${page.id}`}
+                                    className="block px-2 py-1 text-[13px] text-gray-300 rounded hover:bg-gray-700 hover:text-white transition"
+                                  >
+                                    {page.name}
+                                  </Link>
+                                </ContextMenuTrigger>
+                                <ContextMenuContent className="w-48">
+                                  <ContextMenuItem
+                                    onClick={() =>
+                                      handleRenameSidebarItem(page.id)
+                                    }
+                                  >
+                                    Rename Page
+                                  </ContextMenuItem>
+                                  <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                      <ContextMenuItem
+                                        onSelect={(e) => e.preventDefault()}
+                                      >
+                                        Delete Page
+                                      </ContextMenuItem>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                      <AlertDialogHeader>
+                                        <AlertDialogTitle>
+                                          Are you sure you want to delete this
+                                          page?
+                                        </AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                          This action cannot be undone. This
+                                          will permanently delete the page and
+                                          remove its data from our servers.
+                                        </AlertDialogDescription>
+                                      </AlertDialogHeader>
+                                      <AlertDialogFooter>
+                                        <AlertDialogCancel>
+                                          Cancel
+                                        </AlertDialogCancel>
+                                        <AlertDialogAction
+                                          onClick={() =>
+                                            handleDeleteSidebarItem(
+                                              page.id,
+                                              "page"
+                                            )
+                                          }
+                                        >
+                                          Continue
+                                        </AlertDialogAction>
+                                      </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                  </AlertDialog>
+                                </ContextMenuContent>
+                              </ContextMenu>
                             </SidebarMenuSubItem>
                           ))}
                         </SidebarMenuSub>

@@ -149,6 +149,7 @@ export default function HomePage() {
     router.push("/login");
   };
 
+  // Copies link to clipboard and displays toast when user clicks Send button
   function sendLink(): void {
     // TODO: @escoats update the link copied to be the published page view
     navigator.clipboard.writeText("https://comp426-25s.github.io");
