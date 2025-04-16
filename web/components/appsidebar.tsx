@@ -381,6 +381,7 @@ export function AppSidebar() {
                           onClick={() =>
                             handleDeleteSidebarItem(notebook.id, "notebook")
                           }
+                          className="bg-red-600"
                         >
                           Continue
                         </AlertDialogAction>
@@ -443,6 +444,7 @@ export function AppSidebar() {
                                         "chapter"
                                       )
                                     }
+                                    className="bg-red-600"
                                   >
                                     Continue
                                   </AlertDialogAction>
@@ -507,6 +509,7 @@ export function AppSidebar() {
                                               "page"
                                             )
                                           }
+                                          className="bg-red-600"
                                         >
                                           Continue
                                         </AlertDialogAction>
