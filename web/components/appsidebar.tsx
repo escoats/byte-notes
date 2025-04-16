@@ -51,7 +51,9 @@ import {
   getNotebookTreeByUser,
   getProfileData,
 } from "@/utils/supabase/queries";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import { toast } from "sonner";
 
 // array of user's notebooks
 const notebooks = [
@@ -135,6 +137,24 @@ const notebooks = [
 
 export function AppSidebar() {
   const supabase = createSupabaseComponentClient();
+  const queryClient = useQueryClient();
+
+  //useStates for creating & setting new notebook title and opening/closing dialog on creation
+  const [newNotebookTitle, setNewNotebookTitle] = useState("");
+  const [isNotebookDialogOpen, setIsNotebookDialogOpen] = useState(false);
+
+  //useStates for creating & setting new chapter title, opening/closing dialog on creation, and selecting a notebook for the chater
+  const [newChapterTitle, setNewChapterTitle] = useState("");
+  const [isChapterDialogOpen, setIsChapterDialogOpen] = useState(false);
+  const [selectedNotebookId, setSelectedNotebookId] = useState<string>("");
+
+
+  //useStates for creating & setting new page title, opening/closing dialog on creation, and selecting a chapter for the page
+  const [newPageTitle, setNewPageTitle] = useState("");
+  const [isPageDialogOpen, setIsPageDialogOpen] = useState(false);
+  const [selectedChapterId, setSelectedChapterId] = useState<string>("");
+
+
 
   // Get current authenticated user
   const { data: profileData } = useQuery({
@@ -152,6 +172,125 @@ export function AppSidebar() {
     enabled: !!profileData?.id,
     queryFn: async () => await getNotebookTreeByUser(supabase, profileData!.id),
   });
+
+  //Creates a new notebook and adds to notebook table & sidebar
+  const handleCreateNotebook = async () => {
+    if (!newNotebookTitle.trim() || !profileData?.id) return;
+
+    const { data: existing, error: checkError } = await supabase
+      .from("notebook")
+      .select("id")
+      .eq("title", newNotebookTitle.trim())
+      .eq("author_id", profileData.id)
+      .maybeSingle();
+
+    if (checkError) {
+      toast.error("Failed to fetch notebook.");
+      return;
+    }
+
+    if (existing) {
+      toast.error("Notebook already exists");
+      return;
+    }
+
+    const { error } = await supabase.from("notebook").insert({
+      title: newNotebookTitle.trim(),
+      author_id: profileData.id,
+    });
+
+    if (error) {
+      console.error("Failed to create notebook:", error.message);
+      toast.error("Failed to create notebook.");
+      return;
+    }
+
+    toast.success("Notebook created!");
+    setNewNotebookTitle("");
+    setIsNotebookDialogOpen(false);
+    await queryClient.invalidateQueries({ queryKey: ["notebook_tree"] });
+  };
+
+  //Creates a new chapter and adds to chapter table & sidebar
+  const handleCreateChapter = async () => {
+    //trim to remove whitespace for supabase
+    if (!newChapterTitle.trim() || !profileData?.id) return;
+
+    const { data: existing, error: checkError } = await supabase
+      .from("chapter")
+      .select("id")
+      .eq("title", newChapterTitle.trim())
+      .eq("notebook_id", selectedNotebookId)
+      .maybeSingle();
+      console.log(existing)
+
+    if (checkError) {
+      toast.error("Failed to fetch chapter.");
+      return;
+    }
+
+    if (existing) {
+      toast.error("Chapter already exists");
+      return;
+    }
+
+    const { error } = await supabase.from("chapter").insert({
+      title: newChapterTitle.trim(),
+      notebook_id: selectedNotebookId,
+    });
+
+    if (error) {
+      console.error("Failed to create chapter:", error.message);
+      toast.error("Failed to create chapter.");
+      return;
+    }
+
+    toast.success("Chapter created!");
+    setNewChapterTitle("");
+    setSelectedNotebookId("");
+    setIsChapterDialogOpen(false);
+    await queryClient.invalidateQueries({ queryKey: ["notebook_tree"] });
+  };
+
+  //Creates a new page and adds to page table & sidebar
+  const handleCreatePage = async () => {
+    if (!newPageTitle.trim() || !profileData?.id) return;
+
+    const { data: existing, error: checkError } = await supabase
+      .from("page")
+      .select("id")
+      .eq("title", newPageTitle.trim())
+      .eq("chapter_id", selectedChapterId)
+      .maybeSingle();
+      console.log(existing)
+
+    if (checkError) {
+      toast.error("Failed to fetch page.");
+      return;
+    }
+
+    if (existing) {
+      toast.error("Page already exists");
+      return;
+    }
+
+    const { error } = await supabase.from("page").insert({
+      title: newPageTitle.trim(),
+      chapter_id: selectedChapterId,
+    });
+
+    if (error) {
+      console.error("Failed to create page:", error.message);
+      toast.error("Failed to create page.");
+      return;
+    }
+
+    toast.success("Page created!");
+    setNewPageTitle("");
+    setSelectedChapterId("");
+    setIsPageDialogOpen(false);
+    await queryClient.invalidateQueries({ queryKey: ["notebook_tree"] });
+  };
 
   return (
     <Sidebar>
@@ -213,7 +352,7 @@ export function AppSidebar() {
         <DropdownMenuContent className="w-60">
           <DropdownMenuGroup>
             {/* New Notebook */}
-            <Dialog>
+              <Dialog open={isNotebookDialogOpen} onOpenChange={setIsNotebookDialogOpen}>
               <DialogTrigger asChild>
                 <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
                   New Notebook
@@ -234,6 +373,8 @@ export function AppSidebar() {
                     <Input
                       id="notebook"
                       className="col-span-3"
+                      value={newNotebookTitle}
+                      onChange={(e) => setNewNotebookTitle(e.target.value)}
                       placeholder="Name of your notebook..."
                     />
                   </div>
@@ -244,15 +385,18 @@ export function AppSidebar() {
                       Cancel
                     </Button>
                   </DialogClose>
-                  {/* TODO: implement Save logic to update database when new notebook is created */}
-                  <Button type="submit" className="bg-blue-400">
-                    Save
+                  <Button
+                    type="submit"
+                    className="bg-blue-400"
+                    onClick={handleCreateNotebook}
+                  >
+                    Create
                   </Button>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
             {/* New Chapter */}
-            <Dialog>
+            <Dialog open={isChapterDialogOpen} onOpenChange={setIsChapterDialogOpen}>
               <DialogTrigger asChild>
                 <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
                   New Chapter
@@ -273,6 +417,8 @@ export function AppSidebar() {
                     <Input
                       id="chapter"
                       className="col-span-3"
+                      value={newChapterTitle}
+                      onChange={(e) => setNewChapterTitle(e.target.value)}
                       placeholder="Name of your chapter..."
                     />
                   </div>
@@ -280,13 +426,16 @@ export function AppSidebar() {
                     <Label htmlFor="notebook" className="text-right">
                       Notebook
                     </Label>
-                      <Select>
+                    <Select value={selectedNotebookId} onValueChange={setSelectedNotebookId}>
                     <SelectTrigger className="w-[277.25]">
                       <SelectValue placeholder="Select a notebook" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
                         <SelectLabel>Your notebooks</SelectLabel>
+                        {notebookTree?.map((nb) => (
+                          <SelectItem key={nb.id} value={nb.id}>{nb.name}</SelectItem>
+                        ))}
                       </SelectGroup>
                     </SelectContent>
                     </Select>
@@ -299,14 +448,14 @@ export function AppSidebar() {
                     </Button>
                   </DialogClose>
                   {/* TODO: implement Save logic to update database when new chapter is created */}
-                  <Button type="submit" className="bg-blue-400">
-                    Save
+                  <Button type="submit" className="bg-blue-400" onClick={handleCreateChapter}>
+                    Create
                   </Button>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
             {/* New Page */}
-            <Dialog>
+            <Dialog  open={isPageDialogOpen} onOpenChange={setIsPageDialogOpen}>
               <DialogTrigger asChild>
                 <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
                   New Page
@@ -328,19 +477,28 @@ export function AppSidebar() {
                       id="page"
                       className="col-span-3"
                       placeholder="Name of your page..."
+                      value={newPageTitle}
+                      onChange={(e) => setNewPageTitle(e.target.value)}
                     />
                   </div>
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="chapter" className="text-right">
                       Chapter
                     </Label>
-                    <Select>
+                    <Select value={selectedChapterId} onValueChange={setSelectedChapterId}>
                     <SelectTrigger className="w-[277.25]">
                       <SelectValue placeholder="Select a chapter" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
                         <SelectLabel>Your chapters</SelectLabel>
+                        {notebookTree?.flatMap((notebook) =>
+                        notebook.chapter.map((chapter) => (
+                          <SelectItem key={chapter.id} value={chapter.id}>
+                            {notebook.name} / {chapter.name}
+                          </SelectItem>
+                        ))
+                      )}
                       </SelectGroup>
                     </SelectContent>
                     </Select>
@@ -353,8 +511,8 @@ export function AppSidebar() {
                     </Button>
                   </DialogClose>
                   {/* TODO: implement Save logic to update database when new notebook is created */}
-                  <Button type="submit" className="bg-blue-400">
-                    Save
+                  <Button type="submit" className="bg-blue-400" onClick={handleCreatePage}>
+                    Create
                   </Button>
                 </DialogFooter>
               </DialogContent>
