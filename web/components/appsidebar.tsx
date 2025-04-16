@@ -139,14 +139,17 @@ export function AppSidebar() {
   const supabase = createSupabaseComponentClient();
   const queryClient = useQueryClient();
 
+  //useStates for creating & setting new notebook title and opening/closing dialog on creation
   const [newNotebookTitle, setNewNotebookTitle] = useState("");
   const [isNotebookDialogOpen, setIsNotebookDialogOpen] = useState(false);
 
+  //useStates for creating & setting new chapter title, opening/closing dialog on creation, and selecting a notebook for the chater
   const [newChapterTitle, setNewChapterTitle] = useState("");
   const [isChapterDialogOpen, setIsChapterDialogOpen] = useState(false);
   const [selectedNotebookId, setSelectedNotebookId] = useState<string>("");
 
 
+  //useStates for creating & setting new page title, opening/closing dialog on creation, and selecting a chapter for the page
   const [newPageTitle, setNewPageTitle] = useState("");
   const [isPageDialogOpen, setIsPageDialogOpen] = useState(false);
   const [selectedChapterId, setSelectedChapterId] = useState<string>("");
