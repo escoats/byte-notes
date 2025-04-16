@@ -25,8 +25,9 @@ import {
 import { FilePen, Globe, Save, Send } from "lucide-react";
 import Layout from "./layout";
 import { userAgent } from "next/server";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { SupabaseClient } from "@supabase/supabase-js";
 
 {
   /* TODO: Need to access user data */
@@ -36,6 +37,8 @@ export default function HomePage() {
   const supabase = createSupabaseComponentClient();
   const router = useRouter();
   const queryClient = useQueryClient();
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   // Fetch user profile data to display in the header
   const { data: profileData } = useQuery({
@@ -59,10 +62,24 @@ export default function HomePage() {
   }, [profileData]);
 
   // Updates the database when the user changes their display name or avatar
-  //TODO: Upload photo avtar functionality in handleUpdateProfile:
   const handleUpdateProfile = async () => {
     if (!profileData) return;
 
+    let changed = false;
+
+    // Upload avatar if a new file was selected
+    if (selectedFile) {
+      try {
+        await updateProfilePicture(supabase, profileData.id, selectedFile);
+        toast.success("Profile photo updated!");
+        setSelectedFile(null);
+        changed = true;
+      } catch (error: any) {
+        toast.error(`Failed to update profile photo: ${error.message}`);
+      }
+    }
+
+    // Update display name if changed
     if (displayName !== profileData.display_name) {
       const { error: profileError } = await supabase
         .from("profile")
@@ -75,17 +92,55 @@ export default function HomePage() {
       }
 
       toast.success("Display name successfully changed!");
+      changed = true;
     }
 
-    await queryClient.refetchQueries({ queryKey: ["user_profile"] });
+    // Refresh profile if something changed
+    if (changed) {
+      await queryClient.refetchQueries({ queryKey: ["user_profile"] });
+    }
   };
-    
+
   // Get user's notebook + chapter + page tree
   const { data: notebookTree } = useQuery({
     queryKey: ["notebook_tree"],
     enabled: !!profileData?.id,
     queryFn: async () => await getNotebookTreeByUser(supabase, profileData!.id),
   });
+
+  const updateProfilePicture = async (
+    supabase: SupabaseClient,
+    userId: string,
+    file: File | null
+  ): Promise<void> => {
+    if (!file) {
+      const { error } = await supabase
+        .from("profile")
+        .update({ avatar_url: null })
+        .eq("id", userId);
+      if (error) throw error;
+      return;
+    }
+
+    // generate a unique filename for the avatar (to store in supabase)
+    const fileExt = file.name.split(".").pop();
+    const filePath = `${userId}/avatar-${Date.now()}.${fileExt}`;
+
+    const { data: fileData, error: uploadError } = await supabase.storage
+      .from("avatars")
+      .upload(filePath, file, { upsert: true });
+
+    if (uploadError) throw uploadError;
+
+    const publicUrl = supabase.storage.from("avatars").getPublicUrl(filePath).data.publicUrl;
+
+    const { error: updateError } = await supabase
+      .from("profile")
+      .update({ avatar_url: filePath })
+      .eq("id", userId);
+
+    if (updateError) throw updateError;
+  };
 
   // Logs the user out and routes back to the login page
   const handleSignOut = async () => {
@@ -101,27 +156,32 @@ export default function HomePage() {
       {/* Header */}
       <header className="flex items-center h-[115px] px-6 border-b border-border bg-card justify-end">
         {/* Profile */}
-        {/* TODO: wrap dialog in form */}
         <Dialog>
           <DialogTrigger asChild>
-            <Button className="flex items-center gap-3 rounded-md px-3 py-1.5 h-14 w-40 justify-end">
-              <Avatar className="h-9 w-9">
-              <AvatarImage src={profileData?.avatar_url ?? ""} alt="@ajay" />
-                {/* TODO: update to be dynamic */}
-                <AvatarFallback>
-                  {profileData && profileData.display_name[0].toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
+            <Button
+              className="flex items-center gap-3 rounded-md px-3 py-1.5 h-14 justify-start max-w-full overflow-hidden"
+              variant="secondary">
+              <div className="flex items-center gap-3 max-w-full overflow-hidden">
+                <Avatar className="h-9 w-9 shrink-0">
+                  <AvatarImage
+                    src={
+                      profileData?.avatar_url
+                        ? supabase.storage.from("avatars").getPublicUrl(profileData.avatar_url).data.publicUrl
+                        : ""
+                    }
+                  />
+                  <AvatarFallback>
+                    {profileData?.display_name?.[0]?.toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
 
-              <div className="flex flex-col items-start leading-tight">
-                <p className="text-sm font-medium">
-                  {profileData?.display_name}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  {profileData?.email}
-                </p>
+                <div className="flex flex-col items-start leading-tight truncate">
+                  <p className="text-sm font-medium truncate">{profileData?.display_name}</p>
+                  <p className="text-xs text-secondary-foreground truncate">{profileData?.email}</p>
+                </div>
               </div>
             </Button>
+
           </DialogTrigger>
 
           <DialogContent className="sm:max-w-[425px]">
@@ -136,7 +196,28 @@ export default function HomePage() {
                 <Label htmlFor="photo" className="text-left">
                   Upload Photo
                 </Label>
-                <Input id="photo" type="file" className="col-span-3" />
+                {profileData?.id && (
+                  <>
+                    <Input
+                      className="hidden"
+                      type="file"
+                      ref={fileInputRef}
+                      accept="image/*"
+                      onChange={(e) =>
+                        setSelectedFile(
+                          (e.target.files ?? []).length > 0 ? e.target.files![0] : null
+                        )
+                      }
+                    />
+                    <Button
+                      variant="outline"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="w-3xs"
+                    >
+                      {selectedFile ? "Photo Selected" : "Upload"}
+                    </Button>
+                  </>
+                )}
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="display-name" className="text-left">
