@@ -150,6 +150,7 @@ export default function HomePage() {
   };
 
   function sendLink(): void {
+    // TODO: @escoats update the link copied to be the published page view
     navigator.clipboard.writeText("https://comp426-25s.github.io");
     toast("Link copied successfully!");
   }
@@ -272,7 +273,7 @@ export default function HomePage() {
       <div className="relative flex items-center h-[60px] px-6 border-b border-border bg-background">
         {/* Centered text */}
         <p className="absolute left-1/2 -translate-x-1/2 text-center">
-          {/* TODO: update to be dynamic - nothing should be displayed when no note is selected */}
+          {/* TODO @escoats: update to be dynamic - nothing should be displayed when no note is selected */}
           {/* {notebookTree?.[0]?.name} / {notebookTree?.[0]?.chapter?.[0]?.name} /
           {notebookTree?.[0]?.chapter?.[0]?.page?.[0]?.name} */}
         </p>
@@ -304,7 +305,7 @@ export default function HomePage() {
       <Layout>
         {/* No Note Selected */}
         <div className="flex flex-col items-center justify-center text-center h-screen w-screen">
-          {/* TODO: fix alignment on no notes text */}
+          {/* TODO @charlottetsui: fix alignment on no notes text */}
           <FilePen strokeWidth={1.5} className="h-[90px] w-[90px] m-4" />
           <h1 className="font-bold text-lg mb-1 text-center">
             No Note Selected
