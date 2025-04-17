@@ -29,7 +29,7 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { MarkdownEditor } from "@/components/MarkdownEditor";
-import { NoActivePage, NoNoteSelected } from "@/components/NoActivePage";
+import { NoActivePage } from "@/components/NoActivePage";
 
 export default function HomePage() {
   // Create necessary hooks for clients and providers.
@@ -160,8 +160,11 @@ export default function HomePage() {
 
   // clicking this button should navigate user to view-only published note page
   function handlePublish(): void {
-    // TODO: @escoats
-    toast("Publish functionality has not been implemented yet.");
+    if (activePageId !== "") {
+      router.push(`/${activePageId}`, undefined, { shallow: true })
+    } else {
+      toast("Please select the page you'd like to publish using the sidebar!");
+        }
   }
 
   // TODO: Sprint 2
@@ -171,7 +174,7 @@ export default function HomePage() {
 
   // Handle opening a page from the sidebar
   const [activePageId, setActivePageId] = useState("");
-  
+
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       {/* Header */}
