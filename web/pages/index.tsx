@@ -28,6 +28,8 @@ import { userAgent } from "next/server";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { SupabaseClient } from "@supabase/supabase-js";
+import { MarkdownEditor } from "@/components/MarkdownEditor";
+import { NoActivePage } from "@/components/NoActivePage";
 
 export default function HomePage() {
   // Create necessary hooks for clients and providers.
@@ -158,14 +160,20 @@ export default function HomePage() {
 
   // clicking this button should navigate user to view-only published note page
   function handlePublish(): void {
-    // TODO: @escoats
-    toast("Publish functionality has not been implemented yet.");
+    if (activePageId !== "") {
+      router.push(`/${activePageId}`, undefined, { shallow: true })
+    } else {
+      toast("Please select the page you'd like to publish using the sidebar!");
+        }
   }
 
   // TODO: Sprint 2
   function handleSave(): void {
     toast("Save functionality has not been implemented yet.");
   }
+
+  // Handle opening a page from the sidebar
+  const [activePageId, setActivePageId] = useState("");
 
   return (
     <div className="fixed inset-0 overflow-hidden bg-background text-foreground">
@@ -326,18 +334,11 @@ export default function HomePage() {
           </Button>
         </div>
       </div>
-      <Layout>
-        {/* No Note Selected */}
-        <div className="flex flex-col items-center justify-center text-center h-screen w-screen">
-          {/* TODO @charlottetsui: fix alignment on no notes text */}
-          <FilePen strokeWidth={1.5} className="h-[90px] w-[90px] m-4" />
-          <h1 className="font-bold text-lg mb-1 text-center">
-            No Note Selected
-          </h1>
-          <h2 className="font-bold text-gray-400 text-md max-w-[380px] text-center">
-            Select a note from the sidebar or create a new one to get started.
-          </h2>
-        </div>
+      <Layout setActivePageId={setActivePageId}>
+
+        {/* Conditionally render either page editors OR "no page selected" view.
+          @charlottetsui, you'll need to tweak the alignment of the no page view inside that file, not this one. thanks!! <3 lizzie */}
+        {(activePageId !== "") ? MarkdownEditor(activePageId) : NoActivePage()}
       </Layout>
     </div>
   );
