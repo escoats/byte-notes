@@ -16,6 +16,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { ChevronDown } from "lucide-react";
+import { SquareTerminal } from "lucide-react";
 import Link from "next/link";
 import {
   DropdownMenu,
@@ -250,24 +251,15 @@ export function AppSidebar() {
   }
 
   return (
-    <Sidebar>
-      {/* Logo */}
-      <div className="flex justify-center mr-2.5 -mt-0.5">
-        <img
-          src="/ByteNotesLogo.png"
-          alt="Byte Notes"
-          className="w-[186px] h-[166px]"
-        />
-      </div>
-
-      <SidebarContent>
+    <Sidebar className="h-[calc(100vh-115px)] mt-[115px]">
+      <SidebarContent className="mt-1">
         {notebookTree?.map((notebook, notebookIdx) => (
           <SidebarGroup key={notebookIdx}>
             {/* Notebook Title */}
-            <SidebarGroupLabel>
+            <SidebarGroupLabel className="text-left">
               <ContextMenu>
                 <ContextMenuTrigger>
-                  <p className="text-[11px] text-gray-400 uppercase tracking-wider px-4 pt-3 pb-1">
+                  <p className="text-[11px] text-gray-400 uppercase text-left tracking-wider px-2 pt-3 pb-1">
                     {notebook.name}
                   </p>
                 </ContextMenuTrigger>
@@ -314,17 +306,38 @@ export function AppSidebar() {
 
             {/* Chapters */}
             <SidebarGroupContent>
-              <SidebarMenu className="space-y-1">
+              <SidebarMenu>
                 {notebook.chapter.map((chapter, chapterIdx) => (
-                  <Collapsible key={chapterIdx} className="pl-2 pr-2">
-                    <SidebarGroup>
-                      <SidebarGroupLabel asChild>
+                  <Collapsible key={chapterIdx} className="pl-2 pr-2 group">
+                    <SidebarGroup className="p-0 mb-1">
+                      <SidebarGroupLabel asChild className="text-left">
                         <ContextMenu>
                           <ContextMenuTrigger>
-                            <CollapsibleTrigger className="flex items-center justify-between w-full py-1.5 text-white text-[13px] font-medium hover:bg-gray-800 rounded-md transition pl-2">
-                              {chapter.name}
-                              <ChevronDown className="ml-auto h-4 w-4 transition-transform group-data-[state=open]:rotate-180" />
-                            </CollapsibleTrigger>
+                            {chapter.page.length > 0 ? (
+                              <CollapsibleTrigger className="flex items-center justify-between w-full py-1.5 text-white text-[13px] font-medium hover:bg-gray-800 rounded-md transition pl-2">
+                                <SquareTerminal
+                                  strokeWidth={1.5}
+                                  size={16}
+                                  className="mr-2"
+                                />
+                                <p className="text-left font-medium text-sm">
+                                  {chapter.name}
+                                </p>
+                                <ChevronDown className="ml-auto h-4 w-4 transition-transform duration-200 group-data-[state=open]:rotate-0 group-data-[state=closed]:-rotate-90" />
+                              </CollapsibleTrigger>
+                            ) : (
+                              <div className="flex items-center justify-start w-full py-1.5 text-white text-[13px] font-medium pl-2 opacity-70">
+                                <SquareTerminal
+                                  strokeWidth={1.5}
+                                  size={16}
+                                  className="mr-2"
+                                />
+                                <p className="text-left font-medium text-sm">
+                                  {chapter.name}
+                                </p>
+                                <ChevronDown className="ml-auto h-4 w-4 rotate-270" />
+                              </div>
+                            )}
                           </ContextMenuTrigger>
                           <ContextMenuContent className="w-48 bg-gray-800">
                             <ContextMenuItem
@@ -386,7 +399,7 @@ export function AppSidebar() {
                                     href={`/${page.id}`}
                                     className="block px-2 py-1 text-[13px] text-gray-300 rounded hover:bg-gray-700 hover:text-white transition"
                                   >
-                                    {page.name}
+                                    <p className="text-left">{page.name}</p>
                                   </Link>
                                 </ContextMenuTrigger>
                                 <ContextMenuContent className="w-48 bg-gray-800">
@@ -453,7 +466,10 @@ export function AppSidebar() {
       {/* + New */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" className="mb-4 mr-2 ml-2 bg-blue-400">
+          <Button
+            variant="outline"
+            className="mb-4 mr-2 ml-2 bg-blue-400 text-white"
+          >
             + New
           </Button>
         </DropdownMenuTrigger>

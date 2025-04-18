@@ -9,7 +9,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <main>
         {children}
       </main>
-      <Toaster className=""/>
+      <Toaster/>
     </SidebarProvider>
   )
 }
