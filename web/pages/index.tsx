@@ -151,20 +151,24 @@ export default function HomePage() {
     router.push("/login");
   };
 
+
   // Copies link to clipboard and displays toast when user clicks Send button
   function sendLink(): void {
-    // TODO: @escoats update the link copied to be the published page view
-    navigator.clipboard.writeText("https://comp426-25s.github.io");
-    toast("Link copied to clipboard!");
+    if (activePageId !== "") {
+      navigator.clipboard.writeText(`${window.location.origin}/${activePageId}`);
+      toast("Link copied to clipboard!");
+    } else {
+      toast("Please select the page you'd like to send using the sidebar!");
+    }
   }
 
-  // clicking this button should navigate user to view-only published note page
+  // Clicking this button navigates the user to view-only published note page
   function handlePublish(): void {
     if (activePageId !== "") {
       router.push(`/${activePageId}`, undefined, { shallow: true })
     } else {
       toast("Please select the page you'd like to publish using the sidebar!");
-        }
+    }
   }
 
   // TODO: Sprint 2
