@@ -1,11 +1,11 @@
-// Component that displays 
+// Component that displays the markdown editor card
 
 import { useState } from "react";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader } from "./ui/card";
 
 export function MarkdownEditor(pageId: string) {
-    // TODO: fetch data
+    // TODO: fetch page contents data
 
     /**
      * TODO: seems like React requires the same # of hooks to be generated on each re-render. 
@@ -14,7 +14,6 @@ export function MarkdownEditor(pageId: string) {
      * will cause this error: "Error: Rendered more hooks than during the previous render"
      * Looking into a workaround, but for now this component is pretty non-functional since it would rely on
      * tracking which view (edit vs. preview) is open, and that needs extra useState handlers.
-     * - Lizzie
      */
         return (
         <div className="w-[50%] p-4">
