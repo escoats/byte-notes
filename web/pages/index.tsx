@@ -30,8 +30,6 @@ import { toast } from "sonner";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { MarkdownEditor } from "@/components/MarkdownEditor";
 import { NoActivePage } from "@/components/NoActivePage";
-import { getPublishedURL } from "@/utils/create-url";
-import { usePathname } from "next/navigation";
 
 export default function HomePage() {
   // Create necessary hooks for clients and providers.
