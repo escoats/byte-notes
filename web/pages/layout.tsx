@@ -1,4 +1,4 @@
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { SidebarProvider } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/appsidebar"
 import { Toaster } from "@/components/ui/sonner"
 import { Dispatch, SetStateAction } from "react"
@@ -8,10 +8,9 @@ export default function Layout({ children, setActivePageId }: { children: React.
     <SidebarProvider>
       <AppSidebar setActivePageId={setActivePageId}/>
       <main>
-        <SidebarTrigger />
         {children}
       </main>
-      <Toaster className=""/>
+      <Toaster/>
     </SidebarProvider>
   )
 }
