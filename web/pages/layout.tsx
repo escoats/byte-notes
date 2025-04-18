@@ -1,4 +1,4 @@
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { SidebarProvider } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/appsidebar"
 import { Toaster } from "@/components/ui/sonner"
 
@@ -7,10 +7,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <SidebarProvider>
       <AppSidebar />
       <main>
-        <SidebarTrigger />
         {children}
       </main>
-      <Toaster className=""/>
+      <Toaster/>
     </SidebarProvider>
   )
 }

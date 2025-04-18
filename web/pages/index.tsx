@@ -168,9 +168,17 @@ export default function HomePage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-background text-foreground">
+    <div className="fixed inset-0 overflow-hidden bg-background text-foreground">
       {/* Header */}
-      <header className="flex items-center h-[115px] px-6 border-b border-border bg-card justify-end">
+      <header className="flex items-center h-[115px] px-6 border-b border-border bg-card justify-between">
+        {/* Logo */}
+        <div className="flex justify-center mr-2.5 -mt-0.5">
+        <img
+          src="/ByteNotesLogo.png"
+          alt="Byte Notes"
+          className="w-[186px] h-[181px]"
+        />
+      </div>
         {/* Profile */}
         <Dialog>
           <DialogTrigger asChild>
