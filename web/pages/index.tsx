@@ -30,6 +30,7 @@ import { toast } from "sonner";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { MarkdownEditor } from "@/components/MarkdownEditor";
 import { NoActivePage } from "@/components/NoActivePage";
+import { getPageHierarchyById } from "@/utils/find-page-hierarchy";
 
 export default function HomePage() {
   // Create necessary hooks for clients and providers.
@@ -179,6 +180,17 @@ export default function HomePage() {
   // Handle opening a page from the sidebar
   const [activePageId, setActivePageId] = useState("");
 
+  // Update header whenever the active page changes
+  const [headerPath, setHeaderPath] = useState("");
+
+  useEffect(() => {
+    if (activePageId !== "" && notebookTree !== undefined) {
+      const pageInfo = getPageHierarchyById({notebookTree: notebookTree, pageId: activePageId})
+      setHeaderPath(`${pageInfo?.notebook.name} / ${pageInfo?.chapter.name} / ${pageInfo?.page.name}`)
+    }
+  }, [activePageId])
+
+
   return (
     <div className="fixed inset-0 overflow-hidden bg-background text-foreground">
       {/* Header */}
@@ -305,9 +317,7 @@ export default function HomePage() {
       <div className="relative flex items-center h-[60px] px-6 border-b border-border bg-background">
         {/* Centered text */}
         <p className="absolute left-1/2 -translate-x-1/2 text-center">
-          {/* TODO @escoats: update to be dynamic - nothing should be displayed when no note is selected */}
-          {/* {notebookTree?.[0]?.name} / {notebookTree?.[0]?.chapter?.[0]?.name} /
-          {notebookTree?.[0]?.chapter?.[0]?.page?.[0]?.name} */}
+          {headerPath}
         </p>
 
         {/* Right-aligned buttons */}
