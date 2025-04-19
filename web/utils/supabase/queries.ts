@@ -25,7 +25,7 @@ export const getProfileData = async (
 };
 
 // get notebooks, chapters, and pages for authenicated user
-type NotebookTreeType = z.infer<typeof NotebookTree>;
+export type NotebookTreeType = z.infer<typeof NotebookTree>;
 export async function getNotebookTreeByUser(
   supabase: SupabaseClient,
   userId: string
