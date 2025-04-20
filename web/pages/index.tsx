@@ -151,11 +151,12 @@ export default function HomePage() {
     router.push("/login");
   };
 
-
   // Copies link to clipboard and displays toast when user clicks Send button
   function sendLink(): void {
     if (activePageId !== "") {
-      navigator.clipboard.writeText(`${window.location.origin}/${activePageId}`);
+      navigator.clipboard.writeText(
+        `${window.location.origin}/${activePageId}`
+      );
       toast("Link copied to clipboard!");
     } else {
       toast("Please select the page you'd like to send using the sidebar!");
@@ -165,7 +166,7 @@ export default function HomePage() {
   // Clicking this button navigates the user to view-only published note page
   function handlePublish(): void {
     if (activePageId !== "") {
-      router.push(`/${activePageId}`, undefined, { shallow: true })
+      router.push(`/${activePageId}`, undefined, { shallow: true });
     } else {
       toast("Please select the page you'd like to publish using the sidebar!");
     }
@@ -185,12 +186,12 @@ export default function HomePage() {
       <header className="flex items-center h-[115px] px-6 border-b border-border bg-card justify-between">
         {/* Logo */}
         <div className="flex justify-center mr-2.5 -mt-0.5">
-        <img
-          src="/ByteNotesLogo.png"
-          alt="Byte Notes"
-          className="w-[186px] h-[181px]"
-        />
-      </div>
+          <img
+            src="/ByteNotesLogo.png"
+            alt="Byte Notes"
+            className="w-[186px] h-[181px]"
+          />
+        </div>
         {/* Profile */}
         <Dialog>
           <DialogTrigger asChild>
@@ -302,47 +303,44 @@ export default function HomePage() {
         </Dialog>
       </header>
       {/* Subheader */}
-      <div className="relative flex items-center h-[60px] px-6 border-b border-border bg-background">
-        {/* Centered text */}
-        <p className="absolute left-1/2 -translate-x-1/2 text-center">
-          {/* TODO @escoats: update to be dynamic - nothing should be displayed when no note is selected */}
-          {/* {notebookTree?.[0]?.name} / {notebookTree?.[0]?.chapter?.[0]?.name} /
-          {notebookTree?.[0]?.chapter?.[0]?.page?.[0]?.name} */}
-        </p>
-
-        {/* Right-aligned buttons */}
-        <div className="ml-auto flex gap-2">
-          <Button
-            variant="ghost"
-            className="flex flex-row items-center gap-1"
-            onClick={() => sendLink()}
-          >
-            <Send />
-            Send
-          </Button>
-          <Button
-            variant="ghost"
-            className="flex flex-row items-center gap-1"
-            onClick={() => handlePublish()}
-          >
-            <Globe />
-            Publish
-          </Button>
-          <Button
-            variant="ghost"
-            className="flex flex-row items-center gap-1"
-            onClick={() => handleSave()}
-          >
-            <Save />
-            Save
-          </Button>
+      {activePageId !== "" && (
+        <div className="relative flex items-center h-[60px] px-6 border-b border-border bg-background">
+          {/* Centered text */}
+          <p className="absolute left-1/2 -translate-x-1/2 text-center">
+            {/* TODO @escoats: update to be dynamic - nothing should be displayed when no note is selected */}
+            {/* {notebookTree?.[0]?.name} / {notebookTree?.[0]?.chapter?.[0]?.name} / notebookTree?.[0]?.chapter?.[0]?.page?.[0]?.name} */}
+          </p>
+          {/* Right-aligned buttons */}
+          <div className="ml-auto flex gap-2">
+            <Button
+              variant="ghost"
+              className="flex flex-row items-center gap-1"
+              onClick={() => sendLink()}
+            >
+              <Send />
+              Send
+            </Button>
+            <Button
+              variant="ghost"
+              className="flex flex-row items-center gap-1"
+              onClick={() => handlePublish()}
+            >
+              <Globe />
+              Publish
+            </Button>
+            <Button
+              variant="ghost"
+              className="flex flex-row items-center gap-1"
+              onClick={() => handleSave()}
+            >
+              <Save />
+              Save
+            </Button>
+          </div>
         </div>
-      </div>
+      )}
       <Layout setActivePageId={setActivePageId}>
-
-        {/* Conditionally render either page editors OR "no page selected" view.
-          @charlottetsui, you'll need to tweak the alignment of the no page view inside that file, not this one. thanks!! <3 lizzie */}
-        {(activePageId !== "") ? MarkdownEditor(activePageId) : NoActivePage()}
+        {activePageId !== "" ? MarkdownEditor(activePageId) : NoActivePage()}
       </Layout>
     </div>
   );
