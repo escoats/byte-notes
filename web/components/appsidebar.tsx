@@ -522,9 +522,7 @@ export function AppSidebar({
                 <DialogFooter>
                   <div className="flex justify-between w-full">
                     <DialogClose asChild>
-                      <Button variant="secondary">
-                        Cancel
-                      </Button>
+                      <Button variant="secondary">Cancel</Button>
                     </DialogClose>
                     <Button
                       type="submit"
@@ -599,9 +597,7 @@ export function AppSidebar({
                 <DialogFooter>
                   <div className="flex justify-between w-full">
                     <DialogClose asChild>
-                      <Button variant="secondary">
-                        Cancel
-                      </Button>
+                      <Button variant="secondary">Cancel</Button>
                     </DialogClose>
                     <Button
                       type="submit"
@@ -675,9 +671,7 @@ export function AppSidebar({
                 <DialogFooter>
                   <div className="flex justify-between w-full">
                     <DialogClose asChild>
-                      <Button variant="secondary">
-                        Cancel
-                      </Button>
+                      <Button variant="secondary">Cancel</Button>
                     </DialogClose>
                     <Button
                       type="submit"
