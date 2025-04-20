@@ -73,6 +73,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "./ui/alert-dialog";
+import { Separator } from "@/components/ui/separator";
 
 export function AppSidebar({
   setActivePageId,
@@ -467,6 +468,7 @@ export function AppSidebar({
                 ))}
               </SidebarMenu>
             </SidebarGroupContent>
+            <Separator className="m-0 mt-5 -mb-2.5 p-0 bg-[#64748B] opacity-50" />
           </SidebarGroup>
         ))}
       </SidebarContent>
