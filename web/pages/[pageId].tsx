@@ -6,8 +6,8 @@ export default function Page() {
   return (
     <div>
       <p>This is a published page!</p>
-      <p>page path: {pathname} </p>
-      <p>page id: {pageId}</p>
+      {pathname && <p>page path: {pathname}</p>}
+      {pageId && <p>page id: {pageId}</p>}
     </div>
   );
 }
