@@ -75,7 +75,11 @@ import {
   AlertDialogTrigger,
 } from "./ui/alert-dialog";
 
-export function AppSidebar({ setActivePageId }: { setActivePageId: Dispatch<SetStateAction<string>> }) {
+export function AppSidebar({
+  setActivePageId,
+}: {
+  setActivePageId: Dispatch<SetStateAction<string>>;
+}) {
   const supabase = createSupabaseComponentClient();
   const queryClient = useQueryClient();
 
@@ -92,7 +96,6 @@ export function AppSidebar({ setActivePageId }: { setActivePageId: Dispatch<SetS
   const [newPageTitle, setNewPageTitle] = useState("");
   const [isPageDialogOpen, setIsPageDialogOpen] = useState(false);
   const [selectedChapterId, setSelectedChapterId] = useState<string>("");
-
 
   // Get current authenticated user
   const { data: profileData } = useQuery({
@@ -395,14 +398,16 @@ export function AppSidebar({ setActivePageId }: { setActivePageId: Dispatch<SetS
                           {chapter.page.map((page, pageIdx) => (
                             <SidebarMenuSubItem key={pageIdx} className="pl-1">
                               <ContextMenu>
-                                <ContextMenuTrigger onClick={() => setActivePageId(page.id)}>
+                                <ContextMenuTrigger
+                                  onClick={() => setActivePageId(page.id)}
+                                >
                                   <Button
-                                    
-                                    className="block px-2 py-1 text-[13px] text-gray-300 rounded hover:bg-gray-700 hover:text-white transition"
+                                    variant="ghost"
+                                    className="px-2 -ml-1 text-[13px] text-gray-300 rounded hover:bg-gray-700 hover:text-white transition"
                                   >
-                                    {/*TODO @charlottetsui: I had to change this to a button (previously a link) in order to render the page properly, 
-                                    but I believe it changed the styling/hover behavior a bit so you might want to take a peek - lizzie*/}
-                                    <p className="text-left">{page.name}</p>
+                                    <p className="text-left -ml-1">
+                                      {page.name}
+                                    </p>
                                   </Button>
                                 </ContextMenuTrigger>
                                 <ContextMenuContent className="w-48 bg-gray-800">
