@@ -17,7 +17,6 @@ import {
 } from "@/components/ui/collapsible";
 import { ChevronDown } from "lucide-react";
 import { SquareTerminal } from "lucide-react";
-import Link from "next/link";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -403,7 +402,7 @@ export function AppSidebar({
                                 >
                                   <Button
                                     variant="ghost"
-                                    className="px-2 -ml-1 text-[13px] text-gray-300 rounded hover:bg-gray-700 hover:text-white transition"
+                                    className="px-2 py-0 m-0 -ml-1 text-[13px] text-gray-300 rounded hover:bg-gray-700 hover:text-white transition"
                                   >
                                     <p className="text-left -ml-1">
                                       {page.name}

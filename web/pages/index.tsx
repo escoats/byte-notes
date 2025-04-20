@@ -30,6 +30,7 @@ import { toast } from "sonner";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { MarkdownEditor } from "@/components/MarkdownEditor";
 import { NoActivePage } from "@/components/NoActivePage";
+import Link from "next/link";
 
 export default function HomePage() {
   // Create necessary hooks for clients and providers.
@@ -186,11 +187,17 @@ export default function HomePage() {
       <header className="flex items-center h-[115px] px-6 border-b border-border bg-card justify-between">
         {/* Logo */}
         <div className="flex justify-center mr-2.5 -mt-0.5">
-          <img
-            src="/ByteNotesLogo.png"
-            alt="Byte Notes"
-            className="w-[186px] h-[181px]"
-          />
+          <Button
+            variant="ghost"
+            className="p-0 m-0 hover:bg-transparent"
+            onClick={() => setActivePageId("")}
+          >
+            <img
+              src="/ByteNotesLogo.png"
+              alt="Byte Notes"
+              className="w-[186px] h-[181px]"
+            />
+          </Button>
         </div>
         {/* Profile */}
         <Dialog>
