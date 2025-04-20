@@ -250,7 +250,7 @@ export function AppSidebar({
       return;
     }
 
-    toast(`${type.charAt(0).toUpperCase() + type.slice(1)} deleted!`);
+    toast(`${type.charAt(0).toUpperCase() + type?.slice(1)} deleted!`);
     await queryClient.invalidateQueries({ queryKey: ["notebook_tree"] });
   }
 
