@@ -206,7 +206,7 @@ export default function HomePage() {
               className="flex items-center gap-3 rounded-md px-3 py-1.5 h-14 justify-start max-w-full overflow-hidden"
               variant="secondary"
             >
-              <div className="flex items-center gap-3 max-w-full overflow-hidden">
+              <div className="flex items-center gap-3 mr-12 max-w-full overflow-hidden">
                 <Avatar className="h-9 w-9 shrink-0">
                   <AvatarImage
                     src={
