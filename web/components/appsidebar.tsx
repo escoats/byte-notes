@@ -520,18 +520,20 @@ export function AppSidebar({
                   </div>
                 </div>
                 <DialogFooter>
-                  <DialogClose asChild>
-                    <Button variant="outline" className="bg-blue-400">
-                      Cancel
+                  <div className="flex justify-between w-full">
+                    <DialogClose asChild>
+                      <Button variant="outline" className="bg-blue-400">
+                        Cancel
+                      </Button>
+                    </DialogClose>
+                    <Button
+                      type="submit"
+                      className="bg-blue-400"
+                      onClick={handleCreateNotebook}
+                    >
+                      Create
                     </Button>
-                  </DialogClose>
-                  <Button
-                    type="submit"
-                    className="bg-blue-400"
-                    onClick={handleCreateNotebook}
-                  >
-                    Create
-                  </Button>
+                  </div>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
@@ -595,18 +597,20 @@ export function AppSidebar({
                   </div>
                 </div>
                 <DialogFooter>
-                  <DialogClose asChild>
-                    <Button variant="outline" className="bg-blue-400">
-                      Cancel
+                  <div className="flex justify-between w-full">
+                    <DialogClose asChild>
+                      <Button variant="outline" className="bg-blue-400">
+                        Cancel
+                      </Button>
+                    </DialogClose>
+                    <Button
+                      type="submit"
+                      className="bg-blue-400"
+                      onClick={handleCreateChapter}
+                    >
+                      Create
                     </Button>
-                  </DialogClose>
-                  <Button
-                    type="submit"
-                    className="bg-blue-400"
-                    onClick={handleCreateChapter}
-                  >
-                    Create
-                  </Button>
+                  </div>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
@@ -669,18 +673,20 @@ export function AppSidebar({
                   </div>
                 </div>
                 <DialogFooter>
-                  <DialogClose asChild>
-                    <Button variant="outline" className="bg-blue-400">
-                      Cancel
+                  <div className="flex justify-between w-full">
+                    <DialogClose asChild>
+                      <Button variant="outline" className="bg-blue-400">
+                        Cancel
+                      </Button>
+                    </DialogClose>
+                    <Button
+                      type="submit"
+                      className="bg-blue-400"
+                      onClick={handleCreatePage}
+                    >
+                      Create
                     </Button>
-                  </DialogClose>
-                  <Button
-                    type="submit"
-                    className="bg-blue-400"
-                    onClick={handleCreatePage}
-                  >
-                    Create
-                  </Button>
+                  </div>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
