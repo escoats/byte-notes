@@ -17,7 +17,6 @@ import {
 } from "@/components/ui/collapsible";
 import { ChevronDown } from "lucide-react";
 import { SquareTerminal } from "lucide-react";
-import Link from "next/link";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -74,8 +73,13 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "./ui/alert-dialog";
+import { Separator } from "@/components/ui/separator";
 
-export function AppSidebar({ setActivePageId }: { setActivePageId: Dispatch<SetStateAction<string>> }) {
+export function AppSidebar({
+  setActivePageId,
+}: {
+  setActivePageId: Dispatch<SetStateAction<string>>;
+}) {
   const supabase = createSupabaseComponentClient();
   const queryClient = useQueryClient();
 
@@ -92,7 +96,6 @@ export function AppSidebar({ setActivePageId }: { setActivePageId: Dispatch<SetS
   const [newPageTitle, setNewPageTitle] = useState("");
   const [isPageDialogOpen, setIsPageDialogOpen] = useState(false);
   const [selectedChapterId, setSelectedChapterId] = useState<string>("");
-
 
   // Get current authenticated user
   const { data: profileData } = useQuery({
@@ -395,14 +398,16 @@ export function AppSidebar({ setActivePageId }: { setActivePageId: Dispatch<SetS
                           {chapter.page.map((page, pageIdx) => (
                             <SidebarMenuSubItem key={pageIdx} className="pl-1">
                               <ContextMenu>
-                                <ContextMenuTrigger onClick={() => setActivePageId(page.id)}>
+                                <ContextMenuTrigger
+                                  onClick={() => setActivePageId(page.id)}
+                                >
                                   <Button
-                                    
-                                    className="block px-2 py-1 text-[13px] text-gray-300 rounded hover:bg-gray-700 hover:text-white transition"
+                                    variant="ghost"
+                                    className="px-3 py-0 m-0 -ml-2.5 text-[13px] text-gray-300 rounded hover:bg-gray-700 hover:text-white transition"
                                   >
-                                    {/*TODO @charlottetsui: I had to change this to a button (previously a link) in order to render the page properly, 
-                                    but I believe it changed the styling/hover behavior a bit so you might want to take a peek - lizzie*/}
-                                    <p className="text-left">{page.name}</p>
+                                    <p className="text-left -ml-1">
+                                      {page.name}
+                                    </p>
                                   </Button>
                                 </ContextMenuTrigger>
                                 <ContextMenuContent className="w-48 bg-gray-800">
@@ -463,6 +468,7 @@ export function AppSidebar({ setActivePageId }: { setActivePageId: Dispatch<SetS
                 ))}
               </SidebarMenu>
             </SidebarGroupContent>
+            <Separator className="m-0 mt-5 -mb-2.5 p-0 bg-[#64748B] opacity-50" />
           </SidebarGroup>
         ))}
       </SidebarContent>
@@ -501,7 +507,7 @@ export function AppSidebar({ setActivePageId }: { setActivePageId: Dispatch<SetS
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                   <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="notebook" className="text-right">
+                    <Label htmlFor="notebook" className="text-left">
                       Notebook
                     </Label>
                     <Input
@@ -514,18 +520,20 @@ export function AppSidebar({ setActivePageId }: { setActivePageId: Dispatch<SetS
                   </div>
                 </div>
                 <DialogFooter>
-                  <DialogClose asChild>
-                    <Button variant="outline" className="bg-blue-400">
-                      Cancel
+                  <div className="flex justify-between w-full">
+                    <DialogClose asChild>
+                      <Button variant="secondary">
+                        Cancel
+                      </Button>
+                    </DialogClose>
+                    <Button
+                      type="submit"
+                      className="bg-blue-400"
+                      onClick={handleCreateNotebook}
+                    >
+                      Create
                     </Button>
-                  </DialogClose>
-                  <Button
-                    type="submit"
-                    className="bg-blue-400"
-                    onClick={handleCreateNotebook}
-                  >
-                    Create
-                  </Button>
+                  </div>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
@@ -553,7 +561,7 @@ export function AppSidebar({ setActivePageId }: { setActivePageId: Dispatch<SetS
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                   <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="chapter" className="text-right">
+                    <Label htmlFor="chapter" className="text-left">
                       Chapter
                     </Label>
                     <Input
@@ -565,7 +573,7 @@ export function AppSidebar({ setActivePageId }: { setActivePageId: Dispatch<SetS
                     />
                   </div>
                   <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="notebook" className="text-right">
+                    <Label htmlFor="notebook" className="text-left">
                       Notebook
                     </Label>
                     <Select
@@ -589,18 +597,20 @@ export function AppSidebar({ setActivePageId }: { setActivePageId: Dispatch<SetS
                   </div>
                 </div>
                 <DialogFooter>
-                  <DialogClose asChild>
-                    <Button variant="outline" className="bg-blue-400">
-                      Cancel
+                  <div className="flex justify-between w-full">
+                    <DialogClose asChild>
+                      <Button variant="secondary">
+                        Cancel
+                      </Button>
+                    </DialogClose>
+                    <Button
+                      type="submit"
+                      className="bg-blue-400"
+                      onClick={handleCreateChapter}
+                    >
+                      Create
                     </Button>
-                  </DialogClose>
-                  <Button
-                    type="submit"
-                    className="bg-blue-400"
-                    onClick={handleCreateChapter}
-                  >
-                    Create
-                  </Button>
+                  </div>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
@@ -625,7 +635,7 @@ export function AppSidebar({ setActivePageId }: { setActivePageId: Dispatch<SetS
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                   <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="page" className="text-right">
+                    <Label htmlFor="page" className="text-left">
                       Page
                     </Label>
                     <Input
@@ -637,7 +647,7 @@ export function AppSidebar({ setActivePageId }: { setActivePageId: Dispatch<SetS
                     />
                   </div>
                   <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="chapter" className="text-right">
+                    <Label htmlFor="chapter" className="text-left">
                       Chapter
                     </Label>
                     <Select
@@ -663,18 +673,20 @@ export function AppSidebar({ setActivePageId }: { setActivePageId: Dispatch<SetS
                   </div>
                 </div>
                 <DialogFooter>
-                  <DialogClose asChild>
-                    <Button variant="outline" className="bg-blue-400">
-                      Cancel
+                  <div className="flex justify-between w-full">
+                    <DialogClose asChild>
+                      <Button variant="secondary">
+                        Cancel
+                      </Button>
+                    </DialogClose>
+                    <Button
+                      type="submit"
+                      className="bg-blue-400"
+                      onClick={handleCreatePage}
+                    >
+                      Create
                     </Button>
-                  </DialogClose>
-                  <Button
-                    type="submit"
-                    className="bg-blue-400"
-                    onClick={handleCreatePage}
-                  >
-                    Create
-                  </Button>
+                  </div>
                 </DialogFooter>
               </DialogContent>
             </Dialog>

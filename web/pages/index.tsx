@@ -30,6 +30,7 @@ import { toast } from "sonner";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { MarkdownEditor } from "@/components/MarkdownEditor";
 import { NoActivePage } from "@/components/NoActivePage";
+import Link from "next/link";
 import { getPageHierarchyById } from "@/utils/find-page-hierarchy";
 
 export default function HomePage() {
@@ -152,11 +153,12 @@ export default function HomePage() {
     router.push("/login");
   };
 
-
   // Copies link to clipboard and displays toast when user clicks Send button
   function sendLink(): void {
     if (activePageId !== "") {
-      navigator.clipboard.writeText(`${window.location.origin}/${activePageId}`);
+      navigator.clipboard.writeText(
+        `${window.location.origin}/${activePageId}`
+      );
       toast("Link copied to clipboard!");
     } else {
       toast("Please select the page you'd like to send using the sidebar!");
@@ -166,7 +168,7 @@ export default function HomePage() {
   // Clicking this button navigates the user to view-only published note page
   function handlePublish(): void {
     if (activePageId !== "") {
-      router.push(`/${activePageId}`, undefined, { shallow: true })
+      router.push(`/${activePageId}`, undefined, { shallow: true });
     } else {
       toast("Please select the page you'd like to publish using the sidebar!");
     }
@@ -185,11 +187,15 @@ export default function HomePage() {
 
   useEffect(() => {
     if (activePageId !== "" && notebookTree !== undefined) {
-      const pageInfo = getPageHierarchyById({notebookTree: notebookTree, pageId: activePageId})
-      setHeaderPath(`${pageInfo?.notebook.name} / ${pageInfo?.chapter.name} / ${pageInfo?.page.name}`)
+      const pageInfo = getPageHierarchyById({
+        notebookTree: notebookTree,
+        pageId: activePageId,
+      });
+      setHeaderPath(
+        `${pageInfo?.notebook.name} / ${pageInfo?.chapter.name} / ${pageInfo?.page.name}`
+      );
     }
-  }, [activePageId])
-
+  }, [activePageId]);
 
   return (
     <div className="fixed inset-0 overflow-hidden bg-background text-foreground">
@@ -197,12 +203,18 @@ export default function HomePage() {
       <header className="flex items-center h-[115px] px-6 border-b border-border bg-card justify-between">
         {/* Logo */}
         <div className="flex justify-center mr-2.5 -mt-0.5">
-        <img
-          src="/ByteNotesLogo.png"
-          alt="Byte Notes"
-          className="w-[186px] h-[181px]"
-        />
-      </div>
+          <Button
+            variant="ghost"
+            className="p-0 m-0 hover:bg-transparent"
+            onClick={() => setActivePageId("")}
+          >
+            <img
+              src="/ByteNotesLogo.png"
+              alt="Byte Notes"
+              className="w-[186px] h-[181px]"
+            />
+          </Button>
+        </div>
         {/* Profile */}
         <Dialog>
           <DialogTrigger asChild>
@@ -210,7 +222,7 @@ export default function HomePage() {
               className="flex items-center gap-3 rounded-md px-3 py-1.5 h-14 justify-start max-w-full overflow-hidden"
               variant="secondary"
             >
-              <div className="flex items-center gap-3 max-w-full overflow-hidden">
+              <div className="flex items-center gap-3 mr-12 max-w-full overflow-hidden">
                 <Avatar className="h-9 w-9 shrink-0">
                   <AvatarImage
                     src={
@@ -268,7 +280,7 @@ export default function HomePage() {
                     <Button
                       variant="outline"
                       onClick={() => fileInputRef.current?.click()}
-                      className="w-3xs"
+                      className="col-span-3"
                     >
                       {selectedFile ? "Photo Selected" : "Upload"}
                     </Button>
@@ -281,78 +293,76 @@ export default function HomePage() {
                 </Label>
                 <Input
                   id="display-name"
-                  className="col-span-3"
+                  className="col-span-3 text-center"
                   value={displayName}
                   placeholder={profileData?.display_name}
                   onChange={(e) => setDisplayName(e.target.value)}
                 />
               </div>
-              <div className="grid grid-cols-4 items-center gap-4"></div>
-            </div>
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button variant="secondary" className="bg-blue-400">
-                  Cancel
-                </Button>
-              </DialogClose>
               <Button
                 type="submit"
-                className="bg-blue-400 align-content-start"
-                onClick={handleSignOut}
-              >
-                Sign out
-              </Button>
-              <Button
-                type="submit"
-                className="bg-blue-400"
+                className="bg-blue-400 m-0 p-0"
                 onClick={handleUpdateProfile}
               >
                 Update Profile
               </Button>
+            </div>
+            <DialogFooter>
+              <div className="flex justify-between w-full">
+                <DialogClose asChild>
+                  <Button variant="secondary">Cancel</Button>
+                </DialogClose>
+                <Button
+                  type="submit"
+                  variant="destructive"
+                  className="align-content-start"
+                  onClick={handleSignOut}
+                >
+                  Sign out
+                </Button>
+              </div>
             </DialogFooter>
           </DialogContent>
         </Dialog>
       </header>
       {/* Subheader */}
-      <div className="relative flex items-center h-[60px] px-6 border-b border-border bg-background">
-        {/* Centered text */}
-        <p className="absolute left-1/2 -translate-x-1/2 text-center">
-          {headerPath}
-        </p>
-
-        {/* Right-aligned buttons */}
-        <div className="ml-auto flex gap-2">
-          <Button
-            variant="ghost"
-            className="flex flex-row items-center gap-1"
-            onClick={() => sendLink()}
-          >
-            <Send />
-            Send
-          </Button>
-          <Button
-            variant="ghost"
-            className="flex flex-row items-center gap-1"
-            onClick={() => handlePublish()}
-          >
-            <Globe />
-            Publish
-          </Button>
-          <Button
-            variant="ghost"
-            className="flex flex-row items-center gap-1"
-            onClick={() => handleSave()}
-          >
-            <Save />
-            Save
-          </Button>
+      {activePageId !== "" && (
+        <div className="relative flex items-center h-[60px] px-6 border-b border-border bg-background">
+          {/* Centered text */}
+          <p className="text-sm absolute left-1/2 -translate-x-1/2 text-center">
+            {headerPath}
+          </p>
+          {/* Right-aligned buttons */}
+          <div className="ml-auto flex gap-2">
+            <Button
+              variant="ghost"
+              className="flex flex-row items-center gap-1"
+              onClick={() => sendLink()}
+            >
+              <Send />
+              Send
+            </Button>
+            <Button
+              variant="ghost"
+              className="flex flex-row items-center gap-1"
+              onClick={() => handlePublish()}
+            >
+              <Globe />
+              Publish
+            </Button>
+            <Button
+              variant="ghost"
+              className="flex flex-row items-center gap-1"
+              onClick={() => handleSave()}
+            >
+              <Save />
+              Save
+            </Button>
+          </div>
         </div>
-      </div>
+      )}
       <Layout setActivePageId={setActivePageId}>
-
-        {/* Conditionally render either page editors OR "no page selected" view.
-          @charlottetsui, you'll need to tweak the alignment of the no page view inside that file, not this one. thanks!! <3 lizzie */}
-        {(activePageId !== "") ? MarkdownEditor(activePageId) : NoActivePage()}
+        {activePageId !== "" ? MarkdownEditor(activePageId) : NoActivePage()}
       </Layout>
     </div>
   );
