@@ -264,7 +264,7 @@ export default function HomePage() {
                     <Button
                       variant="outline"
                       onClick={() => fileInputRef.current?.click()}
-                      className="w-3xs"
+                      className="col-span-3"
                     >
                       {selectedFile ? "Photo Selected" : "Upload"}
                     </Button>
@@ -277,34 +277,36 @@ export default function HomePage() {
                 </Label>
                 <Input
                   id="display-name"
-                  className="col-span-3"
+                  className="col-span-3 text-center"
                   value={displayName}
                   placeholder={profileData?.display_name}
                   onChange={(e) => setDisplayName(e.target.value)}
                 />
               </div>
-              <div className="grid grid-cols-4 items-center gap-4"></div>
-            </div>
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button variant="secondary" className="bg-blue-400">
-                  Cancel
-                </Button>
-              </DialogClose>
               <Button
                 type="submit"
-                className="bg-blue-400 align-content-start"
-                onClick={handleSignOut}
-              >
-                Sign out
-              </Button>
-              <Button
-                type="submit"
-                className="bg-blue-400"
+                className="bg-blue-400 m-0 p-0"
                 onClick={handleUpdateProfile}
               >
                 Update Profile
               </Button>
+            </div>
+            <DialogFooter>
+              <div className="flex justify-between w-full">
+                <DialogClose asChild>
+                  <Button variant="secondary">
+                    Cancel
+                  </Button>
+                </DialogClose>
+                <Button
+                  type="submit"
+                  variant="destructive"
+                  className="align-content-start"
+                  onClick={handleSignOut}
+                >
+                  Sign out
+                </Button>
+              </div>
             </DialogFooter>
           </DialogContent>
         </Dialog>

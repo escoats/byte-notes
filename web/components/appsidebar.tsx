@@ -507,7 +507,7 @@ export function AppSidebar({
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                   <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="notebook" className="text-right">
+                    <Label htmlFor="notebook" className="text-left">
                       Notebook
                     </Label>
                     <Input
@@ -522,7 +522,7 @@ export function AppSidebar({
                 <DialogFooter>
                   <div className="flex justify-between w-full">
                     <DialogClose asChild>
-                      <Button variant="outline" className="bg-blue-400">
+                      <Button variant="secondary">
                         Cancel
                       </Button>
                     </DialogClose>
@@ -561,7 +561,7 @@ export function AppSidebar({
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                   <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="chapter" className="text-right">
+                    <Label htmlFor="chapter" className="text-left">
                       Chapter
                     </Label>
                     <Input
@@ -573,7 +573,7 @@ export function AppSidebar({
                     />
                   </div>
                   <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="notebook" className="text-right">
+                    <Label htmlFor="notebook" className="text-left">
                       Notebook
                     </Label>
                     <Select
@@ -599,7 +599,7 @@ export function AppSidebar({
                 <DialogFooter>
                   <div className="flex justify-between w-full">
                     <DialogClose asChild>
-                      <Button variant="outline" className="bg-blue-400">
+                      <Button variant="secondary">
                         Cancel
                       </Button>
                     </DialogClose>
@@ -635,7 +635,7 @@ export function AppSidebar({
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                   <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="page" className="text-right">
+                    <Label htmlFor="page" className="text-left">
                       Page
                     </Label>
                     <Input
@@ -647,7 +647,7 @@ export function AppSidebar({
                     />
                   </div>
                   <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="chapter" className="text-right">
+                    <Label htmlFor="chapter" className="text-left">
                       Chapter
                     </Label>
                     <Select
@@ -675,7 +675,7 @@ export function AppSidebar({
                 <DialogFooter>
                   <div className="flex justify-between w-full">
                     <DialogClose asChild>
-                      <Button variant="outline" className="bg-blue-400">
+                      <Button variant="secondary">
                         Cancel
                       </Button>
                     </DialogClose>
