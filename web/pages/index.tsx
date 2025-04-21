@@ -209,7 +209,7 @@ export default function HomePage() {
     >
       <div className="fixed inset-0 overflow-hidden bg-background text-foreground">
         {/* Header */}
-        <header className="flex items-center h-[115px] px-6 border-b border-border bg-card justify-between">
+        <header className="flex items-center h-[115px] px-6 border-b border-border bg-sidebar justify-between">
           {/* Logo */}
           <div className="flex justify-center mr-2.5 -mt-0.5">
             <Button
@@ -235,9 +235,10 @@ export default function HomePage() {
             }
           />
         </header>
+
         {/* Subheader */}
         {activePageId !== "" && (
-          <div className="relative flex items-center h-[60px] px-6 border-b border-border bg-background">
+          <div className="relative flex items-center h-[60px] px-6 border-b border-border bg-sidebar">
             {/* Centered text */}
             <p className="text-sm absolute left-1/2 -translate-x-1/2 text-center">
               {headerPath}
@@ -271,6 +272,8 @@ export default function HomePage() {
             </div>
           </div>
         )}
+
+        {/* Content Layout */}
         <Layout setActivePageId={setActivePageId}>
           {activePageId !== "" ? MarkdownEditor(activePageId) : NoActivePage()}
         </Layout>

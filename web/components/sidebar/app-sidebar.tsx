@@ -123,7 +123,7 @@ export function AppSidebar({
   }
 
   return (
-    <Sidebar className="h-[calc(100vh-115px)] mt-[115px]">
+    <Sidebar className="h-[calc(100vh-115px)] mt-[115px] bg-sidebar text-sidebar-foreground">
       <SidebarContent className="mt-1">
         {notebookTree?.map((notebook, notebookIdx) => (
           <SidebarGroup key={notebookIdx}>
@@ -131,11 +131,11 @@ export function AppSidebar({
             <SidebarGroupLabel className="text-left">
               <ContextMenu>
                 <ContextMenuTrigger>
-                  <p className="text-[11px] text-gray-400 uppercase text-left tracking-wider px-2 pt-3 pb-1">
+                  <p className="text-[11px] text-muted-foreground uppercase text-left tracking-wider px-2 pt-3 pb-1">
                     {notebook.name}
                   </p>
                 </ContextMenuTrigger>
-                <ContextMenuContent className="w-48 bg-gray-800">
+                <ContextMenuContent className="w-48 bg-sidebar text-sidebar-foreground">
                   <ContextMenuItem
                     onClick={() => handleRenameSidebarItem(notebook.id)}
                   >
@@ -165,7 +165,7 @@ export function AppSidebar({
                           onClick={() =>
                             handleDeleteSidebarItem(notebook.id, "notebook")
                           }
-                          className="bg-red-600"
+                          className="bg-destructive"
                         >
                           Continue
                         </AlertDialogAction>
@@ -185,7 +185,13 @@ export function AppSidebar({
                         <ContextMenu>
                           <ContextMenuTrigger>
                             {chapter.page.length > 0 ? (
-                              <CollapsibleTrigger className="flex items-center justify-between w-full py-1.5 text-white text-[13px] font-medium hover:bg-gray-800 rounded-md transition pl-2">
+                              <CollapsibleTrigger
+                                className={`flex items-center justify-between w-full py-1.5 text-[13px] font-medium rounded-md transition pl-2 ${
+                                  chapter.page.length > 0
+                                    ? "text-sidebar-foreground hover:bg-sidebar-primary hover:text-sidebar-primary-foreground"
+                                    : "text-muted-foreground cursor-default"
+                                }`}
+                              >
                                 <SquareTerminal
                                   strokeWidth={1.5}
                                   size={16}
@@ -197,7 +203,7 @@ export function AppSidebar({
                                 <ChevronDown className="ml-auto h-4 w-4 transition-transform duration-200 group-data-[state=open]:rotate-0 group-data-[state=closed]:-rotate-90" />
                               </CollapsibleTrigger>
                             ) : (
-                              <div className="flex items-center justify-start w-full py-1.5 text-white text-[13px] font-medium pl-2 opacity-70">
+                              <div className="flex items-center justify-start w-full py-1.5 text-foreground text-[13px] font-medium pl-2 opacity-70">
                                 <SquareTerminal
                                   strokeWidth={1.5}
                                   size={16}
@@ -210,7 +216,7 @@ export function AppSidebar({
                               </div>
                             )}
                           </ContextMenuTrigger>
-                          <ContextMenuContent className="w-48 bg-gray-800">
+                          <ContextMenuContent className="w-48 bg-sidebar text-sidebar-foreground">
                             <ContextMenuItem
                               onClick={() =>
                                 handleRenameSidebarItem(chapter.id)
@@ -248,7 +254,7 @@ export function AppSidebar({
                                         "chapter"
                                       )
                                     }
-                                    className="bg-red-600"
+                                    className="bg-destructive"
                                   >
                                     Continue
                                   </AlertDialogAction>
@@ -270,14 +276,14 @@ export function AppSidebar({
                                 >
                                   <Button
                                     variant="ghost"
-                                    className="px-3 py-0 m-0 -ml-2.5 text-[13px] text-gray-300 rounded hover:bg-gray-700 hover:text-white transition"
+                                    className="px-3 py-0 m-0 -ml-2.5 text-[13px] text-muted-foreground rounded hover:bg-sidebar-primary hover:text-sidebar-primary-foreground"
                                   >
                                     <p className="text-left -ml-1">
                                       {page.name}
                                     </p>
                                   </Button>
                                 </ContextMenuTrigger>
-                                <ContextMenuContent className="w-48 bg-gray-800">
+                                <ContextMenuContent className="w-48 bg-sidebar text-sidebar-foreground">
                                   <ContextMenuItem
                                     onClick={() =>
                                       handleRenameSidebarItem(page.id)
@@ -335,7 +341,7 @@ export function AppSidebar({
                 ))}
               </SidebarMenu>
             </SidebarGroupContent>
-            <Separator className="m-0 mt-5 -mb-2.5 p-0 bg-[#64748B] opacity-50" />
+            <Separator className="m-0 mt-5 -mb-2.5 p-0 bg-border opacity-50" />
           </SidebarGroup>
         ))}
       </SidebarContent>
