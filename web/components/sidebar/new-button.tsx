@@ -135,10 +135,7 @@ export default function NewButton({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
-          variant="outline"
-          className="mb-4 mr-2 ml-2 bg-blue-400 text-white"
-        >
+        <Button className="mb-4 mr-2 ml-2 !bg-blue-400 !text-white">
           + New
         </Button>
       </DropdownMenuTrigger>
