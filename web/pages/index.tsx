@@ -225,16 +225,19 @@ export default function HomePage() {
               />
             </Button>
           </div>
-          <ThemeToggle />
-          {/* Profile */}
-          <Profile
-            profileData={profileData}
-            supabase={supabase}
-            onSignOut={handleSignOut}
-            onProfileUpdate={async () =>
-              await queryClient.refetchQueries({ queryKey: ["userprofile"] })
-            }
-          />
+          <div className="flex flex-row items-center gap-x-3">
+            {/* Theme Toggle */}
+            <ThemeToggle />
+            {/* Profile */}
+            <Profile
+              profileData={profileData}
+              supabase={supabase}
+              onSignOut={handleSignOut}
+              onProfileUpdate={async () =>
+                await queryClient.refetchQueries({ queryKey: ["userprofile"] })
+              }
+            />
+          </div>
         </header>
 
         {/* Subheader */}
