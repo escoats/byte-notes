@@ -1,5 +1,5 @@
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/appsidebar";
+import { AppSidebar } from "@/components/sidebar/app-sidebar";
 import { Toaster } from "@/components/ui/sonner";
 import { Dispatch, SetStateAction } from "react";
 

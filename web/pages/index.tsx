@@ -28,10 +28,14 @@ import { userAgent } from "next/server";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { SupabaseClient } from "@supabase/supabase-js";
-import { MarkdownEditor } from "@/components/MarkdownEditor";
-import { NoActivePage } from "@/components/NoActivePage";
+import { MarkdownEditor } from "@/components/content/markdown-editor";
+import { NoActivePage } from "@/components/content/no-active-page";
 import Link from "next/link";
 import { getPageHierarchyById } from "@/utils/find-page-hierarchy";
+import { ThemeProvider } from "@/components/theme/theme-provider";
+import { useTheme } from "next-themes";
+import ThemeToggle from "@/components/theme/theme-toggle";
+import Profile from "@/components/profile";
 
 export default function HomePage() {
   // Create necessary hooks for clients and providers.
@@ -52,7 +56,6 @@ export default function HomePage() {
   });
 
   // Sets profile data to be empty initally
-
   const [displayName, setDisplayName] = useState("");
 
   // As soon as the profile data loads, pre-fill the inputs and populate isEditingDisplay
@@ -198,173 +201,81 @@ export default function HomePage() {
   }, [activePageId]);
 
   return (
-    <div className="fixed inset-0 overflow-hidden bg-background text-foreground">
-      {/* Header */}
-      <header className="flex items-center h-[115px] px-6 border-b border-border bg-card justify-between">
-        {/* Logo */}
-        <div className="flex justify-center mr-2.5 -mt-0.5">
-          <Button
-            variant="ghost"
-            className="p-0 m-0 hover:bg-transparent"
-            onClick={() => setActivePageId("")}
-          >
-            <img
-              src="/ByteNotesLogo.png"
-              alt="Byte Notes"
-              className="w-[186px] h-[181px]"
-            />
-          </Button>
-        </div>
-        {/* Profile */}
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button
-              className="flex items-center gap-3 rounded-md px-3 py-1.5 h-14 justify-start max-w-full overflow-hidden"
-              variant="secondary"
-            >
-              <div className="flex items-center gap-3 mr-12 max-w-full overflow-hidden">
-                <Avatar className="h-9 w-9 shrink-0">
-                  <AvatarImage
-                    src={
-                      profileData?.avatar_url
-                        ? supabase.storage
-                            .from("avatars")
-                            .getPublicUrl(profileData.avatar_url).data.publicUrl
-                        : ""
-                    }
-                  />
-                  <AvatarFallback>
-                    {profileData?.display_name?.[0]?.toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-
-                <div className="flex flex-col items-start leading-tight truncate">
-                  <p className="text-sm font-medium truncate">
-                    {profileData?.display_name}
-                  </p>
-                  <p className="text-xs text-secondary-foreground truncate">
-                    {profileData?.email}
-                  </p>
-                </div>
-              </div>
-            </Button>
-          </DialogTrigger>
-
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>Edit profile</DialogTitle>
-              <DialogDescription>
-                Make changes to your profile here. Click save when you're done.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="photo" className="text-left">
-                  Upload Photo
-                </Label>
-                {profileData?.id && (
-                  <>
-                    <Input
-                      className="hidden"
-                      type="file"
-                      ref={fileInputRef}
-                      accept="image/*"
-                      onChange={(e) =>
-                        setSelectedFile(
-                          (e.target.files ?? []).length > 0
-                            ? e.target.files![0]
-                            : null
-                        )
-                      }
-                    />
-                    <Button
-                      variant="outline"
-                      onClick={() => fileInputRef.current?.click()}
-                      className="col-span-3"
-                    >
-                      {selectedFile ? "Photo Selected" : "Upload"}
-                    </Button>
-                  </>
-                )}
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="display-name" className="text-left">
-                  Display Name
-                </Label>
-                <Input
-                  id="display-name"
-                  className="col-span-3 text-center"
-                  value={displayName}
-                  placeholder={profileData?.display_name}
-                  onChange={(e) => setDisplayName(e.target.value)}
-                />
-              </div>
-              <Button
-                type="submit"
-                className="bg-blue-400 m-0 p-0"
-                onClick={handleUpdateProfile}
-              >
-                Update Profile
-              </Button>
-            </div>
-            <DialogFooter>
-              <div className="flex justify-between w-full">
-                <DialogClose asChild>
-                  <Button variant="secondary">Cancel</Button>
-                </DialogClose>
-                <Button
-                  type="submit"
-                  variant="destructive"
-                  className="align-content-start"
-                  onClick={handleSignOut}
-                >
-                  Sign out
-                </Button>
-              </div>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      </header>
-      {/* Subheader */}
-      {activePageId !== "" && (
-        <div className="relative flex items-center h-[60px] px-6 border-b border-border bg-background">
-          {/* Centered text */}
-          <p className="text-sm absolute left-1/2 -translate-x-1/2 text-center">
-            {headerPath}
-          </p>
-          {/* Right-aligned buttons */}
-          <div className="ml-auto flex gap-2">
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="dark"
+      enableSystem
+      disableTransitionOnChange
+    >
+      <div className="fixed inset-0 overflow-hidden bg-background text-foreground">
+        {/* Header */}
+        <header className="flex items-center h-[115px] px-6 border-b border-border bg-card justify-between">
+          {/* Logo */}
+          <div className="flex justify-center mr-2.5 -mt-0.5">
             <Button
               variant="ghost"
-              className="flex flex-row items-center gap-1"
-              onClick={() => sendLink()}
+              className="p-0 m-0 hover:bg-transparent"
+              onClick={() => setActivePageId("")}
             >
-              <Send />
-              Send
-            </Button>
-            <Button
-              variant="ghost"
-              className="flex flex-row items-center gap-1"
-              onClick={() => handlePublish()}
-            >
-              <Globe />
-              Publish
-            </Button>
-            <Button
-              variant="ghost"
-              className="flex flex-row items-center gap-1"
-              onClick={() => handleSave()}
-            >
-              <Save />
-              Save
+              <img
+                src="/ByteNotesLogo.png"
+                alt="Byte Notes"
+                className="w-[186px] h-[181px]"
+              />
             </Button>
           </div>
-        </div>
-      )}
-      <Layout setActivePageId={setActivePageId}>
-        {activePageId !== "" ? MarkdownEditor(activePageId) : NoActivePage()}
-      </Layout>
-    </div>
+          <ThemeToggle />
+          {/* Profile */}
+          <Profile
+            profileData={profileData}
+            supabase={supabase}
+            onSignOut={handleSignOut}
+            onProfileUpdate={async () =>
+              await queryClient.refetchQueries({ queryKey: ["userprofile"] })
+            }
+          />
+        </header>
+        {/* Subheader */}
+        {activePageId !== "" && (
+          <div className="relative flex items-center h-[60px] px-6 border-b border-border bg-background">
+            {/* Centered text */}
+            <p className="text-sm absolute left-1/2 -translate-x-1/2 text-center">
+              {headerPath}
+            </p>
+            {/* Right-aligned buttons */}
+            <div className="ml-auto flex gap-2">
+              <Button
+                variant="ghost"
+                className="flex flex-row items-center gap-1"
+                onClick={() => sendLink()}
+              >
+                <Send />
+                Send
+              </Button>
+              <Button
+                variant="ghost"
+                className="flex flex-row items-center gap-1"
+                onClick={() => handlePublish()}
+              >
+                <Globe />
+                Publish
+              </Button>
+              <Button
+                variant="ghost"
+                className="flex flex-row items-center gap-1"
+                onClick={() => handleSave()}
+              >
+                <Save />
+                Save
+              </Button>
+            </div>
+          </div>
+        )}
+        <Layout setActivePageId={setActivePageId}>
+          {activePageId !== "" ? MarkdownEditor(activePageId) : NoActivePage()}
+        </Layout>
+      </div>
+    </ThemeProvider>
   );
 }
 

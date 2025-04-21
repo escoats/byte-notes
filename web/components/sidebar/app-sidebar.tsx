@@ -25,7 +25,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import {
   Dialog,
   DialogClose,
@@ -46,7 +46,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@radix-ui/react-label";
-import { Input } from "./ui/input";
+import { Input } from "../ui/input";
 import { createSupabaseComponentClient } from "@/utils/supabase/component";
 import {
   getNotebookTreeByUser,
@@ -61,7 +61,7 @@ import {
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuTrigger,
-} from "./ui/context-menu";
+} from "../ui/context-menu";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -72,8 +72,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "./ui/alert-dialog";
+} from "../ui/alert-dialog";
 import { Separator } from "@/components/ui/separator";
+import NewButton from "./new-button";
 
 export function AppSidebar({
   setActivePageId,
@@ -82,20 +83,6 @@ export function AppSidebar({
 }) {
   const supabase = createSupabaseComponentClient();
   const queryClient = useQueryClient();
-
-  //useStates for creating & setting new notebook title and opening/closing dialog on creation
-  const [newNotebookTitle, setNewNotebookTitle] = useState("");
-  const [isNotebookDialogOpen, setIsNotebookDialogOpen] = useState(false);
-
-  //useStates for creating & setting new chapter title, opening/closing dialog on creation, and selecting a notebook for the chater
-  const [newChapterTitle, setNewChapterTitle] = useState("");
-  const [isChapterDialogOpen, setIsChapterDialogOpen] = useState(false);
-  const [selectedNotebookId, setSelectedNotebookId] = useState<string>("");
-
-  //useStates for creating & setting new page title, opening/closing dialog on creation, and selecting a chapter for the page
-  const [newPageTitle, setNewPageTitle] = useState("");
-  const [isPageDialogOpen, setIsPageDialogOpen] = useState(false);
-  const [selectedChapterId, setSelectedChapterId] = useState<string>("");
 
   // Get current authenticated user
   const { data: profileData } = useQuery({
@@ -113,125 +100,6 @@ export function AppSidebar({
     enabled: !!profileData?.id,
     queryFn: async () => await getNotebookTreeByUser(supabase, profileData!.id),
   });
-
-  //Creates a new notebook and adds to notebook table & sidebar
-  const handleCreateNotebook = async () => {
-    if (!newNotebookTitle.trim() || !profileData?.id) return;
-
-    const { data: existing, error: checkError } = await supabase
-      .from("notebook")
-      .select("id")
-      .eq("title", newNotebookTitle.trim())
-      .eq("author_id", profileData.id)
-      .maybeSingle();
-
-    if (checkError) {
-      toast.error("Failed to fetch notebook.");
-      return;
-    }
-
-    if (existing) {
-      toast.error("Notebook already exists");
-      return;
-    }
-
-    const { error } = await supabase.from("notebook").insert({
-      title: newNotebookTitle.trim(),
-      author_id: profileData.id,
-    });
-
-    if (error) {
-      console.error("Failed to create notebook:", error.message);
-      toast.error("Failed to create notebook.");
-      return;
-    }
-
-    toast("Notebook created!");
-    setNewNotebookTitle("");
-    setIsNotebookDialogOpen(false);
-    await queryClient.invalidateQueries({ queryKey: ["notebook_tree"] });
-  };
-
-  //Creates a new chapter and adds to chapter table & sidebar
-  const handleCreateChapter = async () => {
-    //trim to remove whitespace for supabase
-    if (!newChapterTitle.trim() || !profileData?.id) return;
-
-    const { data: existing, error: checkError } = await supabase
-      .from("chapter")
-      .select("id")
-      .eq("title", newChapterTitle.trim())
-      .eq("notebook_id", selectedNotebookId)
-      .maybeSingle();
-    console.log(existing);
-
-    if (checkError) {
-      toast.error("Failed to fetch chapter.");
-      return;
-    }
-
-    if (existing) {
-      toast.error("Chapter already exists");
-      return;
-    }
-
-    const { error } = await supabase.from("chapter").insert({
-      title: newChapterTitle.trim(),
-      notebook_id: selectedNotebookId,
-    });
-
-    if (error) {
-      console.error("Failed to create chapter:", error.message);
-      toast.error("Failed to create chapter.");
-      return;
-    }
-
-    toast("Chapter created!");
-    setNewChapterTitle("");
-    setSelectedNotebookId("");
-    setIsChapterDialogOpen(false);
-    await queryClient.invalidateQueries({ queryKey: ["notebook_tree"] });
-  };
-
-  //Creates a new page and adds to page table & sidebar
-  const handleCreatePage = async () => {
-    if (!newPageTitle.trim() || !profileData?.id) return;
-
-    const { data: existing, error: checkError } = await supabase
-      .from("page")
-      .select("id")
-      .eq("title", newPageTitle.trim())
-      .eq("chapter_id", selectedChapterId)
-      .maybeSingle();
-    console.log(existing);
-
-    if (checkError) {
-      toast.error("Failed to fetch page.");
-      return;
-    }
-
-    if (existing) {
-      toast.error("Page already exists");
-      return;
-    }
-
-    const { error } = await supabase.from("page").insert({
-      title: newPageTitle.trim(),
-      chapter_id: selectedChapterId,
-    });
-
-    if (error) {
-      console.error("Failed to create page:", error.message);
-      toast.error("Failed to create page.");
-      return;
-    }
-
-    toast("Page created!");
-    setNewPageTitle("");
-    setSelectedChapterId("");
-    setIsPageDialogOpen(false);
-    await queryClient.invalidateQueries({ queryKey: ["notebook_tree"] });
-  };
 
   // handles renaming item in database when user right clicks in sidebar
   function handleRenameSidebarItem(id: string): void {
@@ -259,7 +127,7 @@ export function AppSidebar({
       <SidebarContent className="mt-1">
         {notebookTree?.map((notebook, notebookIdx) => (
           <SidebarGroup key={notebookIdx}>
-            {/* Notebook Title */}
+            {/* Notebook(s) Title */}
             <SidebarGroupLabel className="text-left">
               <ContextMenu>
                 <ContextMenuTrigger>
@@ -307,8 +175,7 @@ export function AppSidebar({
                 </ContextMenuContent>
               </ContextMenu>
             </SidebarGroupLabel>
-
-            {/* Chapters */}
+            {/* Chapter(s) Title */}
             <SidebarGroupContent>
               <SidebarMenu>
                 {notebook.chapter.map((chapter, chapterIdx) => (
@@ -392,7 +259,7 @@ export function AppSidebar({
                         </ContextMenu>
                       </SidebarGroupLabel>
 
-                      {/* Pages */}
+                      {/* Page(s) Title */}
                       <CollapsibleContent>
                         <SidebarMenuSub className="pl-4 space-y-1">
                           {chapter.page.map((page, pageIdx) => (
@@ -473,220 +340,13 @@ export function AppSidebar({
         ))}
       </SidebarContent>
       {/* + New */}
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="outline"
-            className="mb-4 mr-2 ml-2 bg-blue-400 text-white"
-          >
-            + New
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-60  bg-slate-700">
-          <DropdownMenuGroup>
-            {/* New Notebook */}
-            <Dialog
-              open={isNotebookDialogOpen}
-              onOpenChange={setIsNotebookDialogOpen}
-            >
-              <DialogTrigger asChild>
-                <DropdownMenuItem
-                  onSelect={(e) => e.preventDefault()}
-                  className="flex items-center space-x-2 px-3 py-2 rounded-md text-white hover:text-gray-300 hover:bg-gray-700 transition"
-                >
-                  <BookMarked className="h-4 w-4" />
-                  <span>New Notebook</span>
-                </DropdownMenuItem>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[425px]">
-                <DialogHeader>
-                  <DialogTitle>Create New Notebook</DialogTitle>
-                  <DialogDescription>
-                    Create a new notebook to store your chapters
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="grid gap-4 py-4">
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="notebook" className="text-left">
-                      Notebook
-                    </Label>
-                    <Input
-                      id="notebook"
-                      className="col-span-3"
-                      value={newNotebookTitle}
-                      onChange={(e) => setNewNotebookTitle(e.target.value)}
-                      placeholder="Name of your notebook..."
-                    />
-                  </div>
-                </div>
-                <DialogFooter>
-                  <div className="flex justify-between w-full">
-                    <DialogClose asChild>
-                      <Button variant="secondary">Cancel</Button>
-                    </DialogClose>
-                    <Button
-                      type="submit"
-                      className="bg-blue-400"
-                      onClick={handleCreateNotebook}
-                    >
-                      Create
-                    </Button>
-                  </div>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-            <DropdownMenuSeparator />
-            {/* New Chapter */}
-            <Dialog
-              open={isChapterDialogOpen}
-              onOpenChange={setIsChapterDialogOpen}
-            >
-              <DialogTrigger asChild>
-                <DropdownMenuItem
-                  onSelect={(e) => e.preventDefault()}
-                  className="flex items-center space-x-2 px-3 py-2 rounded-md text-white hover:text-gray-300 hover:bg-gray-700 transition"
-                >
-                  <List className="h-4 w-4" />
-                  <span>Chapter</span>
-                </DropdownMenuItem>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[425px]">
-                <DialogHeader>
-                  <DialogTitle>Create New Chapter</DialogTitle>
-                  <DialogDescription>
-                    Create a new chapter to store your pages
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="grid gap-4 py-4">
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="chapter" className="text-left">
-                      Chapter
-                    </Label>
-                    <Input
-                      id="chapter"
-                      className="col-span-3"
-                      value={newChapterTitle}
-                      onChange={(e) => setNewChapterTitle(e.target.value)}
-                      placeholder="Name of your chapter..."
-                    />
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="notebook" className="text-left">
-                      Notebook
-                    </Label>
-                    <Select
-                      value={selectedNotebookId}
-                      onValueChange={setSelectedNotebookId}
-                    >
-                      <SelectTrigger className="w-[277.25]">
-                        <SelectValue placeholder="Select a notebook" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectLabel>Your notebooks</SelectLabel>
-                          {notebookTree?.map((nb) => (
-                            <SelectItem key={nb.id} value={nb.id}>
-                              {nb.name}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                <DialogFooter>
-                  <div className="flex justify-between w-full">
-                    <DialogClose asChild>
-                      <Button variant="secondary">Cancel</Button>
-                    </DialogClose>
-                    <Button
-                      type="submit"
-                      className="bg-blue-400"
-                      onClick={handleCreateChapter}
-                    >
-                      Create
-                    </Button>
-                  </div>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-            <DropdownMenuSeparator />
-            {/* New Page */}
-            <Dialog open={isPageDialogOpen} onOpenChange={setIsPageDialogOpen}>
-              <DialogTrigger asChild>
-                <DropdownMenuItem
-                  onSelect={(e) => e.preventDefault()}
-                  className="flex items-center space-x-2 px-3 py-2 rounded-md text-white hover:text-gray-300 hover:bg-gray-700 transition"
-                >
-                  <FileText className="h-4 w-4" />
-                  <span>Page</span>
-                </DropdownMenuItem>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[425px]">
-                <DialogHeader>
-                  <DialogTitle>Create New Page</DialogTitle>
-                  <DialogDescription>
-                    Create a new page to start taking notes
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="grid gap-4 py-4">
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="page" className="text-left">
-                      Page
-                    </Label>
-                    <Input
-                      id="page"
-                      className="col-span-3"
-                      placeholder="Name of your page..."
-                      value={newPageTitle}
-                      onChange={(e) => setNewPageTitle(e.target.value)}
-                    />
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="chapter" className="text-left">
-                      Chapter
-                    </Label>
-                    <Select
-                      value={selectedChapterId}
-                      onValueChange={setSelectedChapterId}
-                    >
-                      <SelectTrigger className="w-[277.25]">
-                        <SelectValue placeholder="Select a chapter" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectLabel>Your chapters</SelectLabel>
-                          {notebookTree?.flatMap((notebook) =>
-                            notebook.chapter.map((chapter) => (
-                              <SelectItem key={chapter.id} value={chapter.id}>
-                                {notebook.name} / {chapter.name}
-                              </SelectItem>
-                            ))
-                          )}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                <DialogFooter>
-                  <div className="flex justify-between w-full">
-                    <DialogClose asChild>
-                      <Button variant="secondary">Cancel</Button>
-                    </DialogClose>
-                    <Button
-                      type="submit"
-                      className="bg-blue-400"
-                      onClick={handleCreatePage}
-                    >
-                      Create
-                    </Button>
-                  </div>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          </DropdownMenuGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <NewButton
+        profileData={profileData}
+        notebookTree={notebookTree ?? []}
+        onItemCreated={async () => {
+          await queryClient.invalidateQueries({ queryKey: ["notebook_tree"] });
+        }}
+      />
     </Sidebar>
   );
 }
