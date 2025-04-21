@@ -25,7 +25,7 @@ import {
 import { FilePen, Globe, Save, Send } from "lucide-react";
 import Layout from "./layout";
 import { userAgent } from "next/server";
-import { useEffect, useRef, useState } from "react";
+import { SetStateAction, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { MarkdownEditor } from "@/components/content/markdown-editor";
@@ -36,6 +36,7 @@ import { ThemeProvider } from "@/components/theme/theme-provider";
 import { useTheme } from "next-themes";
 import ThemeToggle from "@/components/theme/theme-toggle";
 import Profile from "@/components/profile";
+import { CodeCompiler } from "@/components/content/code-compiler";
 
 export default function HomePage() {
   // Create necessary hooks for clients and providers.
@@ -275,7 +276,14 @@ export default function HomePage() {
 
         {/* Content Layout */}
         <Layout setActivePageId={setActivePageId}>
-          {activePageId !== "" ? MarkdownEditor(activePageId) : NoActivePage()}
+          {activePageId !== "" ? (
+            <>
+              {MarkdownEditor(activePageId)}
+              {CodeCompiler(activePageId)}
+            </>
+          ) : (
+            <NoActivePage />
+          )}
         </Layout>
       </div>
     </ThemeProvider>
