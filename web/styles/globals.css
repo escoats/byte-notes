@@ -11,8 +11,8 @@
   --radius: 0.625rem;
   --card: oklch(0.28 0.03 257); /* gray-800 */
   --card-foreground: oklch(0.985 0.002 247.839); /* text color: white */
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.71 0.02 261); /* gray-400 */
+  --popover: oklch(0.37 0.0392 257.29); /* popover color: slate 700 */
+  --popover-foreground: oklch(0.985 0.002 247.839); /* gray-400 change this to be lighter */
   --primary: oklch(0.21 0.034 264.665);
   --primary-foreground: oklch(0.985 0.002 247.839);
   --secondary: oklch(42.37% 0.044 259.47); /* slate-700 */
@@ -88,33 +88,33 @@ body {
 }
 
 :root.light {
-  --background: oklch(0.93 0.01 256); /* slate-200 */
-  --foreground: oklch(0.28 0.04 260); /* text: gray-800 */
+  --background: oklch(0.97 0.0069 247.9); /* slate-100 */
+  --foreground: oklch(0.45 0.0263 256.8); /* gray 600 */
   
-  --card: oklch(0.87 0.02 253); /* slate-300 */
+  --card: oklch(0.93 0.01 256); /* slate-200 */
   --card-foreground: var(--foreground);
   
   --popover: oklch(0.93 0.01 256); /* slate-200 */
-  --popover-foreground: var(--foreground);
+  --popover-foreground: oklch(0.21 0.04 266); /* slate-900 */
 
   --primary: oklch(0.58 0.19 264.665); 
   --primary-foreground: oklch(1 0 0); 
   
-  --secondary: oklch(0.94 0.01 260); 
-  --secondary-foreground: var(--foreground);
+  --secondary: oklch(0.87 0.0198 252.89); /* slate 300 */
+  --secondary-foreground: oklch(0.21 0.04 266); /* slate-900 */
 
-  --muted: oklch(0.95 0.01 260);
+  --muted: oklch(0.98 0.0034 247.86); /* primary foreground */
   --muted-foreground: oklch(0.45 0.02 260);
 
-  --accent: oklch(0.92 0.015 260); 
+  --accent: oklch(0.98 0.0034 247.86); /* primary foreground */
   --accent-foreground: var(--foreground);
 
   --destructive: oklch(0.75 0.2 25);
   --border: oklch(0.71 0.04 257); /* slate-400 */
-  --input: oklch(0.97 0.005 260);
+  --input: oklch(0.71 0.04 257); /* slate-400 */
   --ring: oklch(0.65 0.03 260);
 
-  --sidebar: oklch(0.87 0.02 253); /* slate-300 */
+  --sidebar: oklch(0.93 0.01 256); /* slate-200 */
   --sidebar-foreground: oklch(0.25 0.03 260);
   --muted-foreground: oklch(0.21 0.04 266); /* slate-900 */
   --sidebar-primary: oklch(0.92 0.02 260);
