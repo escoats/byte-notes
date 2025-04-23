@@ -24,12 +24,16 @@ function embedProject() {
 
 export function CodeCompiler(pageId: string) {
   return (
-    <div>
-      <nav>
-        <div id="app">
-          <button id="embed" onClick={(embedProject)}>Embed project</button>
-        </div>
-      </nav>
+    <div className="w-[50%] h-[100%] p-4">
+      <Card>
+        <nav>
+          <div id="app">
+            <button id="embed" onClick={embedProject}>
+              Embed project
+            </button>
+          </div>
+        </nav>
+      </Card>
     </div>
   );
 }
