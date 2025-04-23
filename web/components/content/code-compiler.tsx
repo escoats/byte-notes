@@ -38,7 +38,23 @@ export function CodeCompiler({
   const [initialCode, setInitialCode] = useState<string>("");
   const [currentCode, setCurrentCode] = useState<string>("");
 
-  // TODO: fetch page's code from supabase
+  // fetch page's code from supabase
+  useEffect(() => {
+    const fetchCode = async () => {
+      const { data, error } = await supabase
+        .from("page")
+        .select("code")
+        .eq("id", activePageId)
+        .single();
+
+      // only fetch when there are no errors, and data.code is fetched
+      if (!error && data?.code) {
+        setInitialCode(data.code);
+      }
+    };
+    fetchCode();
+    // run useEffect on activePageId change
+  }, [activePageId]);
 
   // TODO: populate code compiler with code from supabase
 
