@@ -47,6 +47,11 @@ export default function HomePage() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [value, setValue] = useState("test");
 
+  // Log markdown editor value for testing/dev purposes - delete later!
+  useEffect(()=> {
+    console.log(value)
+  }, [value])
+
   // Fetch user profile data to display in the header
   const { data: profileData } = useQuery({
     queryKey: ["user_profile"],

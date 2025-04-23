@@ -14,7 +14,7 @@ export function MarkdownEditor({
   setValue: Dispatch<SetStateAction<string>>;
   value: string;
 }) {
-  // TODO: fetch page contents data
+  // TODO: fetch page contents data & sub in for content={value}
 
   /**
    * TODO: seems like React requires the same # of hooks to be generated on each re-render.
