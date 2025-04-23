@@ -135,11 +135,11 @@ export default function NewButton({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button className="mb-4 mr-2 ml-2 !bg-blue-400 !text-white">
+        <Button className="mb-4 mr-2 ml-2 !bg-blue-400 ">
           + New
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-60 bg-slate-700">
+      <DropdownMenuContent className="w-60">
         <DropdownMenuGroup>
           {/* Notebook */}
           <Dialog
@@ -149,7 +149,7 @@ export default function NewButton({
             <DialogTrigger asChild>
               <DropdownMenuItem
                 onSelect={(e) => e.preventDefault()}
-                className="text-white hover:bg-gray-700"
+                className=""
               >
                 <BookMarked className="h-4 w-4 mr-2" />
                 New Notebook
@@ -189,7 +189,7 @@ export default function NewButton({
             <DialogTrigger asChild>
               <DropdownMenuItem
                 onSelect={(e) => e.preventDefault()}
-                className="text-white hover:bg-gray-700"
+                className=""
               >
                 <List className="h-4 w-4 mr-2" />
                 Chapter
@@ -243,7 +243,7 @@ export default function NewButton({
             <DialogTrigger asChild>
               <DropdownMenuItem
                 onSelect={(e) => e.preventDefault()}
-                className="text-white hover:bg-gray-700"
+                className=""
               >
                 <FileText className="h-4 w-4 mr-2" />
                 Page
