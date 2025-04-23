@@ -4,35 +4,43 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import sdk from "@stackblitz/sdk";
+import React, { useEffect } from "react";
 
-// This opens https://stackblitz.com/edit/css-custom-prop-color-values
-// in the current window with the Preview pane
-function openProject() {
-  sdk.openProjectId("css-custom-prop-color-values", {
-    newWindow: false,
-    view: "preview",
-  });
-}
+type CodeCompilerProps = {
+  pageId: string;
+};
 
-//  This replaces the HTML element with
-// the id of "embed" with https://stackblitz.com/edit/css-custom-prop-color-values embedded in an iframe.
-function embedProject() {
-  sdk.embedProjectId("embed", "css-custom-prop-color-values", {
-    openFile: "index.ts",
-  });
-}
+export function CodeCompiler({ pageId }: CodeCompilerProps) {
+  useEffect(() => {
+    async function start() {
+      // Embed the project once the component is mounted and DOM is ready
+      // TODO: 'css-custom-prop-color-values' should be pageId variable that can be passed in for the associated StackBlitz editor
+      const vm = await sdk.embedProjectId(
+        "embed",
+        "css-custom-prop-color-values",
+        {
+          clickToLoad: false,
+          openFile: "index.ts",
+        }
+      );
+      // Optional: modify the virtual file system
+      const deps = await vm.getDependencies();
+      await vm.applyFsDiff({
+        create: {
+          "hello.txt": "Hello, this is a new file!",
+          "deps.txt": JSON.stringify(deps, null, 2),
+        },
+        destroy: [],
+      });
+    }
 
-export function CodeCompiler(pageId: string) {
+    start();
+  }, [pageId]);
+
   return (
-    <div className="w-[50%] h-[100%] p-4">
-      <Card>
-        <nav>
-          <div id="app">
-            <button id="embed" onClick={embedProject}>
-              Embed project
-            </button>
-          </div>
-        </nav>
+    <div className="w-[50%] px-6 py-4">
+      <Card className="w-full max-w-5xl mx-auto h-[80.5%]">
+        <div id="embed" className="h-full w-full" />
       </Card>
     </div>
   );

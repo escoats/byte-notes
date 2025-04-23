@@ -282,7 +282,7 @@ export default function HomePage() {
           {activePageId !== "" ? (
             <>
               {MarkdownEditor(activePageId)}
-              {CodeCompiler(activePageId)}
+              <CodeCompiler pageId={activePageId} />
             </>
           ) : (
             <NoActivePage />
