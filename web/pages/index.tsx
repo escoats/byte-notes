@@ -45,6 +45,7 @@ export default function HomePage() {
   const queryClient = useQueryClient();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [value, setValue] = useState("test");
 
   // Fetch user profile data to display in the header
   const { data: profileData } = useQuery({
@@ -281,7 +282,13 @@ export default function HomePage() {
         <Layout setActivePageId={setActivePageId}>
           {activePageId !== "" ? (
             <>
-              {MarkdownEditor(activePageId)}
+              {
+                <MarkdownEditor
+                  pageId={activePageId}
+                  value={value}
+                  setValue={setValue}
+                />
+              }
               {CodeCompiler(activePageId)}
             </>
           ) : (
