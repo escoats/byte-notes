@@ -15,8 +15,6 @@ type CodeCompilerProps = {
 const languages = [
   "c",
   "c#",
-  "c++",
-  "css",
   "go",
   "html",
   "java",
@@ -50,24 +48,8 @@ export function CodeCompiler({
   return (
     <div className="w-[50%] p-4">
       <Card>
-        <div className="flex items-center justify-between mb-2 ml-2 mr-2">
-          <label htmlFor="language" className="mr-2 font-medium-bold">
-            Language
-          </label>
-          <select
-            id="language"
-            value={language}
-            onChange={(e) => setLanguage(e.target.value)}
-            className="border rounded px-2 py-1"
-          >
-            {languages.map((lang) => (
-              <option key={lang} value={lang}>
-                {lang}
-              </option>
-            ))}
-          </select>
-        </div>
-
+        {/* TODO: format so header takes up less of code compiler card */}
+        <CardHeader className="text-center">Code Compiler</CardHeader>
         {/* https://onecompiler.com/apis/embed-editor */}
         <iframe
           id="oc-editor"
