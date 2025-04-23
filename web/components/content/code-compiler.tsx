@@ -3,25 +3,33 @@
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader } from "../ui/card";
+import sdk from "@stackblitz/sdk";
+
+// This opens https://stackblitz.com/edit/css-custom-prop-color-values
+// in the current window with the Preview pane
+function openProject() {
+  sdk.openProjectId("css-custom-prop-color-values", {
+    newWindow: false,
+    view: "preview",
+  });
+}
+
+//  This replaces the HTML element with
+// the id of "embed" with https://stackblitz.com/edit/css-custom-prop-color-values embedded in an iframe.
+function embedProject() {
+  sdk.embedProjectId("embed", "css-custom-prop-color-values", {
+    openFile: "index.ts",
+  });
+}
 
 export function CodeCompiler(pageId: string) {
   return (
-    <div className="w-[50%] p-4">
-      <Card>
-        <CardHeader>
-          <div className="flex justify-">
-            <Button variant="ghost">Edit</Button>
-            <Button variant="ghost">Run</Button>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <p>
-            This is a placeholder Code Compiler view for the page with ID{" "}
-            {pageId}!
-          </p>
-          <p>Editing functionality & styling coming in Sprint 2!</p>
-        </CardContent>
-      </Card>
+    <div>
+      <nav>
+        <div id="app">
+          <button id="embed" onClick={(embedProject)}>Embed project</button>
+        </div>
+      </nav>
     </div>
   );
 }
