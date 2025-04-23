@@ -13,6 +13,11 @@ const Editor = ({ content, placeholder, onChange }: EditorProps) => {
   const editor = useEditor({
     extensions: [StarterKit],
     content: content,
+    editorProps: {
+        attributes: {
+        class: 'p-1 ',
+    },
+    },
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML())
     },
