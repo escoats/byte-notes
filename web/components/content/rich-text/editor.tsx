@@ -32,7 +32,7 @@ const Editor = ({ content, placeholder, onChange }: EditorProps) => {
 
     if (!content) {
       editor.commands.clearContent();
-    } else {
+    } else if (editor?.isEmpty) {
       editor.commands.setContent(content, false, {
         preserveWhitespace: "full",
       });
