@@ -202,12 +202,19 @@ export default function HomePage() {
   }, [activePageId]);
 
   // useState for markdown editor data
-  const [markdownEditorValue, setMarkdownEditorValue] = useState("test");
+  const [markdownEditorValue, setMarkdownEditorValue] = useState("");
 
   // Log markdown editor value for testing/dev purposes - delete later!
-  useEffect(() => {
-    console.log(markdownEditorValue);
-  }, [markdownEditorValue]);
+  // useEffect(() => {
+  //   console.log(markdownEditorValue);
+  // }, [markdownEditorValue]);
+
+//   useEffect(() => {
+//   if (markdownEditorValue) {
+//     console.log(markdownEditorValue);
+//     setDisplayName(markdownEditorValue);
+//   }
+// }, [markdownEditorValue]);
 
   // Fetch markdown text
   const fetchMarkdownText = async () => {

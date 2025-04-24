@@ -1,6 +1,7 @@
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import EditorToolbar from "./toolbar/editor-toolbar";
+import { useEffect } from "react";
 
 interface EditorProps {
   content: string;
@@ -14,7 +15,7 @@ const Editor = ({ content, placeholder, onChange }: EditorProps) => {
     content: content,
     editorProps: {
       attributes: {
-        class: "p-1 ",
+        class: "p-1 leading-none",
       },
     },
     onUpdate: ({ editor }) => {
@@ -23,6 +24,13 @@ const Editor = ({ content, placeholder, onChange }: EditorProps) => {
     immediatelyRender: true,
   });
 
+  //This useEffect renders the markdown content into editor box using TipTap's setContent command for <EditorContent>
+  useEffect(() => {
+    if (editor && content) {
+      editor.commands.setContent(content);
+    }
+  }, [editor, content]);
+  
   if (!editor) return <></>;
 
   return (

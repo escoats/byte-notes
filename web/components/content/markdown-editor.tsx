@@ -18,16 +18,13 @@ export function MarkdownEditor({
   value: string;
 }) {
 
-  // TODO: configure editor to update with data from supabase
-  // Right now the data is fetched & passed in from index.html, but it doesn't seem to be updating to show in the editor
-  // Not sure why yet
   return (
     <div className="w-[50%] p-4">
       <Card>
         <CardContent>
           <Editor
             content={value}
-            onChange={setValue}
+            onChange={(updatedContent) => setValue(updatedContent)}
             placeholder="Write your notes here..."
             // readOnly={false}
           />
