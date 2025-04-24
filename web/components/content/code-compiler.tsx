@@ -5,25 +5,44 @@ import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import sdk from "@stackblitz/sdk";
 import React, { useEffect } from "react";
+import { createSupabaseComponentClient } from "@/utils/supabase/component";
 
 type CodeCompilerProps = {
   pageId: string;
 };
 
 export function CodeCompiler({ pageId }: CodeCompilerProps) {
+  const supabase = createSupabaseComponentClient();
+  const [projectId, setProjectId] = useState<string | null>(null);
+
   useEffect(() => {
-    async function start() {
-      // Embed the project once the component is mounted and DOM is ready
-      // TODO: 'css-custom-prop-color-values' should be pageId variable that can be passed in for the associated StackBlitz editor
-      const vm = await sdk.embedProjectId(
-        "embed",
-        "css-custom-prop-color-values",
-        {
-          clickToLoad: false,
-          openFile: "index.ts",
-        }
-      );
-      // Optional: modify the virtual file system
+    async function fetchProjectId() {
+      const { data, error } = await supabase
+        .from("page")
+        .select("stackblitz_project_id")
+        .eq("id", pageId)
+        .single();
+
+      if (error) {
+        console.error("Error fetching projectId:", error);
+        return;
+      }
+
+      setProjectId(data.stackblitz_project_id);
+    }
+
+    fetchProjectId();
+  }, [pageId]);
+
+  useEffect(() => {
+    if (!projectId) return;
+
+    async function embedProject() {
+      const vm = await sdk.embedProjectId("embed", projectId!, {
+        clickToLoad: false,
+        openFile: "index.ts",
+      });
+
       const deps = await vm.getDependencies();
       await vm.applyFsDiff({
         create: {
@@ -34,8 +53,8 @@ export function CodeCompiler({ pageId }: CodeCompilerProps) {
       });
     }
 
-    start();
-  }, [pageId]);
+    embedProject();
+  }, [projectId]);
 
   return (
     <div className="w-[50%] px-6 py-4">
