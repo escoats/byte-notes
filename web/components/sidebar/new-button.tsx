@@ -121,6 +121,7 @@ export default function NewButton({
     const { error } = await supabase.from("page").insert({
       title: newPageTitle.trim(),
       chapter_id: selectedChapterId,
+      markdown: "Byte Notes",
     });
 
     if (error) return toast.error("Failed to create page.");
@@ -135,9 +136,7 @@ export default function NewButton({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button className="mb-4 mr-2 ml-2 !bg-blue-400 ">
-          + New
-        </Button>
+        <Button className="mb-4 mr-2 ml-2 !bg-blue-400 ">+ New</Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-60">
         <DropdownMenuGroup>
