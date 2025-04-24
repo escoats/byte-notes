@@ -178,15 +178,16 @@ export default function HomePage() {
     }
   }
 
-  // TODO: Sprint 2
+  // TODO: Implement save for Stackblitz editor
   async function handleSave(): Promise<void> {
     const { error: updateMarkdownError } = await supabase
       .from("page")
       .update({ markdown: markdownEditorValue })
       .eq("id", activePageId);
 
-    if (updateMarkdownError) {
-      window.alert("Failed to save: " + updateMarkdownError.message);
+    if (!updateMarkdownError) {
+      toast("Page saved successfully!");
+    } else {
       toast("Failed to save: " + updateMarkdownError.message);
     }
   }

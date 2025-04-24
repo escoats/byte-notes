@@ -27,10 +27,6 @@ const Editor = ({ content, placeholder, onChange }: EditorProps) => {
   });
 
   // This useEffect renders the markdown content into editor box using TipTap's setContent command for <EditorContent>
-
-  /* TODO: [BUG] When the user switches to a page where the markdown content is null or empty, it should clear the editor. 
-    See clearContent command in TipTap docs: https://tiptap.dev/docs/editor/api/commands/content/clear-content */
-
   useEffect(() => {
     if (!editor) return;
 
