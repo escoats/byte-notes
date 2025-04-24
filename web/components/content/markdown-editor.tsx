@@ -14,9 +14,9 @@ export function MarkdownEditor({
   value: string;
 }) {
   return (
-    <div className="w-[50%] p-4">
-      <Card>
-        <CardContent>
+    <div className="w-[50%] h-[78%] p-4">
+      <Card className="h-full flex flex-col">
+        <CardContent className="flex-1 overflow-hidden">
           <Editor
             content={value}
             onChange={(updatedContent) => setValue(updatedContent)}
