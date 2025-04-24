@@ -103,10 +103,26 @@ export function AppSidebar({
 
   // handles renaming item in database when user right clicks in sidebar
   const [newName, setNewName] = useState("");
-  function handleRenameSidebarItem(id: string, type: string): void {
-    // update supabase item to have newName
-    // then change newName back to empty? bruh
-    toast("Rename functionality not implemented yet.");
+  async function handleRenameSidebarItem(
+    id: string,
+    type: string
+  ): Promise<void> {
+    const { error } = await supabase
+      .from(type)
+      .update({ title: newName })
+      .eq("id", id);
+
+    if (error) {
+      toast(`Error renaming ${type}: ${error.message}`);
+    } else {
+      toast(
+        `${
+          type.charAt(0).toUpperCase() + type?.slice(1)
+        } name updated successfully!`
+      );
+      await queryClient.invalidateQueries({ queryKey: ["notebook_tree"] });
+    }
+    setNewName("");
   }
 
   // handles deleting item from database when user right clicks in sidebar
@@ -164,7 +180,7 @@ export function AppSidebar({
                           onClick={() =>
                             handleRenameSidebarItem(notebook.id, "notebook")
                           }
-                          className="bg-destructive"
+                          className="bg-blue-400"
                         >
                           Save
                         </AlertDialogAction>
@@ -248,13 +264,48 @@ export function AppSidebar({
                             )}
                           </ContextMenuTrigger>
                           <ContextMenuContent className="w-48 bg-sidebar text-sidebar-foreground">
-                            <ContextMenuItem
-                              onClick={() =>
-                                handleRenameSidebarItem(chapter.id, "chapter")
-                              }
-                            >
-                              Rename Chapter
-                            </ContextMenuItem>
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <ContextMenuItem
+                                  onSelect={(e) => e.preventDefault()}
+                                >
+                                  Rename Chapter
+                                </ContextMenuItem>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>
+                                    Rename chapter
+                                  </AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    Are you sure you want to rename{" "}
+                                    {chapter.name}? This action cannot be
+                                    undone.
+                                    <Input
+                                      placeholder={"New name..."}
+                                      value={newName}
+                                      onChange={(e) =>
+                                        setNewName(e.target.value)
+                                      }
+                                    />
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <AlertDialogAction
+                                    onClick={() =>
+                                      handleRenameSidebarItem(
+                                        chapter.id,
+                                        "chapter"
+                                      )
+                                    }
+                                    className="bg-blue-400"
+                                  >
+                                    Save
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
                             <DropdownMenuSeparator />
                             <AlertDialog>
                               <AlertDialogTrigger asChild>
@@ -315,13 +366,50 @@ export function AppSidebar({
                                   </Button>
                                 </ContextMenuTrigger>
                                 <ContextMenuContent className="w-48 bg-sidebar text-sidebar-foreground">
-                                  <ContextMenuItem
-                                    onClick={() =>
-                                      handleRenameSidebarItem(page.id, "page")
-                                    }
-                                  >
-                                    Rename Page
-                                  </ContextMenuItem>
+                                  <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                      <ContextMenuItem
+                                        onSelect={(e) => e.preventDefault()}
+                                      >
+                                        Rename Page
+                                      </ContextMenuItem>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                      <AlertDialogHeader>
+                                        <AlertDialogTitle>
+                                          Rename Page
+                                        </AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                          Are you sure you want to rename{" "}
+                                          {page.name}? This action cannot be
+                                          undone.
+                                          <Input
+                                            placeholder={"New name..."}
+                                            value={newName}
+                                            onChange={(e) =>
+                                              setNewName(e.target.value)
+                                            }
+                                          />
+                                        </AlertDialogDescription>
+                                      </AlertDialogHeader>
+                                      <AlertDialogFooter>
+                                        <AlertDialogCancel>
+                                          Cancel
+                                        </AlertDialogCancel>
+                                        <AlertDialogAction
+                                          onClick={() =>
+                                            handleRenameSidebarItem(
+                                              page.id,
+                                              "page"
+                                            )
+                                          }
+                                          className="bg-blue-400"
+                                        >
+                                          Save
+                                        </AlertDialogAction>
+                                      </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                  </AlertDialog>
                                   <DropdownMenuSeparator />
                                   <AlertDialog>
                                     <AlertDialogTrigger asChild>
