@@ -45,6 +45,12 @@ export default function HomePage() {
   const queryClient = useQueryClient();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const { resolvedTheme } = useTheme();
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Fetch user profile data to display in the header
   const { data: profileData } = useQuery({
@@ -282,7 +288,13 @@ export default function HomePage() {
           {activePageId !== "" ? (
             <>
               {MarkdownEditor(activePageId)}
-              <CodeCompiler pageId={activePageId} />
+              {isMounted && (
+                <CodeCompiler
+                  key={resolvedTheme}
+                  pageId="css-custom-prop-color-values"
+                  theme={resolvedTheme === "dark" ? "dark" : "light"}
+                />
+              )}
             </>
           ) : (
             <NoActivePage />
