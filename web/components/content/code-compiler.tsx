@@ -1,9 +1,7 @@
 // Component that displays the code compiler card
-
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader } from "../ui/card";
-
 export function CodeCompiler(pageId: string) {
   return (
     <div className="w-[50%] p-4">

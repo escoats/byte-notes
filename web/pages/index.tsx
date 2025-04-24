@@ -157,6 +157,12 @@ export default function HomePage() {
     router.push("/login");
   };
 
+  // Handle opening a page from the sidebar
+  const [activePageId, setActivePageId] = useState("");
+
+  // Update header whenever the active page changes
+  const [headerPath, setHeaderPath] = useState("");
+
   // Copies link to clipboard and displays toast when user clicks Send button
   function sendLink(): void {
     if (activePageId !== "") {
@@ -178,6 +184,7 @@ export default function HomePage() {
     }
   }
 
+
   // TODO: Implement save for Stackblitz editor
   async function handleSave(): Promise<void> {
     const { error: updateMarkdownError } = await supabase
@@ -192,11 +199,6 @@ export default function HomePage() {
     }
   }
 
-  // Handle opening a page from the sidebar
-  const [activePageId, setActivePageId] = useState("");
-
-  // Update header whenever the active page changes
-  const [headerPath, setHeaderPath] = useState("");
 
   useEffect(() => {
     if (activePageId !== "" && notebookTree !== undefined) {
