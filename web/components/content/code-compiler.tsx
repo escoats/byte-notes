@@ -27,12 +27,10 @@ export function CodeCompiler({ pageId, theme }: CodeCompilerProps) {
   const supabase = createSupabaseComponentClient();
   const [files, setFiles] = useState<Record<string, string> | null>(null);
 
-
-  
   useEffect(() => {
     const container = document.getElementById("embed");
     if (container) container.innerHTML = "";
-    
+
     async function fetchFiles() {
       const { data, error } = await supabase
         .from("page")
@@ -54,16 +52,20 @@ export function CodeCompiler({ pageId, theme }: CodeCompilerProps) {
   useEffect(() => {
     if (!files) return;
 
-    sdk.embedProject("embed", {
-      title: "ByteNotes Project",
-      description: "Auto-created per page",
-      template: "typescript",
-      files,
-    }, {
-      clickToLoad: false,
-      openFile: "index.ts",
-      theme: `${theme}`,
-    });
+    sdk.embedProject(
+      "embed",
+      {
+        title: "ByteNotes Project",
+        description: "Auto-created per page",
+        template: "typescript",
+        files,
+      },
+      {
+        clickToLoad: false,
+        openFile: "index.ts",
+        theme: `${theme}`,
+      }
+    );
   }, [files]);
 
   return (
