@@ -190,18 +190,18 @@ export default function HomePage() {
     }
   }
 
-  // current code displayed in code compiler
-  const [currentCode, setCurrentCode] = useState<string>("");
-
-  // manually save code to supabase
-  // TODO: currently not working
+  // TODO: Implement save for Stackblitz editor
   async function handleSave(): Promise<void> {
-    const { error } = await supabase
+    const { error: updateMarkdownError } = await supabase
       .from("page")
-      .update({ code: currentCode })
+      .update({ markdown: markdownEditorValue })
       .eq("id", activePageId);
 
-    // TODO: add in toast error handling
+    if (!updateMarkdownError) {
+      toast("Page saved successfully!");
+    } else {
+      toast("Failed to save: " + updateMarkdownError.message);
+    }
   }
 
   useEffect(() => {
@@ -213,6 +213,38 @@ export default function HomePage() {
       setHeaderPath(
         `${pageInfo?.notebook.name} / ${pageInfo?.chapter.name} / ${pageInfo?.page.name}`
       );
+    }
+  }, [activePageId]);
+
+  // useState for markdown editor data
+  const [markdownEditorValue, setMarkdownEditorValue] = useState("");
+
+  // Log markdown editor value for testing/dev purposes - delete later!
+  useEffect(() => {
+    console.log(markdownEditorValue);
+  }, [markdownEditorValue]);
+
+  // Fetch markdown text
+  const fetchMarkdownText = async () => {
+    const { data, error } = await supabase
+      .from("page")
+      .select("markdown")
+      .eq("id", activePageId)
+      .single();
+
+    if (!error && data?.markdown) {
+      setMarkdownEditorValue(data.markdown);
+    } else if (!error) {
+      setMarkdownEditorValue("");
+    }
+  };
+
+  // Fetch new markdown text when active page changes
+  useEffect(() => {
+    if (activePageId !== "") {
+      fetchMarkdownText();
+    } else {
+      setMarkdownEditorValue("");
     }
   }, [activePageId]);
 
@@ -296,13 +328,22 @@ export default function HomePage() {
         <Layout setActivePageId={setActivePageId}>
           {activePageId !== "" ? (
             <>
-              {MarkdownEditor(activePageId)}
-              {isMounted && (
-                <CodeCompiler
-                  key={resolvedTheme}
-                  pageId={activePageId}
-                  theme={resolvedTheme === "dark" ? "dark" : "light"}
-                />
+              {activePageId !== "" ? (
+                <>
+                  {
+                    <MarkdownEditor
+                      value={markdownEditorValue}
+                      setValue={setMarkdownEditorValue}
+                    />
+                  }
+                  <CodeCompiler
+                    key={resolvedTheme}
+                    pageId={activePageId}
+                    theme={resolvedTheme === "dark" ? "dark" : "light"}
+                  />
+                </>
+              ) : (
+                <NoActivePage />
               )}
             </>
           ) : (
