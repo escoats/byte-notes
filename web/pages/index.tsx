@@ -290,11 +290,14 @@ export default function HomePage() {
         <Layout setActivePageId={setActivePageId}>
           {activePageId !== "" ? (
             <>
-              {MarkdownEditor(activePageId)}
-              <CodeCompiler
-                activePageId={activePageId}
-                defaultLanguage="python"
-              />
+              {activePageId !== "" ? (
+                <>
+                  {MarkdownEditor(activePageId)}
+                  {CodeCompiler(activePageId)}
+                </>
+              ) : (
+                <NoActivePage />
+              )}
             </>
           ) : (
             <NoActivePage />
