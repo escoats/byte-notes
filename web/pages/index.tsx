@@ -179,8 +179,16 @@ export default function HomePage() {
   }
 
   // TODO: Sprint 2
-  function handleSave(): void {
-    toast("Save functionality has not been implemented yet.");
+  async function handleSave(): Promise<void> {
+    const { error: updateMarkdownError } = await supabase
+      .from("page")
+      .update({ markdown: markdownEditorValue })
+      .eq("id", activePageId);
+
+    if (updateMarkdownError) {
+      window.alert("Failed to save: " + updateMarkdownError.message);
+      toast("Failed to save: " + updateMarkdownError.message);
+    }
   }
 
   // Handle opening a page from the sidebar
