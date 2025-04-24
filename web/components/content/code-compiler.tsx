@@ -13,48 +13,37 @@ type CodeCompilerProps = {
 
 export function CodeCompiler({ pageId }: CodeCompilerProps) {
   const supabase = createSupabaseComponentClient();
-  const [projectId, setProjectId] = useState<string | null>(null);
+  const [files, setFiles] = useState<Record<string, string> | null>(null);
 
   useEffect(() => {
-    async function fetchProjectId() {
+    async function fetchFiles() {
       const { data, error } = await supabase
         .from("page")
-        .select("stackblitz_project_id")
+        .select("code_content")
         .eq("id", pageId)
         .single();
 
-      if (error) {
-        console.error("Error fetching projectId:", error);
+      if (error || !data?.code_content) {
+        console.error("Error fetching code_content:", error);
         return;
       }
 
-      setProjectId(data.stackblitz_project_id);
+      setFiles(data.code_content);
     }
 
-    fetchProjectId();
+    fetchFiles();
   }, [pageId]);
 
   useEffect(() => {
-    if (!projectId) return;
+    if (!files) return;
 
-    async function embedProject() {
-      const vm = await sdk.embedProjectId("embed", projectId!, {
-        clickToLoad: false,
-        openFile: "index.ts",
-      });
-
-      const deps = await vm.getDependencies();
-      await vm.applyFsDiff({
-        create: {
-          "hello.txt": "Hello, this is a new file!",
-          "deps.txt": JSON.stringify(deps, null, 2),
-        },
-        destroy: [],
-      });
-    }
-
-    embedProject();
-  }, [projectId]);
+    sdk.embedProject("embed", {
+      title: "ByteNotes Project",
+      description: "Auto-created per page",
+      template: "typescript",
+      files,
+    });
+  }, [files]);
 
   return (
     <div className="w-[50%] px-6 py-4">

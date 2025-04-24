@@ -107,9 +107,6 @@ export default function NewButton({
   };
 
   const handleCreatePage = async () => {
-    // TODO: every page is linked to the same stackblitz project
-    const STACKBLITZ_TEMPLATE_ID = "css-custom-prop-color-values";
-
     if (!newPageTitle.trim() || !selectedChapterId || !profileData?.id) return;
 
     const { data: existing } = await supabase
@@ -124,7 +121,11 @@ export default function NewButton({
     const { error } = await supabase.from("page").insert({
       title: newPageTitle.trim(),
       chapter_id: selectedChapterId,
-      stackblitz_project_id: STACKBLITZ_TEMPLATE_ID,
+      // create new stackblitz project on every page
+      code_content: {
+        "index.ts": `console.log("Welcome to your new project!")`,
+        "index.html": "<h1>Welcome</h1>",
+      },
     });
 
     if (error) return toast.error("Failed to create page.");
