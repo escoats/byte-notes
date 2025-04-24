@@ -163,6 +163,12 @@ export default function HomePage() {
     router.push("/login");
   };
 
+  // Handle opening a page from the sidebar
+  const [activePageId, setActivePageId] = useState("");
+
+  // Update header whenever the active page changes
+  const [headerPath, setHeaderPath] = useState("");
+
   // Copies link to clipboard and displays toast when user clicks Send button
   function sendLink(): void {
     if (activePageId !== "") {
@@ -184,16 +190,19 @@ export default function HomePage() {
     }
   }
 
-  // TODO: Sprint 2
-  function handleSave(): void {
-    toast("Save functionality has not been implemented yet.");
+  // current code displayed in code compiler
+  const [currentCode, setCurrentCode] = useState<string>("");
+
+  // manually save code to supabase
+  // TODO: currently not working
+  async function handleSave(): Promise<void> {
+    const { error } = await supabase
+      .from("page")
+      .update({ code: currentCode })
+      .eq("id", activePageId);
+
+    // TODO: add in toast error handling
   }
-
-  // Handle opening a page from the sidebar
-  const [activePageId, setActivePageId] = useState("");
-
-  // Update header whenever the active page changes
-  const [headerPath, setHeaderPath] = useState("");
 
   useEffect(() => {
     if (activePageId !== "" && notebookTree !== undefined) {
@@ -291,7 +300,7 @@ export default function HomePage() {
               {isMounted && (
                 <CodeCompiler
                   key={resolvedTheme}
-                  pageId="css-custom-prop-color-values"
+                  pageId={activePageId}
                   theme={resolvedTheme === "dark" ? "dark" : "light"}
                 />
               )}
