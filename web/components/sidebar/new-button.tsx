@@ -121,7 +121,7 @@ export default function NewButton({
     const { error } = await supabase.from("page").insert({
       title: newPageTitle.trim(),
       chapter_id: selectedChapterId,
-      markdown: "Byte Notes",
+      markdown: "<p>Get started with Byte Notes here ...</p>",
     });
 
     if (error) return toast.error("Failed to create page.");
