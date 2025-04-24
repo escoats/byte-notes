@@ -1,11 +1,11 @@
-import { EditorContent, useEditor } from "@tiptap/react"
-import StarterKit from "@tiptap/starter-kit"
-import EditorToolbar from "./toolbar/editor-toolbar"
+import { EditorContent, useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import EditorToolbar from "./toolbar/editor-toolbar";
 
 interface EditorProps {
-  content: string
-  placeholder?: string
-  onChange: (value: string) => void
+  content: string;
+  placeholder?: string;
+  onChange: (value: string) => void;
 }
 
 const Editor = ({ content, placeholder, onChange }: EditorProps) => {
@@ -13,16 +13,17 @@ const Editor = ({ content, placeholder, onChange }: EditorProps) => {
     extensions: [StarterKit],
     content: content,
     editorProps: {
-        attributes: {
-        class: 'p-1 ',
-    },
+      attributes: {
+        class: "p-1 ",
+      },
     },
     onUpdate: ({ editor }) => {
-      onChange(editor.getHTML())
+      onChange(editor.getHTML());
     },
-  })
+    immediatelyRender: true,
+  });
 
-  if (!editor) return <></>
+  if (!editor) return <></>;
 
   return (
     <div className="prose max-w-none w-full border border-input bg-background dark:prose-invert">
@@ -31,7 +32,7 @@ const Editor = ({ content, placeholder, onChange }: EditorProps) => {
         <EditorContent editor={editor} placeholder={placeholder} />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Editor
+export default Editor;

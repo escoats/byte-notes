@@ -45,12 +45,6 @@ export default function HomePage() {
   const queryClient = useQueryClient();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [value, setValue] = useState("test");
-
-  // Log markdown editor value for testing/dev purposes - delete later!
-  useEffect(()=> {
-    console.log(value)
-  }, [value])
 
   // Fetch user profile data to display in the header
   const { data: profileData } = useQuery({
@@ -207,6 +201,36 @@ export default function HomePage() {
     }
   }, [activePageId]);
 
+  // useState for markdown editor data
+  const [markdownEditorValue, setMarkdownEditorValue] = useState("test");
+
+  // Log markdown editor value for testing/dev purposes - delete later!
+  useEffect(() => {
+    console.log(markdownEditorValue);
+  }, [markdownEditorValue]);
+
+  // Fetch markdown text
+  const fetchMarkdownText = async () => {
+    const { data, error } = await supabase
+      .from("page")
+      .select("markdown")
+      .eq("id", activePageId)
+      .single();
+
+    if (!error && data?.markdown) {
+      setMarkdownEditorValue(data.markdown);
+    }
+  };
+
+  // Fetch new markdown text when active page changes
+  useEffect(() => {
+    if (activePageId !== "") {
+      fetchMarkdownText();
+    } else {
+      setMarkdownEditorValue("");
+    }
+  }, [activePageId]);
+
   return (
     <ThemeProvider
       attribute="class"
@@ -289,9 +313,10 @@ export default function HomePage() {
             <>
               {
                 <MarkdownEditor
+                  supabase={supabase}
                   pageId={activePageId}
-                  value={value}
-                  setValue={setValue}
+                  value={markdownEditorValue}
+                  setValue={setMarkdownEditorValue}
                 />
               }
               {CodeCompiler(activePageId)}
