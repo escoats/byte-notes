@@ -98,115 +98,118 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="flex min-h-[calc(100svh)] flex-col items-center justify-center bg-background p-6 md:p-10">
+    <div className="relative min-h-screen bg-background">
       {/* Fixed Logo */}
-      {/* TODO: fix spacing to be in top left corner */}
-      <div className="fixed top-2 left-4 w-[186px] h-[81px]">
+      <div className="fixed -top-10 left-0 p-4 z-50">
         <img
           src="/ByteNotesLogo.png"
-          className="w-[186px] h-[166px] object-contain"
-          alt="Byte Notes Logo"
+          alt="ByteNotes Logo"
+          className="w-[186px] object-contain"
         />
       </div>
 
-      {/* Centered Sign-Up Card */}
-      <Card className="w-full max-w-md rounded-lg border border-border bg-card/80 backdrop-blur-md p-6 shadow-lg">
-        <div className="mb-4 space-y-1 text-center">
-          <h1 className="text-2xl font-semibold text-foreground">Sign up</h1>
-          <p className="text-sm text-muted-foreground">
-            Create your account here. Welcome to Byte Notes!
-          </p>
-        </div>
-
-        <div className="flex flex-col gap-4">
-          {/* Profile Photo */}
-          <div className="grid gap-2">
-            <Label htmlFor="photo">Upload Profile Photo</Label>
-            <Input
-              id="photo"
-              className="hidden"
-              type="file"
-              ref={fileInputRef}
-              accept="image/*"
-              onChange={(e) =>
-                setSelectedFile(
-                  (e.target.files ?? []).length > 0 ? e.target.files![0] : null
-                )
-              }
-            />
-            <Button
-              variant="outline"
-              onClick={() => fileInputRef.current?.click()}
-              className="w-full"
-            >
-              {selectedFile ? "Photo Selected" : "Upload"}
-            </Button>
+      {/* Centered Signup Card */}
+      <div className="flex items-center justify-center min-h-screen">
+        <Card className="w-full max-w-md rounded-lg border border-border bg-card/80 backdrop-blur-md p-6 shadow-lg">
+          <div>
+            <h1 className="text-2xl font-semibold text-foreground">Sign up</h1>
+            <p className="text-sm text-muted-foreground">
+              Create your account here. Welcome to Byte Notes!
+            </p>
           </div>
 
-          {/* Name */}
-          <div className="grid gap-2">
-            <Label htmlFor="name">Name</Label>
-            <Input
-              id="name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Ajay Gandecha"
-              required
-            />
-          </div>
-
-          {/* Email */}
-          <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
-            <div className="relative">
+          <div className="flex flex-col gap-4">
+            {/* Profile Photo */}
+            <div className="grid gap-2">
+              <Label htmlFor="photo">Upload Profile Photo</Label>
               <Input
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="ajay@cs.unc.edu"
+                id="photo"
+                className="hidden"
+                type="file"
+                ref={fileInputRef}
+                accept="image/*"
+                onChange={(e) =>
+                  setSelectedFile(
+                    (e.target.files ?? []).length > 0
+                      ? e.target.files![0]
+                      : null
+                  )
+                }
+              />
+              <Button
+                variant="outline"
+                onClick={() => fileInputRef.current?.click()}
+                className="w-full"
+              >
+                {selectedFile ? "Photo Selected" : "Upload"}
+              </Button>
+            </div>
+
+            {/* Name */}
+            <div className="grid gap-2">
+              <Label htmlFor="name">Name</Label>
+              <Input
+                id="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Ajay Gandecha"
                 required
               />
             </div>
+
+            {/* Email */}
+            <div className="grid gap-2">
+              <Label htmlFor="email">Email</Label>
+              <div className="relative">
+                <Input
+                  id="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="ajay@cs.unc.edu"
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Password */}
+            <div className="grid gap-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
+                required
+              />
+            </div>
+
+            {/* Confirm Password */}
+            <div className="grid gap-2">
+              <Label htmlFor="confirmPassword">Repeat password</Label>
+              <Input
+                id="confirmPassword"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmedPassword(e.target.value)}
+                placeholder="Repeat your password"
+                required
+              />
+            </div>
+
+            <Button className="w-full bg-blue-400" onClick={signUp}>
+              Sign up
+            </Button>
           </div>
 
-          {/* Password */}
-          <div className="grid gap-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
-              required
-            />
-          </div>
-
-          {/* Confirm Password */}
-          <div className="grid gap-2">
-            <Label htmlFor="confirmPassword">Repeat password</Label>
-            <Input
-              id="confirmPassword"
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmedPassword(e.target.value)}
-              placeholder="Repeat your password"
-              required
-            />
-          </div>
-
-          <Button className="w-full bg-blue-400" onClick={signUp}>
-            Sign up
-          </Button>
-        </div>
-
-        <p className="mt-2 text-center text-sm text-muted-foreground">
-          Already have an account?{" "}
-          <Link href="/login" className="underline underline-offset-4">
-            Login
-          </Link>
-        </p>
-      </Card>
+          <p className="mt-2 text-center text-sm text-muted-foreground">
+            Already have an account?{" "}
+            <Link href="/login" className="underline underline-offset-4">
+              Login
+            </Link>
+          </p>
+        </Card>
+      </div>
     </div>
   );
   ``;

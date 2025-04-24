@@ -1,8 +1,8 @@
 // Component that displays the code compiler card
-
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader } from "../ui/card";
+<<<<<<< HEAD
 import sdk from "@stackblitz/sdk";
 import React, { useEffect } from "react";
 import { createSupabaseComponentClient } from "@/utils/supabase/component";
@@ -45,6 +45,9 @@ export function CodeCompiler({ pageId }: CodeCompilerProps) {
     });
   }, [files]);
 
+=======
+export function CodeCompiler(pageId: string) {
+>>>>>>> main
   return (
     <div className="w-[50%] px-6 py-4">
       <Card className="w-full max-w-5xl mx-auto h-[80.5%]">
