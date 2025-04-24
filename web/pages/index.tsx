@@ -219,6 +219,8 @@ export default function HomePage() {
 
     if (!error && data?.markdown) {
       setMarkdownEditorValue(data.markdown);
+    } else if (!error) {
+      setMarkdownEditorValue("");
     }
   };
 
@@ -313,8 +315,6 @@ export default function HomePage() {
             <>
               {
                 <MarkdownEditor
-                  supabase={supabase}
-                  pageId={activePageId}
                   value={markdownEditorValue}
                   setValue={setMarkdownEditorValue}
                 />

@@ -40,14 +40,14 @@ const Editor = ({ content, placeholder, onChange }: EditorProps) => {
       editor.commands.setContent(content);
     }
   }, [editor, content]);
-  
+
   if (!editor) return null;
 
   return (
     <div className="prose max-w-none w-full border border-input bg-background dark:prose-invert">
       <EditorToolbar editor={editor} />
       <div className="editor">
-        <EditorContent editor={editor} placeholder={placeholder}/>
+        <EditorContent editor={editor} placeholder={placeholder} />
       </div>
     </div>
   );

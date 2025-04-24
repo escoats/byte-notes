@@ -7,17 +7,12 @@ import Editor from "./rich-text/editor";
 import { SupabaseClient } from "@supabase/supabase-js";
 
 export function MarkdownEditor({
-  supabase,
-  pageId,
   setValue,
   value,
 }: {
-  supabase: SupabaseClient;
-  pageId: string;
   setValue: Dispatch<SetStateAction<string>>;
   value: string;
 }) {
-
   return (
     <div className="w-[50%] p-4">
       <Card>
