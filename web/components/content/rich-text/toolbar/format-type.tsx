@@ -10,6 +10,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+// Code taken from https://github.com/sravimohan/shandcn-ui-extensions/tree/main/components/rich-text
+
 interface FormatTypeProps {
   editor: Editor;
 }

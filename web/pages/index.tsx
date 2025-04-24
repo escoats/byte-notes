@@ -205,16 +205,9 @@ export default function HomePage() {
   const [markdownEditorValue, setMarkdownEditorValue] = useState("");
 
   // Log markdown editor value for testing/dev purposes - delete later!
-  // useEffect(() => {
-  //   console.log(markdownEditorValue);
-  // }, [markdownEditorValue]);
-
-//   useEffect(() => {
-//   if (markdownEditorValue) {
-//     console.log(markdownEditorValue);
-//     setDisplayName(markdownEditorValue);
-//   }
-// }, [markdownEditorValue]);
+  useEffect(() => {
+    console.log(markdownEditorValue);
+  }, [markdownEditorValue]);
 
   // Fetch markdown text
   const fetchMarkdownText = async () => {
