@@ -37,6 +37,7 @@ import { useTheme } from "next-themes";
 import ThemeToggle from "@/components/theme/theme-toggle";
 import Profile from "@/components/profile";
 import { CodeCompiler } from "@/components/content/code-compiler";
+import { ProjectFiles, VM } from "@stackblitz/sdk";
 
 export default function HomePage() {
   // Create necessary hooks for clients and providers.
@@ -190,17 +191,37 @@ export default function HomePage() {
     }
   }
 
+  const [files, setFiles] = useState<ProjectFiles>();
+  const vmRef = useRef<VM>(null);
   // TODO: Implement save for Stackblitz editor
   async function handleSave(): Promise<void> {
-    const { error: updateMarkdownError } = await supabase
+    // console.log("attempting save! current code content: ");
+    // console.log(files);
+    const { error: updateError } = await supabase
       .from("page")
       .update({ markdown: markdownEditorValue })
       .eq("id", activePageId);
 
-    if (!updateMarkdownError) {
+    if (!updateError) {
       toast("Page saved successfully!");
     } else {
-      toast("Failed to save: " + updateMarkdownError.message);
+      toast("Failed to save: " + updateError.message);
+    }
+
+    if (vmRef.current) {
+      const snapshot = await vmRef.current.getFsSnapshot();
+      if (snapshot) setFiles(snapshot);
+
+      const { error: codeSaveError } = await supabase
+        .from("page")
+        .update({ code_content: files })
+        .eq("id", activePageId);
+
+      if (!codeSaveError) {
+        toast("Code saved successfully!");
+      } else {
+        toast("Failed to save code content: " + codeSaveError.message);
+      }
     }
   }
 
@@ -247,6 +268,8 @@ export default function HomePage() {
       setMarkdownEditorValue("");
     }
   }, [activePageId]);
+
+  // UseState for active code editor files - these are passed into the CodeCompiler
 
   return (
     <ThemeProvider
@@ -340,6 +363,9 @@ export default function HomePage() {
                     key={resolvedTheme}
                     pageId={activePageId}
                     theme={resolvedTheme === "dark" ? "dark" : "light"}
+                    files={files}
+                    setFiles={setFiles}
+                    vmRef={vmRef}
                   />
                 </>
               ) : (

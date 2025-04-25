@@ -1,14 +1,17 @@
 // Component that displays the code compiler card
-import { useState } from "react";
+import { Dispatch, useRef, useState } from "react";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader } from "../ui/card";
-import sdk from "@stackblitz/sdk";
+import sdk, { ProjectFiles, VM } from "@stackblitz/sdk";
 import React, { useEffect } from "react";
 import { createSupabaseComponentClient } from "@/utils/supabase/component";
 
 type CodeCompilerProps = {
   pageId: string;
   theme: "dark" | "light";
+  files: ProjectFiles;
+  setFiles: Dispatch<ProjectFiles>;
+  vmRef: React.RefObject<VM>;
 };
 
 // export function CodeCompiler({ pageId, theme }: CodeCompilerProps) {
@@ -23,9 +26,16 @@ type CodeCompilerProps = {
 //     });
 //   }, [pageId, theme]);
 
-export function CodeCompiler({ pageId, theme }: CodeCompilerProps) {
+export function CodeCompiler({
+  pageId,
+  theme,
+  files,
+  setFiles,
+  vmRef,
+}: CodeCompilerProps) {
   const supabase = createSupabaseComponentClient();
-  const [files, setFiles] = useState<Record<string, string> | null>(null);
+  // const vmRef = useRef<VM>(null);
+  // const [files, setFiles] = useState<Record<string, string> | null>(null);
 
   useEffect(() => {
     const container = document.getElementById("embed");
@@ -38,11 +48,17 @@ export function CodeCompiler({ pageId, theme }: CodeCompilerProps) {
         .eq("id", pageId)
         .single();
 
-      if (error || !data?.code_content) {
+      if (error) {
         console.error("Error fetching code_content:", error);
         return;
       }
 
+      if (!data?.code_content) {
+        console.log("No code content");
+        // setFiles(null);
+        return;
+      }
+      console.log("setting files!");
       setFiles(data.code_content);
     }
 
@@ -50,22 +66,31 @@ export function CodeCompiler({ pageId, theme }: CodeCompilerProps) {
   }, [pageId, theme]);
 
   useEffect(() => {
-    if (!files) return;
+    // console.log("FILES?");
+    // console.log(files);
+    // if (!files) return;
 
-    sdk.embedProject(
-      "embed",
-      {
-        title: "ByteNotes Project",
-        description: "Auto-created per page",
-        template: "typescript",
-        files,
-      },
-      {
-        clickToLoad: false,
-        openFile: "index.ts",
-        theme: `${theme}`,
-      }
-    );
+    async function init() {
+      const vm = await sdk.embedProject(
+        "embed",
+        {
+          title: "ByteNotes Project",
+          description: "Auto-created per page",
+          template: "typescript",
+          files,
+        },
+        {
+          clickToLoad: false,
+          openFile: "index.ts",
+          theme: `${theme}`,
+        }
+      );
+
+      vmRef.current = vm;
+
+      // 👇 listen for file changes inside the VM
+    }
+    init();
   }, [files]);
 
   return (
