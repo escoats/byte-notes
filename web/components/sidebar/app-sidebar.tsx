@@ -80,7 +80,7 @@ export function AppSidebar({
   activePageId,
   setActivePageId,
 }: {
-  activePageId: string, 
+  activePageId: string;
   setActivePageId: Dispatch<SetStateAction<string>>;
 }) {
   const supabase = createSupabaseComponentClient();
@@ -114,6 +114,7 @@ export function AppSidebar({
       .update({ title: newName })
       .eq("id", id);
 
+    setNewName("");
     if (error) {
       toast(`Error renaming ${type}: ${error.message}`);
     } else {
@@ -124,7 +125,6 @@ export function AppSidebar({
       );
       await queryClient.invalidateQueries({ queryKey: ["notebook_tree"] });
     }
-    setNewName("");
   }
 
   // handles deleting item from database when user right clicks in sidebar
@@ -175,6 +175,7 @@ export function AppSidebar({
                           Are you sure you want to rename {notebook.name}? This
                           action cannot be undone.
                           <Input
+                            className="mt-2"
                             placeholder={"New name..."}
                             value={newName}
                             onChange={(e) => setNewName(e.target.value)}
@@ -282,13 +283,14 @@ export function AppSidebar({
                               <AlertDialogContent>
                                 <AlertDialogHeader>
                                   <AlertDialogTitle>
-                                    Rename chapter
+                                    Rename Chapter
                                   </AlertDialogTitle>
                                   <AlertDialogDescription>
                                     Are you sure you want to rename{" "}
                                     {chapter.name}? This action cannot be
                                     undone.
                                     <Input
+                                      className="mt-2"
                                       placeholder={"New name..."}
                                       value={newName}
                                       onChange={(e) =>
@@ -388,9 +390,10 @@ export function AppSidebar({
                                         </AlertDialogTitle>
                                         <AlertDialogDescription>
                                           Are you sure you want to rename{" "}
-                                          {page.name}? This action cannot be
-                                          undone.
+                                          <b>{page.name}</b>? This action cannot
+                                          be undone.
                                           <Input
+                                            className="mt-2"
                                             placeholder={"New name..."}
                                             value={newName}
                                             onChange={(e) =>
