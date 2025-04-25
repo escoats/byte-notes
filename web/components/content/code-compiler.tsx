@@ -13,18 +13,6 @@ type CodeCompilerProps = {
   vmRef: React.RefObject<VM>;
 };
 
-// export function CodeCompiler({ pageId, theme }: CodeCompilerProps) {
-//   useEffect(() => {
-//     const container = document.getElementById("embed");
-//     if (container) container.innerHTML = "";
-
-//     sdk.embedProjectId("embed", pageId, {
-//       clickToLoad: false,
-//       openFile: "index.ts",
-//       theme: `${theme}`,
-//     });
-//   }, [pageId, theme]);
-
 export function CodeCompiler({
   pageId,
   theme,
@@ -33,8 +21,6 @@ export function CodeCompiler({
   vmRef,
 }: CodeCompilerProps) {
   const supabase = createSupabaseComponentClient();
-  // const vmRef = useRef<VM>(null);
-  // const [files, setFiles] = useState<Record<string, string> | null>(null);
 
   const starterFiles = {
     "index.ts": 'console.log("Welcome to your new project!")',
