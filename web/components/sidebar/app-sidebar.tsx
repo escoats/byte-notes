@@ -77,8 +77,10 @@ import { Separator } from "@/components/ui/separator";
 import NewButton from "./new-button";
 
 export function AppSidebar({
+  activePageId,
   setActivePageId,
 }: {
+  activePageId: string, 
   setActivePageId: Dispatch<SetStateAction<string>>;
 }) {
   const supabase = createSupabaseComponentClient();
@@ -139,6 +141,11 @@ export function AppSidebar({
 
     toast(`${type.charAt(0).toUpperCase() + type?.slice(1)} deleted!`);
     await queryClient.invalidateQueries({ queryKey: ["notebook_tree"] });
+
+    // If the page that was deleted was the active page, reset to "no page selected" view
+    if (activePageId === id) {
+      setActivePageId("");
+    }
   }
 
   return (
