@@ -1,20 +1,6 @@
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { GetServerSidePropsContext } from "next";
 import { createSupabaseServerClient } from "@/utils/supabase/server-props";
-import { SupabaseAuthClient } from "@supabase/supabase-js/dist/module/lib/SupabaseAuthClient";
 import { createSupabaseComponentClient } from "@/utils/supabase/component";
 import { useRouter } from "next/router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -22,18 +8,15 @@ import {
   getNotebookTreeByUser,
   getProfileData,
 } from "@/utils/supabase/queries";
-import { FilePen, Globe, Save, Send } from "lucide-react";
+import { Globe, Save, Send } from "lucide-react";
 import Layout from "./layout";
-import { userAgent } from "next/server";
-import { SetStateAction, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { MarkdownEditor } from "@/components/content/markdown-editor";
 import { NoActivePage } from "@/components/content/no-active-page";
-import Link from "next/link";
 import { getPageHierarchyById } from "@/utils/find-page-hierarchy";
 import { ThemeProvider } from "@/components/theme/theme-provider";
-import { useTheme } from "next-themes";
 import ThemeToggle from "@/components/theme/theme-toggle";
 import Profile from "@/components/profile";
 import { CodeCompiler } from "@/components/content/code-compiler";
@@ -328,7 +311,7 @@ export default function HomePage() {
                   setValue={setMarkdownEditorValue}
                 />
               }
-              {CodeCompiler(activePageId)}
+              <CodeCompiler pageId={activePageId} />
             </>
           ) : (
             <NoActivePage />

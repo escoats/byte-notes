@@ -1,18 +1,20 @@
 import { CodeCompiler } from "@/components/content/code-compiler";
 import { MarkdownEditor } from "@/components/content/markdown-editor";
-import { NoActivePage } from "@/components/content/no-active-page";
 import Profile from "@/components/profile";
 import ThemeToggle from "@/components/theme/theme-toggle";
 import { Button } from "@/components/ui/button";
+import { getPageHierarchyById } from "@/utils/find-page-hierarchy";
 import { createSupabaseComponentClient } from "@/utils/supabase/component";
-import { getProfileData } from "@/utils/supabase/queries";
+import {
+  getNotebookTreeByUser,
+  getProfileData,
+} from "@/utils/supabase/queries";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Layout } from "lucide-react";
 import { ThemeProvider } from "next-themes";
 import { usePathname } from "next/navigation";
 import router from "next/router";
 import { useState, useEffect } from "react";
-import { toast } from "sonner";
 
 export default function PublishedPage() {
   const pathname = usePathname();
@@ -20,6 +22,7 @@ export default function PublishedPage() {
   const supabase = createSupabaseComponentClient();
   const queryClient = useQueryClient();
 
+  // PROFILE
   // Fetch user profile data to display in the header
   const { data: profileData } = useQuery({
     queryKey: ["user_profile"],
@@ -49,6 +52,30 @@ export default function PublishedPage() {
     router.push("/login");
   };
 
+  // PAGE FILE PATH
+  // get page's notebook and chapter hierarchy
+  const { data: notebookTree } = useQuery({
+    queryKey: ["notebook_tree"],
+    enabled: !!profileData?.id,
+    queryFn: async () => await getNotebookTreeByUser(supabase, profileData!.id),
+  });
+  console.log(notebookTree);
+
+  // fetch header path for published page
+  const [headerPath, setHeaderPath] = useState("");
+  useEffect(() => {
+    if (pageId !== "" && notebookTree !== undefined) {
+      const pageInfo = getPageHierarchyById({
+        notebookTree: notebookTree,
+        pageId: pageId,
+      });
+      setHeaderPath(`${pageInfo?.page.name} (Published)`);
+      console.log(pageInfo);
+    }
+    console.log(headerPath);
+  }, [pageId]);
+
+  // MARKDOWN EDITOR (NON-EDITABLE)
   // useState for markdown editor data
   const [markdownEditorValue, setMarkdownEditorValue] = useState("");
 
@@ -103,30 +130,33 @@ export default function PublishedPage() {
             />
           </div>
         </header>
+        {/* Subheader */}
+        {pageId !== "" && (
+          <div className="relative flex items-center h-[60px] px-6 border-b border-border bg-sidebar">
+            {/* Centered text */}
+            <p className="text-sm absolute left-1/2 -translate-x-1/2 text-center">
+              {headerPath}
+            </p>
+          </div>
+        )}
         {/* Content Layout */}
         <Layout>
           {pageId !== "" ? (
             <>
-              {/* WIP Markdown Editor - Not View Only */}
+              {/* WIP Markdown Editor - Not View Only Yet */}
               {
                 <MarkdownEditor
                   value={markdownEditorValue}
                   setValue={setMarkdownEditorValue}
                 />
               }
-              {CodeCompiler(pageId)}
+              <CodeCompiler pageId={pageId} />
             </>
           ) : (
-            <NoActivePage />
+            <p>This is a published page!</p>
           )}
         </Layout>
       </div>
     </ThemeProvider>
   );
 }
-
-/* 
-<p>This is a published page!</p>
-{pathname && <p>page path: {pathname}</p>}
-{pageId && <p>page id: {pageId}</p>}
-*/

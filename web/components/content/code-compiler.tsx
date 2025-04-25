@@ -2,7 +2,12 @@
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader } from "../ui/card";
-export function CodeCompiler(pageId: string) {
+
+type CodeCompilerProps = {
+  pageId: string;
+};
+
+export function CodeCompiler({ pageId }: CodeCompilerProps) {
   return (
     <div className="w-[50%] p-4">
       <Card>
