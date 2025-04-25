@@ -1,7 +1,6 @@
 // Component that displays the code compiler card
-import { Dispatch, useRef, useState } from "react";
-import { Button } from "../ui/button";
-import { Card, CardContent, CardHeader } from "../ui/card";
+import { Dispatch } from "react";
+import { Card } from "../ui/card";
 import sdk, { ProjectFiles, VM } from "@stackblitz/sdk";
 import React, { useEffect } from "react";
 import { createSupabaseComponentClient } from "@/utils/supabase/component";

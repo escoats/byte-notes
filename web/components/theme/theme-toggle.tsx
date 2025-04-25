@@ -1,8 +1,5 @@
 "use client";
-
-import { useTheme } from "next-themes";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { Switch } from "@/components/ui/switch";
 import { Moon, Sun } from "lucide-react";
 import { cn } from "@/lib/utils";
 
