@@ -96,7 +96,6 @@ export default function HomePage() {
     }
   }
 
-
   // TODO: Implement save for Stackblitz editor
   async function handleSave(): Promise<void> {
     const { error: updateMarkdownError } = await supabase
@@ -229,7 +228,7 @@ export default function HomePage() {
         )}
 
         {/* Content Layout */}
-        <Layout setActivePageId={setActivePageId}>
+        <Layout activePageId={activePageId} setActivePageId={setActivePageId}>
           {activePageId !== "" ? (
             <>
               {

@@ -141,6 +141,7 @@ export default function Profile({
                         .getPublicUrl(profileData.avatar_url).data.publicUrl
                     : ""
                 }
+                alt={`${profileData?.display_name} avatar`}
               />
               <AvatarFallback>
                 {profileData?.display_name?.[0]?.toUpperCase()}
