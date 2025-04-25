@@ -8,7 +8,7 @@ import { createSupabaseComponentClient } from "@/utils/supabase/component";
 
 type CodeCompilerProps = {
   pageId: string;
-  theme: "dark" | "light";
+  theme: string | undefined;
   files: ProjectFiles;
   setFiles: Dispatch<ProjectFiles>;
   vmRef: React.RefObject<VM>;
@@ -73,7 +73,7 @@ export function CodeCompiler({
   }, [pageId, theme]);
 
   useEffect(() => {
-    if (!files) return;
+    if (!files || !theme) return;
 
     async function init() {
       const vm = await sdk.embedProject(
@@ -87,14 +87,14 @@ export function CodeCompiler({
         {
           clickToLoad: false,
           openFile: "index.ts",
-          theme: `${theme}`,
+          theme: `${theme === "dark" ? "dark" : "light"}`,
         }
       );
 
       vmRef.current = vm;
     }
     init();
-  }, [files]);
+  }, [pageId, files, theme]);
 
   return (
     <div className="w-[50%] px-6 py-4">

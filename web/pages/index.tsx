@@ -48,6 +48,7 @@ export default function HomePage() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const { resolvedTheme } = useTheme();
   const [isMounted, setIsMounted] = useState(false);
+  const { theme, setTheme } = useTheme();
 
   useEffect(() => {
     setIsMounted(true);
@@ -191,8 +192,13 @@ export default function HomePage() {
     }
   }
 
-  const [files, setFiles] = useState<ProjectFiles>();
-  const vmRef = useRef<VM>(null);
+  // Example files for state variable before files are fetched from supabase
+  const starterFiles = {
+    "index.ts": 'console.log("Welcome to your new project!")',
+    "index.html": "<h1>Welcome</h1>",
+  };
+  const [files, setFiles] = useState<ProjectFiles>(starterFiles);
+  const vmRef = useRef<any>(null);
   // TODO: Implement save for Stackblitz editor
   async function handleSave(): Promise<void> {
     // console.log("attempting save! current code content: ");
@@ -297,7 +303,7 @@ export default function HomePage() {
           </div>
           <div className="flex flex-row items-center gap-x-3">
             {/* Theme Toggle */}
-            <ThemeToggle />
+            <ThemeToggle theme={theme} setTheme={setTheme} />
             {/* Profile */}
             <Profile
               profileData={profileData}
@@ -362,7 +368,7 @@ export default function HomePage() {
                   <CodeCompiler
                     key={resolvedTheme}
                     pageId={activePageId}
-                    theme={resolvedTheme === "dark" ? "dark" : "light"}
+                    theme={theme}
                     files={files}
                     setFiles={setFiles}
                     vmRef={vmRef}
