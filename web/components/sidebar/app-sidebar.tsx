@@ -170,7 +170,7 @@ export function AppSidebar({
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
-                        <AlertDialogTitle>Rename notebook</AlertDialogTitle>
+                        <AlertDialogTitle>Rename Notebook</AlertDialogTitle>
                         <AlertDialogDescription>
                           Are you sure you want to rename {notebook.name}? This
                           action cannot be undone.
