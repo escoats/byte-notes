@@ -37,6 +37,10 @@ export function CodeCompiler({
   // const vmRef = useRef<VM>(null);
   // const [files, setFiles] = useState<Record<string, string> | null>(null);
 
+  const starterFiles = {
+    "index.ts": 'console.log("Welcome to your new project!")',
+    "index.html": "<h1>Welcome</h1>",
+  };
   useEffect(() => {
     const container = document.getElementById("embed");
     if (container) container.innerHTML = "";
@@ -53,9 +57,12 @@ export function CodeCompiler({
         return;
       }
 
+      // TODO: if there's no content from supabase, i just manually set the starter files. this is probably
+      // not the best thing to do? might cause some issues. but i am not very familiar with stackblitz so
+      // hopefully someone else can check on this?
       if (!data?.code_content) {
         console.log("No code content");
-        // setFiles(null);
+        setFiles(starterFiles);
         return;
       }
       console.log("setting files!");
@@ -66,9 +73,7 @@ export function CodeCompiler({
   }, [pageId, theme]);
 
   useEffect(() => {
-    // console.log("FILES?");
-    // console.log(files);
-    // if (!files) return;
+    if (!files) return;
 
     async function init() {
       const vm = await sdk.embedProject(
@@ -87,8 +92,6 @@ export function CodeCompiler({
       );
 
       vmRef.current = vm;
-
-      // 👇 listen for file changes inside the VM
     }
     init();
   }, [files]);
