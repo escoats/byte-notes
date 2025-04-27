@@ -12,7 +12,7 @@ import {
 } from "@/utils/supabase/queries";
 import { ProjectFiles } from "@stackblitz/sdk";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Layout } from "lucide-react";
+import Layout from "./layout";
 import { ThemeProvider, useTheme } from "next-themes";
 import { usePathname } from "next/navigation";
 import router from "next/router";
@@ -21,11 +21,16 @@ import { toast } from "sonner";
 
 export default function PublishedPage() {
   const pathname = usePathname();
-  const pageId = pathname?.slice(1);
+  const pageId = pathname?.slice(1) ?? "";
+
   const supabase = createSupabaseComponentClient();
   const queryClient = useQueryClient();
-  const { resolvedTheme } = useTheme();
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, resolvedTheme } = useTheme();
+
+  const [headerPath, setHeaderPath] = useState("");
+  const [markdownEditorValue, setMarkdownEditorValue] = useState("");
+  const [files, setFiles] = useState<Record<string, string> | null>(null);
+  const vmRef = useRef<any>(null);
   const [activePageId, setActivePageId] = useState("");
 
   // PROFILE
@@ -39,17 +44,41 @@ export default function PublishedPage() {
     },
   });
 
-  // Sets profile data to be empty initally
-  const [displayName, setDisplayName] = useState("");
+  const { data: notebookTree } = useQuery({
+    queryKey: ["notebook_tree"],
+    enabled: !!profileData?.id,
+    queryFn: async () => await getNotebookTreeByUser(supabase, profileData!.id),
+  });
 
-  // As soon as the profile data loads, pre-fill the inputs and populate isEditingDisplay
   useEffect(() => {
-    if (profileData) {
-      setDisplayName(profileData.display_name || "");
-    }
-  }, [profileData]);
+    const fetchPageData = async () => {
+      if (!pageId) return;
 
-  // Logs the user out and routes back to the login page
+      const { data, error } = await supabase
+        .from("page")
+        .select("markdown, code_content")
+        .eq("id", pageId)
+        .single();
+
+      if (error) {
+        console.error("Error fetching page:", error);
+        return;
+      }
+
+      if (data?.markdown) setMarkdownEditorValue(data.markdown);
+      if (data?.code_content) setFiles(data.code_content);
+    };
+
+    fetchPageData();
+  }, [pageId]);
+
+  useEffect(() => {
+    if (pageId && notebookTree) {
+      const pageInfo = getPageHierarchyById({ notebookTree, pageId });
+      setHeaderPath(`${pageInfo?.page.name} (Published)`);
+    }
+  }, [pageId, notebookTree]);
+
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
@@ -58,84 +87,12 @@ export default function PublishedPage() {
     router.push("/login");
   };
 
-  // PAGE FILE PATH
-  // get page's notebook and chapter hierarchy
-  const { data: notebookTree } = useQuery({
-    queryKey: ["notebook_tree"],
-    enabled: !!profileData?.id,
-    queryFn: async () => await getNotebookTreeByUser(supabase, profileData!.id),
-  });
-  console.log(notebookTree);
-
-  // fetch header path for published page
-  const [headerPath, setHeaderPath] = useState("");
-  useEffect(() => {
-    if (pageId !== "" && notebookTree !== undefined) {
-      const pageInfo = getPageHierarchyById({
-        notebookTree: notebookTree,
-        pageId: pageId,
-      });
-      setHeaderPath(`${pageInfo?.page.name} (Published)`);
-      console.log(pageInfo);
-    }
-    console.log(headerPath);
-  }, [pageId]);
-
-  // MARKDOWN EDITOR (NON-EDITABLE)
-  // useState for markdown editor data
-  const [markdownEditorValue, setMarkdownEditorValue] = useState("");
-
-  // Fetch markdown text
-  const fetchMarkdownText = async () => {
-    const { data, error } = await supabase
-      .from("page")
-      .select("markdown")
-      .eq("id", pageId)
-      .single();
-
-    if (!error && data?.markdown) {
-      setMarkdownEditorValue(data.markdown);
-    } else if (!error) {
-      setMarkdownEditorValue("");
-    }
-  };
-
-  // CODE COMPILER
-  // Placeholder files for code editor state variable before files are fetched from supabase
-  const starterFiles = {
-    "index.ts": 'console.log("Welcome to your new project!")',
-    "index.html": "<h1>Welcome</h1>",
-  };
-  const [files, setFiles] = useState<ProjectFiles>(starterFiles);
-  const vmRef = useRef<any>(null);
-
-  async function handleSave(): Promise<void> {
-    const { error: updateError } = await supabase
-      .from("page")
-      .update({ markdown: markdownEditorValue })
-      .eq("id", pageId);
-
-    if (!updateError) {
-      toast("Page saved successfully!");
-    } else {
-      toast("Failed to save: " + updateError.message);
-    }
-
-    if (vmRef.current) {
-      const snapshot = await vmRef.current.getFsSnapshot();
-      if (snapshot) setFiles(snapshot);
-
-      const { error: codeSaveError } = await supabase
-        .from("page")
-        .update({ code_content: files })
-        .eq("id", pageId);
-
-      if (!codeSaveError) {
-        toast("Code saved successfully!");
-      } else {
-        toast("Failed to save code content: " + codeSaveError.message);
-      }
-    }
+  if (!pageId || !markdownEditorValue || !files) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-background text-foreground">
+        <p>Loading published note...</p>
+      </div>
+    );
   }
 
   return (
@@ -172,7 +129,7 @@ export default function PublishedPage() {
               onSignOut={handleSignOut}
               onProfileUpdate={async () =>
                 await queryClient.refetchQueries({
-                  queryKey: ["userprofile"],
+                  queryKey: ["user_profile"],
                 })
               }
             />
@@ -188,22 +145,16 @@ export default function PublishedPage() {
           </div>
         )}
         {/* Content Layout */}
-        <Layout>
-          {pageId !== "" ? (
-            <>
-              {<Viewer content={markdownEditorValue} style="prose" />}
-              <CodeCompiler
-                key={resolvedTheme}
-                pageId={pageId}
-                theme={theme}
-                files={files}
-                setFiles={setFiles}
-                vmRef={vmRef}
-              />
-            </>
-          ) : (
-            <p>This is a published page!</p>
-          )}
+        <Layout activePageId={activePageId} setActivePageId={setActivePageId}>
+          <Viewer content={markdownEditorValue} style="prose" />
+          <CodeCompiler
+            key={resolvedTheme}
+            pageId={pageId}
+            theme={theme}
+            files={files}
+            setFiles={setFiles}
+            vmRef={vmRef}
+          />
         </Layout>
       </div>
     </ThemeProvider>
