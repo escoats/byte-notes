@@ -1,5 +1,6 @@
 import { CodeCompiler } from "@/components/content/code-compiler";
 import { MarkdownEditor } from "@/components/content/markdown-editor";
+import Viewer from "@/components/content/rich-text/viewer";
 import Profile from "@/components/profile";
 import ThemeToggle from "@/components/theme/theme-toggle";
 import { Button } from "@/components/ui/button";
@@ -131,7 +132,7 @@ export default function PublishedPage() {
           </div>
         </header>
         {/* Subheader */}
-        {pageId !== "" && (
+        {pageId && markdownEditorValue !== "" && (
           <div className="relative flex items-center h-[60px] px-6 border-b border-border bg-sidebar">
             {/* Centered text */}
             <p className="text-sm absolute left-1/2 -translate-x-1/2 text-center">
@@ -144,12 +145,7 @@ export default function PublishedPage() {
           {pageId !== "" ? (
             <>
               {/* WIP Markdown Editor - Not View Only Yet */}
-              {
-                <MarkdownEditor
-                  value={markdownEditorValue}
-                  setValue={setMarkdownEditorValue}
-                />
-              }
+              <Viewer content={markdownEditorValue} style="prose" />
               <CodeCompiler pageId={pageId} />
             </>
           ) : (

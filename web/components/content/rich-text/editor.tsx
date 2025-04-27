@@ -23,7 +23,7 @@ const Editor = ({ content, placeholder, onChange }: EditorProps) => {
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML());
     },
-    immediatelyRender: true,
+    immediatelyRender: false, // Tiptap Error: SSR has been detected, please set `immediatelyRender` explicitly to `false` to avoid hydration mismatches
   });
 
   // This useEffect renders the markdown content into editor box using TipTap's setContent command for <EditorContent>
