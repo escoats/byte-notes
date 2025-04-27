@@ -17,10 +17,10 @@ export default function Layout({
   return (
     <div className="flex h-[calc(100vh-175px)]">
       <SidebarProvider>
-        {showSidebar && activePageId && setActivePageId && (
+        {showSidebar && (
           <AppSidebar
-            activePageId={activePageId}
-            setActivePageId={setActivePageId}
+            activePageId={activePageId ?? ""}
+            setActivePageId={setActivePageId ?? (() => {})}
           />
         )}
         <main className="flex-1 flex">{children}</main>
