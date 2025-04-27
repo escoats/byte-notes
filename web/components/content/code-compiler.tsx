@@ -42,9 +42,8 @@ export function CodeCompiler({
         return;
       }
 
-      // TODO: if there's no content from supabase, i just manually set the starter files. this is probably
-      // not the best thing to do? might cause some issues. but i am not very familiar with stackblitz so
-      // hopefully someone else can check on this?
+      // TODO: if there's no content from supabase, I just manually set the starter files.
+      // Not sure if there's a better way to do this?
       if (!data?.code_content) {
         console.log("No code content");
         setFiles(starterFiles);

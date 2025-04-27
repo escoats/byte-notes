@@ -1,10 +1,8 @@
 // Component that displays the markdown editor card
 
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import Editor from "./rich-text/editor";
-import { SupabaseClient } from "@supabase/supabase-js";
 
 export function MarkdownEditor({
   setValue,

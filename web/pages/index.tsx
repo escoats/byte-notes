@@ -175,17 +175,15 @@ export default function HomePage() {
     }
   }
 
-  // Example files for state variable before files are fetched from supabase
+  // Placeholder files for code editor state variable before files are fetched from supabase
   const starterFiles = {
     "index.ts": 'console.log("Welcome to your new project!")',
     "index.html": "<h1>Welcome</h1>",
   };
   const [files, setFiles] = useState<ProjectFiles>(starterFiles);
   const vmRef = useRef<any>(null);
-  // TODO: Implement save for Stackblitz editor
+
   async function handleSave(): Promise<void> {
-    // console.log("attempting save! current code content: ");
-    // console.log(files);
     const { error: updateError } = await supabase
       .from("page")
       .update({ markdown: markdownEditorValue })
