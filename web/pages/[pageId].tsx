@@ -33,8 +33,6 @@ export default function PublishedPage() {
   const vmRef = useRef<any>(null);
   const [activePageId, setActivePageId] = useState("");
 
-  // PROFILE
-  // Fetch user profile data to display in the header
   const { data: profileData } = useQuery({
     queryKey: ["user_profile"],
     queryFn: async () => {
@@ -145,7 +143,11 @@ export default function PublishedPage() {
           </div>
         )}
         {/* Content Layout */}
-        <Layout activePageId={activePageId} setActivePageId={setActivePageId}>
+        <Layout
+          activePageId={activePageId}
+          setActivePageId={setActivePageId}
+          showSidebar={false}
+        >
           <Viewer content={markdownEditorValue} style="prose" />
           <CodeCompiler
             key={resolvedTheme}

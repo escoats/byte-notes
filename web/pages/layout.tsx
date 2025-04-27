@@ -7,15 +7,22 @@ export default function Layout({
   children,
   activePageId,
   setActivePageId,
+  showSidebar = true,
 }: {
   children: React.ReactNode;
   activePageId: string;
   setActivePageId: Dispatch<SetStateAction<string>>;
+  showSidebar?: boolean;
 }) {
   return (
     <div className="flex h-[calc(100vh-175px)]">
       <SidebarProvider>
-        <AppSidebar activePageId={activePageId} setActivePageId={setActivePageId} />
+        {showSidebar && activePageId && setActivePageId && (
+          <AppSidebar
+            activePageId={activePageId}
+            setActivePageId={setActivePageId}
+          />
+        )}
         <main className="flex-1 flex">{children}</main>
         <Toaster />
       </SidebarProvider>
