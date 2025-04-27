@@ -1,20 +1,6 @@
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { GetServerSidePropsContext } from "next";
 import { createSupabaseServerClient } from "@/utils/supabase/server-props";
-import { SupabaseAuthClient } from "@supabase/supabase-js/dist/module/lib/SupabaseAuthClient";
 import { createSupabaseComponentClient } from "@/utils/supabase/component";
 import { useRouter } from "next/router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -22,21 +8,20 @@ import {
   getNotebookTreeByUser,
   getProfileData,
 } from "@/utils/supabase/queries";
-import { FilePen, Globe, Save, Send } from "lucide-react";
+import { Globe, Save, Send } from "lucide-react";
 import Layout from "./layout";
-import { userAgent } from "next/server";
-import { SetStateAction, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { MarkdownEditor } from "@/components/content/markdown-editor";
 import { NoActivePage } from "@/components/content/no-active-page";
-import Link from "next/link";
 import { getPageHierarchyById } from "@/utils/find-page-hierarchy";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { useTheme } from "next-themes";
 import ThemeToggle from "@/components/theme/theme-toggle";
 import Profile from "@/components/profile";
 import { CodeCompiler } from "@/components/content/code-compiler";
+import { ProjectFiles, VM } from "@stackblitz/sdk";
 
 export default function HomePage() {
   // Create necessary hooks for clients and providers.
@@ -44,7 +29,13 @@ export default function HomePage() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const { resolvedTheme } = useTheme();
+  const [isMounted, setIsMounted] = useState(false);
+  const { theme, setTheme } = useTheme();
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Fetch user profile data to display in the header
   const { data: profileData } = useQuery({
@@ -184,17 +175,40 @@ export default function HomePage() {
     }
   }
 
-  // TODO: Implement save for Stackblitz editor
+  // Placeholder files for code editor state variable before files are fetched from supabase
+  const starterFiles = {
+    "index.ts": 'console.log("Welcome to your new project!")',
+    "index.html": "<h1>Welcome</h1>",
+  };
+  const [files, setFiles] = useState<ProjectFiles>(starterFiles);
+  const vmRef = useRef<any>(null);
+
   async function handleSave(): Promise<void> {
-    const { error: updateMarkdownError } = await supabase
+    const { error: updateError } = await supabase
       .from("page")
       .update({ markdown: markdownEditorValue })
       .eq("id", activePageId);
 
-    if (!updateMarkdownError) {
+    if (!updateError) {
       toast("Page saved successfully!");
     } else {
-      toast("Failed to save: " + updateMarkdownError.message);
+      toast("Failed to save: " + updateError.message);
+    }
+
+    if (vmRef.current) {
+      const snapshot = await vmRef.current.getFsSnapshot();
+      if (snapshot) setFiles(snapshot);
+
+      const { error: codeSaveError } = await supabase
+        .from("page")
+        .update({ code_content: files })
+        .eq("id", activePageId);
+
+      if (!codeSaveError) {
+        toast("Code saved successfully!");
+      } else {
+        toast("Failed to save code content: " + codeSaveError.message);
+      }
     }
   }
 
@@ -242,6 +256,8 @@ export default function HomePage() {
     }
   }, [activePageId]);
 
+  // UseState for active code editor files - these are passed into the CodeCompiler
+
   return (
     <ThemeProvider
       attribute="class"
@@ -268,7 +284,7 @@ export default function HomePage() {
           </div>
           <div className="flex flex-row items-center gap-x-3">
             {/* Theme Toggle */}
-            <ThemeToggle />
+            <ThemeToggle theme={theme} setTheme={setTheme} />
             {/* Profile */}
             <Profile
               profileData={profileData}
@@ -322,13 +338,26 @@ export default function HomePage() {
         <Layout activePageId={activePageId} setActivePageId={setActivePageId}>
           {activePageId !== "" ? (
             <>
-              {
-                <MarkdownEditor
-                  value={markdownEditorValue}
-                  setValue={setMarkdownEditorValue}
-                />
-              }
-              {CodeCompiler(activePageId)}
+              {activePageId !== "" ? (
+                <>
+                  {
+                    <MarkdownEditor
+                      value={markdownEditorValue}
+                      setValue={setMarkdownEditorValue}
+                    />
+                  }
+                  <CodeCompiler
+                    key={resolvedTheme}
+                    pageId={activePageId}
+                    theme={theme}
+                    files={files}
+                    setFiles={setFiles}
+                    vmRef={vmRef}
+                  />
+                </>
+              ) : (
+                <NoActivePage />
+              )}
             </>
           ) : (
             <NoActivePage />

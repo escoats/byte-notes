@@ -1,13 +1,15 @@
 "use client";
-
-import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
-import { Switch } from "@/components/ui/switch";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export default function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
+export default function ThemeToggle({
+  theme,
+  setTheme,
+}: {
+  theme: string | undefined;
+  setTheme: Dispatch<SetStateAction<string>>;
+}) {
   const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
