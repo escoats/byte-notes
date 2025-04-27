@@ -335,7 +335,7 @@ export default function HomePage() {
         )}
 
         {/* Content Layout */}
-        <Layout setActivePageId={setActivePageId}>
+        <Layout activePageId={activePageId} setActivePageId={setActivePageId}>
           {activePageId !== "" ? (
             <>
               {activePageId !== "" ? (
