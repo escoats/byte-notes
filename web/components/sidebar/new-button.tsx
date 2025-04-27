@@ -122,6 +122,11 @@ export default function NewButton({
       title: newPageTitle.trim(),
       chapter_id: selectedChapterId,
       markdown: "<p>Get started with Byte Notes here ...</p>",
+      // create new stackblitz project on every page with default values
+      code_content: {
+        "index.ts": `console.log("Welcome to your new project!")`,
+        "index.html": "<h1>Welcome</h1>",
+      },
     });
 
     if (error) return toast.error("Failed to create page.");
