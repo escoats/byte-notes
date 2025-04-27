@@ -9,7 +9,6 @@ import {
   getProfileData,
 } from "@/utils/supabase/queries";
 import { Globe, Save, Send } from "lucide-react";
-import { Globe, Save, Send } from "lucide-react";
 import Layout from "./layout";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -22,6 +21,7 @@ import ThemeToggle from "@/components/theme/theme-toggle";
 import Profile from "@/components/profile";
 import { CodeCompiler } from "@/components/content/code-compiler";
 import { ProjectFiles, VM } from "@stackblitz/sdk";
+import { useTheme } from "next-themes";
 
 export default function HomePage() {
   // Create necessary hooks for clients and providers.
@@ -338,35 +338,20 @@ export default function HomePage() {
         <Layout activePageId={activePageId} setActivePageId={setActivePageId}>
           {activePageId !== "" ? (
             <>
-              {activePageId !== "" ? (
-                <>
-                  {
-                    <MarkdownEditor
-                      value={markdownEditorValue}
-                      setValue={setMarkdownEditorValue}
-                    />
-                  }
-                  <CodeCompiler
-                    key={resolvedTheme}
-                    pageId={activePageId}
-                    theme={theme}
-                    files={files}
-                    setFiles={setFiles}
-                    vmRef={vmRef}
-                  />
-                </>
-              ) : (
-                <NoActivePage />
-              )}
-          {activePageId !== "" ? (
-            <>
               {
                 <MarkdownEditor
                   value={markdownEditorValue}
                   setValue={setMarkdownEditorValue}
                 />
               }
-              <CodeCompiler pageId={activePageId} />
+              <CodeCompiler
+                key={resolvedTheme}
+                pageId={activePageId}
+                theme={theme}
+                files={files}
+                setFiles={setFiles}
+                vmRef={vmRef}
+              />
             </>
           ) : (
             <NoActivePage />

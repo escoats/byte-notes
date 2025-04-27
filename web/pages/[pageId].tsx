@@ -12,16 +12,17 @@ import {
 } from "@/utils/supabase/queries";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Layout } from "lucide-react";
-import { ThemeProvider } from "next-themes";
+import { ThemeProvider, useTheme } from "next-themes";
 import { usePathname } from "next/navigation";
 import router from "next/router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, SetStateAction } from "react";
 
 export default function PublishedPage() {
   const pathname = usePathname();
   const pageId = pathname?.slice(1);
   const supabase = createSupabaseComponentClient();
   const queryClient = useQueryClient();
+  const { theme, setTheme } = useTheme();
 
   // PROFILE
   // Fetch user profile data to display in the header
@@ -117,7 +118,7 @@ export default function PublishedPage() {
           </div>
           <div className="flex flex-row items-center gap-x-3">
             {/* Theme Toggle */}
-            <ThemeToggle />
+            <ThemeToggle theme={theme} setTheme={setTheme} />
             {/* Profile */}
             <Profile
               profileData={profileData}
@@ -146,7 +147,7 @@ export default function PublishedPage() {
             <>
               {/* WIP Markdown Editor - Not View Only Yet */}
               <Viewer content={markdownEditorValue} style="prose" />
-              <CodeCompiler pageId={pageId} />
+              {/* <CodeCompiler /> */}
             </>
           ) : (
             <p>This is a published page!</p>
