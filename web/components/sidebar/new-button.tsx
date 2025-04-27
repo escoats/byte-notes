@@ -121,6 +121,7 @@ export default function NewButton({
     const { error } = await supabase.from("page").insert({
       title: newPageTitle.trim(),
       chapter_id: selectedChapterId,
+      markdown: "<p>Get started with Byte Notes here ...</p>",
       // create new stackblitz project on every page with default values
       code_content: {
         "index.ts": `console.log("Welcome to your new project!")`,

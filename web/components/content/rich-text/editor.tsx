@@ -42,7 +42,7 @@ const Editor = ({ content, placeholder, onChange }: EditorProps) => {
   if (!editor) return null;
 
   return (
-    <div className="prose max-w-none w-full h-full border border-input bg-background dark:prose-invert flex flex-col">
+    <div className="m-0 p-0 prose max-w-none w-full h-full border-[2] bg-background dark:prose-invert flex flex-col rounded-md">
       <EditorToolbar editor={editor} />
       <div className="editor flex-1 overflow-y-auto px-2">
         <EditorContent editor={editor} placeholder={placeholder} />

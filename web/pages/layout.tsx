@@ -5,15 +5,17 @@ import { Dispatch, SetStateAction } from "react";
 
 export default function Layout({
   children,
+  activePageId,
   setActivePageId,
 }: {
   children: React.ReactNode;
+  activePageId: string;
   setActivePageId: Dispatch<SetStateAction<string>>;
 }) {
   return (
     <div className="flex h-[calc(100vh-175px)]">
       <SidebarProvider>
-        <AppSidebar setActivePageId={setActivePageId} />
+        <AppSidebar activePageId={activePageId} setActivePageId={setActivePageId} />
         <main className="flex-1 flex">{children}</main>
         <Toaster />
       </SidebarProvider>

@@ -1,5 +1,6 @@
 import "@/styles/globals.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Analytics } from "@vercel/analytics/react";
 import type { AppProps } from "next/app";
 import { ThemeProvider } from "next-themes";
 
@@ -15,7 +16,8 @@ export default function App({ Component, pageProps }: AppProps) {
     >
       <QueryClientProvider client={queryClient}>
         <Component {...pageProps} />
-      </QueryClientProvider>
+        <Analytics />
+    </QueryClientProvider>
     </ThemeProvider>
   );
 }
