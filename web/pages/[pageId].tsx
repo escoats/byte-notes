@@ -10,19 +10,23 @@ import {
   getNotebookTreeByUser,
   getProfileData,
 } from "@/utils/supabase/queries";
+import { ProjectFiles } from "@stackblitz/sdk";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Layout } from "lucide-react";
 import { ThemeProvider, useTheme } from "next-themes";
 import { usePathname } from "next/navigation";
 import router from "next/router";
-import { useState, useEffect, SetStateAction } from "react";
+import { useState, useEffect, SetStateAction, useRef } from "react";
+import { toast } from "sonner";
 
 export default function PublishedPage() {
   const pathname = usePathname();
   const pageId = pathname?.slice(1);
   const supabase = createSupabaseComponentClient();
   const queryClient = useQueryClient();
+  const { resolvedTheme } = useTheme();
   const { theme, setTheme } = useTheme();
+  const [activePageId, setActivePageId] = useState("");
 
   // PROFILE
   // Fetch user profile data to display in the header
@@ -96,6 +100,44 @@ export default function PublishedPage() {
     }
   };
 
+  // CODE COMPILER
+  // Placeholder files for code editor state variable before files are fetched from supabase
+  const starterFiles = {
+    "index.ts": 'console.log("Welcome to your new project!")',
+    "index.html": "<h1>Welcome</h1>",
+  };
+  const [files, setFiles] = useState<ProjectFiles>(starterFiles);
+  const vmRef = useRef<any>(null);
+
+  async function handleSave(): Promise<void> {
+    const { error: updateError } = await supabase
+      .from("page")
+      .update({ markdown: markdownEditorValue })
+      .eq("id", pageId);
+
+    if (!updateError) {
+      toast("Page saved successfully!");
+    } else {
+      toast("Failed to save: " + updateError.message);
+    }
+
+    if (vmRef.current) {
+      const snapshot = await vmRef.current.getFsSnapshot();
+      if (snapshot) setFiles(snapshot);
+
+      const { error: codeSaveError } = await supabase
+        .from("page")
+        .update({ code_content: files })
+        .eq("id", pageId);
+
+      if (!codeSaveError) {
+        toast("Code saved successfully!");
+      } else {
+        toast("Failed to save code content: " + codeSaveError.message);
+      }
+    }
+  }
+
   return (
     <ThemeProvider
       attribute="class"
@@ -108,7 +150,11 @@ export default function PublishedPage() {
         <header className="flex items-center h-[115px] px-6 border-b border-border bg-sidebar justify-between">
           {/* Logo */}
           <div className="flex justify-center mr-2.5 -mt-0.5">
-            <Button variant="ghost" className="p-0 m-0 hover:bg-transparent">
+            <Button
+              variant="ghost"
+              className="p-0 m-0 hover:bg-transparent"
+              onClick={() => setActivePageId("")}
+            >
               <img
                 src="/ByteNotesLogo.png"
                 alt="Byte Notes"
@@ -145,9 +191,15 @@ export default function PublishedPage() {
         <Layout>
           {pageId !== "" ? (
             <>
-              {/* WIP Markdown Editor - Not View Only Yet */}
-              <Viewer content={markdownEditorValue} style="prose" />
-              {/* <CodeCompiler /> */}
+              {<Viewer content={markdownEditorValue} style="prose" />}
+              <CodeCompiler
+                key={resolvedTheme}
+                pageId={pageId}
+                theme={theme}
+                files={files}
+                setFiles={setFiles}
+                vmRef={vmRef}
+              />
             </>
           ) : (
             <p>This is a published page!</p>
