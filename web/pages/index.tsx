@@ -8,7 +8,7 @@ import {
   getNotebookTreeByUser,
   getProfileData,
 } from "@/utils/supabase/queries";
-import { Globe, Save, Send } from "lucide-react";
+import { Globe, Mail, MessageSquare, Save, Send } from "lucide-react";
 import Layout from "./layout";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -19,9 +19,19 @@ import { getPageHierarchyById } from "@/utils/find-page-hierarchy";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { useTheme } from "next-themes";
 import ThemeToggle from "@/components/theme/theme-toggle";
-import Profile from "@/components/profile";
+import Profile from "@/components/header/profile";
 import { CodeCompiler } from "@/components/content/code-compiler";
 import { ProjectFiles, VM } from "@stackblitz/sdk";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+} from "@radix-ui/react-dropdown-menu";
+import {
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import SendButton from "@/components/subheader/send-button";
 
 export default function HomePage() {
   // Create necessary hooks for clients and providers.
@@ -153,18 +163,6 @@ export default function HomePage() {
 
   // Update header whenever the active page changes
   const [headerPath, setHeaderPath] = useState("");
-
-  // Copies link to clipboard and displays toast when user clicks Send button
-  function sendLink(): void {
-    if (activePageId !== "") {
-      navigator.clipboard.writeText(
-        `${window.location.origin}/${activePageId}`
-      );
-      toast("Link copied to clipboard!");
-    } else {
-      toast("Please select the page you'd like to send using the sidebar!");
-    }
-  }
 
   // Clicking this button navigates the user to view-only published note page
   function handlePublish(): void {
@@ -306,14 +304,7 @@ export default function HomePage() {
             </p>
             {/* Right-aligned buttons */}
             <div className="ml-auto flex gap-2">
-              <Button
-                variant="ghost"
-                className="flex flex-row items-center gap-1"
-                onClick={() => sendLink()}
-              >
-                <Send />
-                Send
-              </Button>
+              <SendButton activePageId={activePageId} />
               <Button
                 variant="ghost"
                 className="flex flex-row items-center gap-1"
