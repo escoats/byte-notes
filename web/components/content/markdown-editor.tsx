@@ -12,7 +12,7 @@ export function MarkdownEditor({
   value: string;
 }) {
   return (
-    <div className="w-[50%] h-[80.5%] p-4">
+    <div className="w-[50%] h-[80.95%] p-4">
       <Editor
         content={value}
         onChange={(updatedContent) => setValue(updatedContent)}
