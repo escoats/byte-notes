@@ -301,7 +301,7 @@ export default function HomePage() {
         {activePageId !== "" && (
           <div className="relative flex items-center h-[60px] px-6 border-b border-border bg-sidebar">
             {/* Centered text */}
-            <p className="text-lg absolute left-1/2 -translate-x-1/2 text-center">
+            <p className="text-sm absolute left-1/2 -translate-x-1/2 text-center">
               {headerPath}
             </p>
             {/* Right-aligned buttons */}
