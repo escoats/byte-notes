@@ -82,7 +82,7 @@ export function CodeCompiler({
 
   return (
     <div className="w-[50%] px-6 py-4">
-      <Card className="w-full max-w-5xl mx-auto h-[80.5%]">
+      <Card className="w-full max-w-5xl mx-auto h-[80.5%] border-[2]">
         <div id="embed" className="h-full w-full" />
       </Card>
     </div>

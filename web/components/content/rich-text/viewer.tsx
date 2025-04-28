@@ -1,5 +1,6 @@
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import { Card } from "@/components/ui/card";
 
 interface ViewerProps {
   content: string;
@@ -20,9 +21,13 @@ const Viewer = ({ content, style }: ViewerProps) => {
     style === "prose" ? "prose-mt-0 prose max-w-none dark:prose-invert" : "";
 
   return (
-    <article className={className}>
-      <EditorContent editor={editor} readOnly={true} />
-    </article>
+    <div className="w-[50%] h-[80.5%] p-4">
+      <div className="m-0 p-0 prose max-w-none w-full h-full border-[2] bg-background dark:prose-invert flex flex-col rounded-md">
+        <article className={className}>
+          <EditorContent editor={editor} readOnly={true} className="p-4"/>
+        </article>
+      </div>
+    </div>
   );
 };
 
