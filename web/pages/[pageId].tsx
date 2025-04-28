@@ -108,7 +108,7 @@ export default function PublishedPage() {
             <Button
               variant="link"
               className="p-0 m-0 hover:bg-transparent focus:outline-none active:bg-transparent"
-              onClick={() => setActivePageId("")}
+              onClick={() => router.push("/")}
             >
               <img
                 src="/ByteNotesLogo.png"
