@@ -73,7 +73,7 @@ export default function PublishedPage() {
   useEffect(() => {
     if (pageId && notebookTree) {
       const pageInfo = getPageHierarchyById({ notebookTree, pageId });
-      setHeaderPath(`${pageInfo?.page.name} (Published)`);
+      setHeaderPath(`${pageInfo?.page.name}`);
     }
   }, [pageId, notebookTree]);
 
@@ -137,7 +137,7 @@ export default function PublishedPage() {
         {pageId && markdownEditorValue !== "" && (
           <div className="relative flex items-center h-[60px] px-6 border-b border-border bg-sidebar">
             {/* Centered text */}
-            <p className="text-sm absolute left-1/2 -translate-x-1/2 text-center">
+            <p className="text-lg absolute left-1/2 -translate-x-1/2 text-center">
               {headerPath}
             </p>
           </div>
