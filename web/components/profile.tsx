@@ -209,13 +209,14 @@ export default function Profile({
               onChange={(e) => setDisplayName(e.target.value)}
             />
           </div>
-          <Button
+          <DialogClose>
+            <Button
             type="submit"
-            className="bg-blue-400 m-0 p-0"
-            onClick={handleUpdateProfile}
-          >
+            className="bg-blue-400"
+            onClick={handleUpdateProfile}>
             Update Profile
           </Button>
+          </DialogClose>
         </div>
         <DialogFooter>
           <div className="flex justify-between w-full">
