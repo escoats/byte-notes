@@ -19,7 +19,8 @@ import { Input } from "../ui/input";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { useRef, useState, useEffect } from "react";
 import { toast } from "sonner";
-import React from "react";
+import { getProfileData } from "@/utils/supabase/queries";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 type ProfileProps = {
   profileData: any;
@@ -29,14 +30,22 @@ type ProfileProps = {
 };
 
 export default function Profile({
-  profileData,
   supabase,
   onSignOut,
-  onProfileUpdate,
 }: ProfileProps) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const queryClient = useQueryClient();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [displayName, setDisplayName] = useState("");
+
+  const { data: profileData } = useQuery({
+    queryKey: ["user_profile"],
+    queryFn: async () => {
+      const { data } = await supabase.auth.getUser();
+      if (!data) return null;
+      return await getProfileData(supabase, data.user!.id);
+    },
+  });
 
   useEffect(() => {
     if (profileData?.display_name) {
@@ -44,10 +53,13 @@ export default function Profile({
     }
   }, [profileData]);
 
+   // Updates the database when the user changes their display name or avatar
   const handleUpdateProfile = async () => {
     if (!profileData) return;
+
     let changed = false;
 
+    // Upload avatar if a new file was selected
     if (selectedFile) {
       try {
         await updateProfilePicture(supabase, profileData.id, selectedFile);
@@ -59,6 +71,7 @@ export default function Profile({
       }
     }
 
+    // Update display name if changed
     if (displayName !== profileData.display_name) {
       const { error: profileError } = await supabase
         .from("profile")
@@ -74,8 +87,9 @@ export default function Profile({
       changed = true;
     }
 
-    if (changed && onProfileUpdate) {
-      await onProfileUpdate();
+    // Refresh profile if something changed
+    if (changed) {
+      await queryClient.refetchQueries({ queryKey: ["user_profile"] });
     }
   };
 
@@ -196,13 +210,14 @@ export default function Profile({
               onChange={(e) => setDisplayName(e.target.value)}
             />
           </div>
-          <Button
+          <DialogClose>
+            <Button
             type="submit"
-            className="bg-blue-400 m-0 p-0"
-            onClick={handleUpdateProfile}
-          >
+            className="bg-blue-400"
+            onClick={handleUpdateProfile}>
             Update Profile
           </Button>
+          </DialogClose>
         </div>
         <DialogFooter>
           <div className="flex justify-between w-full">

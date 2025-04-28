@@ -57,97 +57,12 @@ export default function HomePage() {
     },
   });
 
-  // Sets profile data to be empty initally
-  const [displayName, setDisplayName] = useState("");
-
-  // As soon as the profile data loads, pre-fill the inputs and populate isEditingDisplay
-  useEffect(() => {
-    if (profileData) {
-      setDisplayName(profileData.display_name || "");
-    }
-  }, [profileData]);
-
-  // Updates the database when the user changes their display name or avatar
-  const handleUpdateProfile = async () => {
-    if (!profileData) return;
-
-    let changed = false;
-
-    // Upload avatar if a new file was selected
-    if (selectedFile) {
-      try {
-        await updateProfilePicture(supabase, profileData.id, selectedFile);
-        toast.success("Profile photo updated!");
-        setSelectedFile(null);
-        changed = true;
-      } catch (error: any) {
-        toast.error(`Failed to update profile photo: ${error.message}`);
-      }
-    }
-
-    // Update display name if changed
-    if (displayName !== profileData.display_name) {
-      const { error: profileError } = await supabase
-        .from("profile")
-        .update({ display_name: displayName })
-        .eq("id", profileData.id);
-
-      if (profileError) {
-        toast.error(`Error changing display name: ${profileError.message}`);
-        return;
-      }
-
-      toast.success("Display name successfully changed!");
-      changed = true;
-    }
-
-    // Refresh profile if something changed
-    if (changed) {
-      await queryClient.refetchQueries({ queryKey: ["user_profile"] });
-    }
-  };
-
   // Get user's notebook + chapter + page tree
   const { data: notebookTree } = useQuery({
     queryKey: ["notebook_tree"],
     enabled: !!profileData?.id,
     queryFn: async () => await getNotebookTreeByUser(supabase, profileData!.id),
   });
-
-  const updateProfilePicture = async (
-    supabase: SupabaseClient,
-    userId: string,
-    file: File | null
-  ): Promise<void> => {
-    if (!file) {
-      const { error } = await supabase
-        .from("profile")
-        .update({ avatar_url: null })
-        .eq("id", userId);
-      if (error) throw error;
-      return;
-    }
-
-    // generate a unique filename for the avatar (to store in supabase)
-    const fileExt = file.name.split(".").pop();
-    const filePath = `${userId}/avatar-${Date.now()}.${fileExt}`;
-
-    const { data: fileData, error: uploadError } = await supabase.storage
-      .from("avatars")
-      .upload(filePath, file, { upsert: true });
-
-    if (uploadError) throw uploadError;
-
-    const publicUrl = supabase.storage.from("avatars").getPublicUrl(filePath)
-      .data.publicUrl;
-
-    const { error: updateError } = await supabase
-      .from("profile")
-      .update({ avatar_url: filePath })
-      .eq("id", userId);
-
-    if (updateError) throw updateError;
-  };
 
   // Logs the user out and routes back to the login page
   const handleSignOut = async () => {
@@ -288,9 +203,6 @@ export default function HomePage() {
               profileData={profileData}
               supabase={supabase}
               onSignOut={handleSignOut}
-              onProfileUpdate={async () =>
-                await queryClient.refetchQueries({ queryKey: ["userprofile"] })
-              }
             />
           </div>
         </header>
