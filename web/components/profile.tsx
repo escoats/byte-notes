@@ -132,8 +132,9 @@ export default function Profile({
           variant="secondary"
         >
           <div className="flex items-center gap-3 mr-12 max-w-full overflow-hidden">
-            <Avatar className="h-9 w-9 shrink-0">
+            <Avatar className="w-9 h-9">
               <AvatarImage
+                className="object-cover"
                 src={
                   profileData?.avatar_url
                     ? supabase.storage

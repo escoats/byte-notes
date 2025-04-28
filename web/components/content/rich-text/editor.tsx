@@ -23,7 +23,7 @@ const Editor = ({ content, placeholder, onChange }: EditorProps) => {
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML());
     },
-    immediatelyRender: true,
+    immediatelyRender: false,
   });
 
   // This useEffect renders the markdown content into editor box using TipTap's setContent command for <EditorContent>
