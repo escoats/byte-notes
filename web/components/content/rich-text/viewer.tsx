@@ -22,9 +22,9 @@ const Viewer = ({ content, style }: ViewerProps) => {
 
   return (
     <div className="w-[50%] h-[80.5%] p-4">
-      <div className="m-0 p-0 prose max-w-none w-full h-full border-[2] bg-background dark:prose-invert flex flex-col rounded-md">
+      <div className="m-0 p-0 prose max-w-none w-full h-full border-[2] bg-background dark:prose-invert flex flex-col rounded-md overflow-auto">
         <article className={className}>
-          <EditorContent editor={editor} readOnly={true} className="p-4"/>
+          <EditorContent editor={editor} readOnly={false} className="p-4" />
         </article>
       </div>
     </div>

@@ -271,14 +271,14 @@ export default function HomePage() {
           {/* Logo */}
           <div className="flex justify-center mr-2.5 -mt-0.5">
             <Button
-              variant="ghost"
-              className="p-0 m-0 hover:bg-transparent"
+              variant="link"
+              className="p-0 m-0 hover:bg-transparent focus:outline-none active:bg-transparent"
               onClick={() => setActivePageId("")}
             >
               <img
                 src="/ByteNotesLogo.png"
                 alt="Byte Notes"
-                className="w-[186px] h-[181px]"
+                className="w-[186px] h-[181px] hover:bg-transparent pointer-events-none"
               />
             </Button>
           </div>
