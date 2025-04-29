@@ -6,6 +6,14 @@
 
 import { z } from "zod";
 
+// Schema for reaction
+export const Reaction = z.object({
+  id: z.string(),
+  profile_id: z.string(),
+  page_id: z.string(),
+  reaction_type: z.enum(["heart", "dislike", "star"]),
+})
+
 // Schema for profile data
 export const Profile = z.object({
   id: z.string(),

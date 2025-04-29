@@ -16,8 +16,24 @@ import Layout from "./layout";
 import { ThemeProvider, useTheme } from "next-themes";
 import { usePathname } from "next/navigation";
 import router from "next/router";
-import { useState, useEffect, SetStateAction, useRef } from "react";
+import {
+  useState,
+  useEffect,
+  SetStateAction,
+  useRef,
+  useCallback,
+} from "react";
 import { toast } from "sonner";
+import {
+  addReactionToCacheFn,
+  removeReactionFromCacheFn,
+} from "@/utils/supabase/cache/reaction-cache";
+import { z } from "zod";
+import { Reaction } from "@/utils/supabase/models";
+import { Heart } from "lucide-react";
+import { HeartOff } from "lucide-react";
+import { Star } from "lucide-react";
+import { v4 as uuidv4 } from "uuid";
 
 export default function PublishedPage() {
   const pathname = usePathname();
@@ -32,6 +48,75 @@ export default function PublishedPage() {
   const [files, setFiles] = useState<Record<string, string> | null>(null);
   const vmRef = useRef<any>(null);
   const [activePageId, setActivePageId] = useState("");
+
+  const { data: reactions = [] } = useQuery({
+    queryKey: ["page_reactions", pageId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("reaction")
+        .select("*")
+        .eq("page_id", pageId);
+
+      if (error) {
+        console.error(error.message);
+        return [];
+      }
+      return data;
+    },
+  });
+  const heartCount = reactions.filter(
+    (r) => r.reaction_type === "heart"
+  ).length;
+  const dislikeCount = reactions.filter(
+    (r) => r.reaction_type === "dislike"
+  ).length;
+  const starCount = reactions.filter((r) => r.reaction_type === "star").length;
+
+  // This function is used for optimistically adding a reaction to a published page - altered from Alias code
+  const addReactionToCache = useCallback(
+    (reaction: z.infer<typeof Reaction>) =>
+      addReactionToCacheFn(queryClient, pageId)(reaction),
+    [queryClient, pageId]
+  );
+
+  // This function is used for deleting a reaction when the reaction is clicked on again - altered from Alias code
+  const removeReactionFromCache = useCallback(
+    (reactionId: string) =>
+      removeReactionFromCacheFn(queryClient, pageId)(reactionId),
+    [queryClient, pageId]
+  );
+
+  const onReactionToggle = async (
+    reactionType: "heart" | "dislike" | "star"
+  ) => {
+    if (!profileData?.id) {
+      toast("You must be logged in to react!");
+      return;
+    }
+
+    const existingReaction = reactions.find(
+      (r) => r.profile_id === profileData.id && r.reaction_type === reactionType
+    );
+
+    if (existingReaction) {
+      removeReactionFromCache(existingReaction.id);
+
+      const { error } = await supabase
+        .from("reaction")
+        .delete()
+        .eq("id", existingReaction.id);
+    } else {
+      const id = uuidv4();
+      const newReaction = {
+        id,
+        profile_id: profileData.id,
+        page_id: pageId,
+        reaction_type: reactionType,
+      };
+
+      addReactionToCache(newReaction);
+    }
+  };
 
   const { data: profileData } = useQuery({
     queryKey: ["user_profile"],
@@ -137,6 +222,25 @@ export default function PublishedPage() {
         {pageId && markdownEditorValue !== "" && (
           <div className="relative flex items-center h-[60px] px-6 border-b border-border bg-sidebar">
             {/* Centered text */}
+            <div className="flex items-center gap-4 p-4">
+              <Button variant="ghost" onClick={() => onReactionToggle("heart")}>
+                <Heart className="text-foreground" />
+                <p>{heartCount}</p>
+              </Button>
+
+              <Button
+                variant="ghost"
+                onClick={() => onReactionToggle("dislike")}
+              >
+                <HeartOff className="text-foreground" />
+                <p>{dislikeCount}</p>
+              </Button>
+
+              <Button variant="ghost" onClick={() => onReactionToggle("star")}>
+                <Star className="text-foreground" />
+                <p>{starCount}</p>
+              </Button>
+            </div>
             <p className="text-lg absolute left-1/2 -translate-x-1/2 text-center">
               {headerPath}
             </p>
