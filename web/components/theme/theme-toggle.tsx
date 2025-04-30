@@ -28,7 +28,7 @@ export default function ThemeToggle({
       aria-label="Toggle theme"
       className={cn(
         "relative w-16 h-9 rounded-full transition-colors",
-        isDark ? "bg-muted" : "bg-gray-200"
+        isDark ? "bg-background" : "bg-gray-300"
       )}
     >
       <span
