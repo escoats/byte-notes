@@ -199,7 +199,15 @@ export default function PublishedPage() {
         )
       `)
       .eq("id", pageId)
-      .single();
+      .single<{
+        markdown: string;
+        code_content: Record<string, string>;
+        chapter: {
+          notebook: {
+            author_id: string;
+          };
+        };
+      }>();
 
       if (error) {
         console.error("Error fetching page:", error);
@@ -212,7 +220,6 @@ export default function PublishedPage() {
       const fetchedAuthorId = data?.chapter?.notebook?.author_id;
       console.log("Fetched author ID:", fetchedAuthorId);
       setAuthorId(fetchedAuthorId ?? null);
-
     };
 
     fetchPageData();
