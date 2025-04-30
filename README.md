@@ -42,5 +42,3 @@ Viewers are updated live using Supabase's real-time capabilities and profile pic
 ### Reactions 
 Viewers can react to pages with a heart, star, or dislike <br>
 Reaction counts are updated live using Supabase's real-time capabilities
-
-### Viewers 
