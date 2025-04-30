@@ -9,16 +9,38 @@
 ![Tailwind](https://img.shields.io/badge/-Tailwind-05122A?style=flat&logo=tailwindcss)
 ![Supabase](https://img.shields.io/badge/-Supabase-05122A?style=flat&logo=supabase)
 
-<img width="1440" alt="image" src="https://github.com/user-attachments/assets/4789a435-db3a-4a90-b0fa-5d1be17fec0d" />
-<img width="1440" alt="image" src="https://github.com/user-attachments/assets/26940741-633f-4572-a913-9a6a15e4e5eb" />
-
-
-Byte Notes is a note-taking web app for Computer Science students. It features side-by-side Markdown and code editor windows to keep conceptual and syntax notes together in one place.
+ByteNotes is a full-stack web application created by Computer Science for Computer Science students to facilitate efficient and organized note-taking in higher-level courses.
 
 ## Features
 
-*Describe the features of your app here.*
+### Authentication
+Supabase Auth for secure login and session management
+Server-side rendering (SSR) for protected routes
 
-## ...
+### Hierarchical Notes
+Notebooks → Chapters → Pages
+Designed for structured learning and modular documentation
 
-Feel free to add other sections as you see fit!
+### Markdown Editor
+Live editing with support for headings, lists, bold/italic, links, and more
+
+### Code Compiler
+Each page includes a live coding environment (StackBlitz or Monaco-based)
+It supports multi-language execution (e.g., Python, JavaScript, etc.).
+Save and load code snippets per page using Supabase
+
+### Theme Support
+Dark and light themes are available with full Tailwind support
+Toggle via custom ThemeProvider and ThemeToggle components
+
+### Published Page
+Once a student finishes their notes they can share (via clipboard, email, or SMS) and publish the page 
+
+### Viewers
+Viewers are updated live using Supabase's real-time capabilties and profile pictures are displayed in an Avatar Stack
+
+### Reactions 
+Viewers can react to pages with a heart, star, or dislike 
+Reaction counts are updated live using Supabase's real-time capabilities
+
+### Viewers 
