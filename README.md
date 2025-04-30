@@ -11,7 +11,7 @@
 
 *Add some screenshots or graphics here that show your app being used!*
 
-*Include a short description of your app here.*
+Byte Notes is a note-taking web app for Computer Science students. It features side-by-side Markdown and code editor windows to keep conceptual and syntax notes together in one place.
 
 ## Features
 
