@@ -49,6 +49,8 @@ export default function PublishedPage() {
   const [files, setFiles] = useState<Record<string, string> | null>(null);
   const vmRef = useRef<any>(null);
   const [activePageId, setActivePageId] = useState("");
+  const [authorId, setAuthorId] = useState<string | null>(null);
+  const [authorName, setAuthorName] = useState<string | null>(null);
 
   const { data: reactions = [] } = useQuery({
     queryKey: ["page_reactions", pageId],
@@ -134,15 +136,27 @@ export default function PublishedPage() {
     queryFn: async () => await getNotebookTreeByUser(supabase, profileData!.id),
   });
 
+  const isAuthor = profileData?.id === authorId;
+
   useEffect(() => {
     const fetchPageData = async () => {
       if (!pageId) return;
 
-      const { data, error } = await supabase
-        .from("page")
-        .select("markdown, code_content")
-        .eq("id", pageId)
-        .single();
+    const { data, error } = await supabase
+      .from("page")
+      .select(`
+        markdown,
+        code_content,
+        chapter:chapter_id (
+          notebook:notebook_id (
+            author_id
+          )
+        )
+      `)
+      .eq("id", pageId)
+      .single();
+
+      console.log("Data", data)
 
       if (error) {
         console.error("Error fetching page:", error);
@@ -151,10 +165,35 @@ export default function PublishedPage() {
 
       if (data?.markdown) setMarkdownEditorValue(data.markdown);
       if (data?.code_content) setFiles(data.code_content);
+      
+      const fetchedAuthorId = data?.chapter?.notebook?.author_id;
+      console.log("Fetched author ID:", fetchedAuthorId);
+      setAuthorId(fetchedAuthorId ?? null);
+
     };
 
     fetchPageData();
   }, [pageId]);
+
+useEffect(() => {
+  const fetchAuthorName = async () => {
+    if (!authorId || authorId === profileData?.id) return;
+
+    const { data, error } = await supabase
+      .from("profile")
+      .select("display_name")
+      .eq("id", authorId)
+      .single();
+
+    if (error) {
+      console.error("Failed to fetch author's display name:", error);
+    } else {
+      setAuthorName(data?.display_name ?? null);
+    }
+  };
+
+  fetchAuthorName();
+}, [authorId, profileData]);
 
   useEffect(() => {
     if (pageId && notebookTree) {
@@ -243,9 +282,13 @@ export default function PublishedPage() {
               </Button>
             </div>
             <p className="text-lg absolute left-1/2 -translate-x-1/2 text-center">
-              {headerPath}
+              {isAuthor
+                ? headerPath || "Untitled Page"
+                : authorName
+                ? `${authorName}'s Page`
+                : "Shared Page"}
             </p>
-            <RealtimeAvatarStack roomName="break_room" />
+            <RealtimeAvatarStack roomName={`page_${pageId}`} />
           </div>
         )}
         {/* Content Layout */}
