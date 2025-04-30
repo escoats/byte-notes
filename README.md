@@ -38,7 +38,8 @@ Toggle via custom ThemeProvider and ThemeToggle components <br>
 Once a student finishes their notes they can share (via clipboard, email, or SMS) and publish the page <br>
 
 ### Viewers
-Viewers are updated live using Supabase's real-time capabilities and profile pictures are displayed in an Avatar Stack <br>
+Viewers are updated live using Supabase's real-time capabilities <br> 
+Profile pictures are displayed in an Avatar Stack <br>
 
 ### Reactions 
 Viewers can react to pages with a heart, star, or dislike <br>
