@@ -335,7 +335,6 @@ export default function PublishedPage() {
               </div>
             )}
           </div>
-        </div>
 
 
         )}
