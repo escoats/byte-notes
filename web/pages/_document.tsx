@@ -5,6 +5,7 @@ export default function Document() {
     <Html lang="en" className="dark">
       <Head />
       <title>Byte Notes</title>
+      <link rel="icon" href="/ByteNotes.png" /> 
       <meta
         name="description"
         content="Byte Notes is a notetaking web app for Computer Science students."
