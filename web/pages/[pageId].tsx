@@ -64,6 +64,7 @@ export default function PublishedPage() {
       return data;
     },
   });
+
   const heartCount = reactions.filter(
     (r) => r.reaction_type === "heart"
   ).length;
@@ -113,6 +114,8 @@ export default function PublishedPage() {
         page_id: pageId,
         reaction_type: reactionType,
       };
+
+      const { error } = await supabase.from("reaction").insert(newReaction);
 
       addReactionToCache(newReaction);
     }
