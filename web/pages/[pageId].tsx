@@ -50,9 +50,13 @@ export default function PublishedPage() {
   const [files, setFiles] = useState<Record<string, string> | null>(null);
   const vmRef = useRef<any>(null);
   const [activePageId, setActivePageId] = useState("");
+  const [heartCount, setHeartCount] = useState(0);
+  const [dislikeCount, setDislikeCount] = useState(0);
+  const [starCount, setStarCount] = useState(0);
   const [authorId, setAuthorId] = useState<string | null>(null);
   const [authorName, setAuthorName] = useState<string | null>(null);
   const [authorProfileImage, setAuthorProfileImage] = useState<string | null>(null);
+
 
   const { data: reactions = [] } = useQuery({
     queryKey: ["page_reactions", pageId],
@@ -69,13 +73,14 @@ export default function PublishedPage() {
       return data;
     },
   });
-  const heartCount = reactions.filter(
-    (r) => r.reaction_type === "heart"
-  ).length;
-  const dislikeCount = reactions.filter(
-    (r) => r.reaction_type === "dislike"
-  ).length;
-  const starCount = reactions.filter((r) => r.reaction_type === "star").length;
+
+  useEffect(() => {
+    setHeartCount(reactions.filter((r) => r.reaction_type === "heart").length);
+    setDislikeCount(
+      reactions.filter((r) => r.reaction_type === "dislike").length
+    );
+    setStarCount(reactions.filter((r) => r.reaction_type === "star").length);
+  }, [reactions]);
 
   // This function is used for optimistically adding a reaction to a published page - altered from Alias code
   const addReactionToCache = useCallback(
@@ -91,6 +96,35 @@ export default function PublishedPage() {
     [queryClient, pageId]
   );
 
+  useEffect(() => {
+    const dbChangesChannel = supabase
+      .channel("reaction-db-changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "reaction",
+        },
+        (payload) => {
+          if (payload.eventType === "INSERT") {
+            const reaction = Reaction.parse(payload.new);
+            if (reaction.profile_id !== profileData?.id) {addReactionToCache(reaction)}
+          }
+          if (payload.eventType === "DELETE") {
+            const reaction = payload.old;
+            removeReactionFromCache(reaction.id);
+          }
+        }
+      )
+      .subscribe();
+    console.log("Hello Lizzie");
+
+    return () => {
+      dbChangesChannel.unsubscribe();
+    };
+  }, [addReactionToCache, removeReactionFromCache, supabase]);
+
   const onReactionToggle = async (
     reactionType: "heart" | "dislike" | "star"
   ) => {
@@ -105,6 +139,7 @@ export default function PublishedPage() {
 
     if (existingReaction) {
       removeReactionFromCache(existingReaction.id);
+      
 
       const { error } = await supabase
         .from("reaction")
@@ -118,6 +153,8 @@ export default function PublishedPage() {
         page_id: pageId,
         reaction_type: reactionType,
       };
+
+      const { error } = await supabase.from("reaction").insert(newReaction);
 
       addReactionToCache(newReaction);
     }
