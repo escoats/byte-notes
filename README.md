@@ -14,33 +14,33 @@ ByteNotes is a full-stack web application created by Computer Science for Comput
 ## Features
 
 ### Authentication
-Supabase Auth for secure login and session management
-Server-side rendering (SSR) for protected routes
+Supabase Auth for secure login and session management <br>
+Server-side rendering (SSR) for protected routes <br>
 
 ### Hierarchical Notes
-Notebooks → Chapters → Pages
-Designed for structured learning and modular documentation
+Notebooks → Chapters → Pages <br>
+Designed for structured learning and modular documentation <br>
 
 ### Markdown Editor
-Live editing with support for headings, lists, bold/italic, links, and more
+Live editing with support for headings, lists, bold/italic, links, and more <br>
 
 ### Code Compiler
-Each page includes a live coding environment (StackBlitz or Monaco-based)
-It supports multi-language execution (e.g., Python, JavaScript, etc.).
-Save and load code snippets per page using Supabase
+Each page includes a live coding environment (StackBlitz) <br>
+It supports multi-language execution (e.g., Python, JavaScript, etc.) <br>
+Save and load code snippets per page using Supabase <br>
 
 ### Theme Support
-Dark and light themes are available with full Tailwind support
-Toggle via custom ThemeProvider and ThemeToggle components
+Dark and light themes are available with full Tailwind support <br>
+Toggle via custom ThemeProvider and ThemeToggle components <br>
 
 ### Published Page
-Once a student finishes their notes they can share (via clipboard, email, or SMS) and publish the page 
+Once a student finishes their notes they can share (via clipboard, email, or SMS) and publish the page <br>
 
 ### Viewers
-Viewers are updated live using Supabase's real-time capabilties and profile pictures are displayed in an Avatar Stack
+Viewers are updated live using Supabase's real-time capabilities and profile pictures are displayed in an Avatar Stack <br>
 
 ### Reactions 
-Viewers can react to pages with a heart, star, or dislike 
+Viewers can react to pages with a heart, star, or dislike <br>
 Reaction counts are updated live using Supabase's real-time capabilities
 
 ### Viewers 
