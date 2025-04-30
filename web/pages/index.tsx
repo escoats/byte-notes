@@ -22,17 +22,8 @@ import Profile from "@/components/header/profile";
 import { CodeCompiler } from "@/components/content/code-compiler";
 import { ProjectFiles, VM } from "@stackblitz/sdk";
 import { useTheme } from "next-themes";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-} from "@radix-ui/react-dropdown-menu";
-import {
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import SendButton from "@/components/subheader/send-button";
-
+import { starterCodeFiles } from "@/utils/starter-content";
 
 export default function HomePage() {
   // Create necessary hooks for clients and providers.
@@ -89,12 +80,7 @@ export default function HomePage() {
     }
   }
 
-  // Placeholder files for code editor state variable before files are fetched from supabase
-  const starterFiles = {
-    "index.ts": 'console.log("Welcome to your new project!")',
-    "index.html": "<h1>Welcome</h1>",
-  };
-  const [files, setFiles] = useState<ProjectFiles>(starterFiles);
+  const [files, setFiles] = useState<ProjectFiles>(starterCodeFiles);
   const vmRef = useRef<any>(null);
 
   async function handleSave(): Promise<void> {
@@ -170,7 +156,24 @@ export default function HomePage() {
     }
   }, [activePageId]);
 
-  // UseState for active code editor files - these are passed into the CodeCompiler
+  // Fetch new code when active page changes
+  useEffect(() => {
+    async function fetchCodeContent() {
+      const { data, error } = await supabase
+        .from("page")
+        .select("code_content")
+        .eq("id", activePageId)
+        .single();
+
+      if (!error && data?.code_content) {
+        setFiles(data.code_content);
+      } else {
+        setFiles(starterCodeFiles);
+      }
+    }
+
+    fetchCodeContent();
+  }, [activePageId]);
 
   return (
     <ThemeProvider

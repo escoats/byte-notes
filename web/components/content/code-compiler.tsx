@@ -4,6 +4,7 @@ import { Card } from "../ui/card";
 import sdk, { ProjectFiles, VM } from "@stackblitz/sdk";
 import React, { useEffect } from "react";
 import { createSupabaseComponentClient } from "@/utils/supabase/component";
+import { starterCodeFiles } from "@/utils/starter-content";
 
 type CodeCompilerProps = {
   pageId: string;
@@ -22,39 +23,10 @@ export function CodeCompiler({
 }: CodeCompilerProps) {
   const supabase = createSupabaseComponentClient();
 
-  const starterFiles = {
-    "index.ts": 'console.log("Welcome to your new project!")',
-    "index.html": "<h1>Welcome</h1>",
-  };
   useEffect(() => {
     const container = document.getElementById("embed");
     if (container) container.innerHTML = "";
-
-    async function fetchFiles() {
-      const { data, error } = await supabase
-        .from("page")
-        .select("code_content")
-        .eq("id", pageId)
-        .single();
-
-      if (error) {
-        console.error("Error fetching code_content:", error);
-        return;
-      }
-
-      // TODO: if there's no content from supabase, I just manually set the starter files.
-      // Not sure if there's a better way to do this?
-      if (!data?.code_content) {
-        console.log("No code content");
-        setFiles(starterFiles);
-        return;
-      }
-      console.log("setting files!");
-      setFiles(data.code_content);
-    }
-
-    fetchFiles();
-  }, [pageId, theme]);
+  }, [pageId]);
 
   useEffect(() => {
     if (!files || !theme) return;
