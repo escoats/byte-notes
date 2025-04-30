@@ -9,7 +9,9 @@
 ![Tailwind](https://img.shields.io/badge/-Tailwind-05122A?style=flat&logo=tailwindcss)
 ![Supabase](https://img.shields.io/badge/-Supabase-05122A?style=flat&logo=supabase)
 
-*Add some screenshots or graphics here that show your app being used!*
+<img width="1440" alt="image" src="https://github.com/user-attachments/assets/4789a435-db3a-4a90-b0fa-5d1be17fec0d" />
+<img width="1440" alt="image" src="https://github.com/user-attachments/assets/26940741-633f-4572-a913-9a6a15e4e5eb" />
+
 
 Byte Notes is a note-taking web app for Computer Science students. It features side-by-side Markdown and code editor windows to keep conceptual and syntax notes together in one place.
 
