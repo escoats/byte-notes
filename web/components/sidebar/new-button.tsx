@@ -35,6 +35,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { createSupabaseComponentClient } from "@/utils/supabase/component";
 import { NotebookTreeType } from "@/utils/supabase/queries";
+import { starterCodeFiles, starterMarkdown } from "@/utils/starter-content";
 
 export default function NewButton({
   profileData,
@@ -121,12 +122,9 @@ export default function NewButton({
     const { error } = await supabase.from("page").insert({
       title: newPageTitle.trim(),
       chapter_id: selectedChapterId,
-      markdown: "<p>Get started with Byte Notes here ...</p>",
+      markdown: starterMarkdown,
       // create new stackblitz project on every page with default values
-      code_content: {
-        "index.ts": `console.log("Welcome to your new project!")`,
-        "index.html": "<h1>Welcome</h1>",
-      },
+      code_content: starterCodeFiles,
     });
 
     if (error) return toast.error("Failed to create page.");
