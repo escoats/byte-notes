@@ -75,6 +75,7 @@ import {
 } from "../ui/alert-dialog";
 import { Separator } from "@/components/ui/separator";
 import NewButton from "./new-button";
+import { cn } from "@/lib/utils";
 
 export function AppSidebar({
   activePageId,
@@ -367,9 +368,14 @@ export function AppSidebar({
                                 >
                                   <Button
                                     variant="ghost"
-                                    className="px-3 py-0 m-0 -ml-2.5 text-[13px] text-muted-foreground rounded hover:bg-sidebar-primary hover:text-sidebar-primary-foreground"
+                                    className={cn(
+                                      "px-3 py-0 m-0 -ml-2.5 text-[13px] rounded text-left hover:bg-sidebar-primary hover:text-sidebar-primary-foreground",
+                                      activePageId === page.id
+                                        ? "bg-sidebar-primary text-sidebar-primary-foreground" // color when selected
+                                        : "text-muted-foreground hover:bg-sidebar-primary hover:text-sidebar-primary-foreground" // default + hover
+                                    )}
                                   >
-                                    <p className="text-left -ml-1">
+                                    <p className="-ml-1 truncate">
                                       {page.name}
                                     </p>
                                   </Button>
