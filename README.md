@@ -46,6 +46,16 @@ Profile pictures are displayed in an Avatar Stack <br>
 Viewers can react to pages with a heart, star, or dislike <br>
 Reaction counts are updated live using Supabase's real-time capabilities
 
+## Architecture 
+ByteNotes follows a modular design, split into clearly defined feature areas: <br>
+- Frontend (Next.js): Pages and components structured by purpose (auth, content, layout).
+- Database (Supabase): Handles user data, notes hierarchy, compiled code, and real-time subscriptions.
+- Shadcn/ui + Tailwind: For consistent and theme-friendly styling.
+- TipTap Markdown Editor: Each page component integrates Tip Tap with dynamic, per-page project state. 
+- StackBlitz Embeds: Each Page component integrates StackBlitz with dynamic, per-page project state via postMessage API.
+- Custom Hooks & Contexts: Manage page state, user context, and theme toggling cleanly.
+This modular structure not only improves maintainability but enables independent feature testing and clearer separation of concerns.
+
 ## Project Management
 We used Figma to create wireframes for our website before developing. We used Notion for project management to keep track of backlog, in progress, in review, and completed tickets. <br>
 [Notion Workspace](https://www.notion.so/F02-Development-Sprints-1-2-1ce1456210fd803089fed0650bf324b6?pvs=4)
