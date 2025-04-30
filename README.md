@@ -14,20 +14,21 @@ ByteNotes is a full-stack web application created by Computer Science for Comput
 ## Features
 
 ### Authentication
-Supabase Auth for secure login and session management <br>
+Supabase Authentication for secure login and session management <br>
 Server-side rendering (SSR) for protected routes <br>
 
 ### Hierarchical Notes
-Notebooks → Chapters → Pages <br>
+Users can create Notebooks → Chapters → Pages <br>
 Designed for structured learning and modular documentation <br>
 
 ### Markdown Editor
 Live editing with support for headings, lists, bold/italic, links, and more <br>
+Users can save their progress and return after signing out to make new changes <br>
 
 ### Code Compiler
 Each page includes a live coding environment (StackBlitz) <br>
 It supports multi-language execution (e.g., Python, JavaScript, etc.) <br>
-Save and load code snippets per page using Supabase <br>
+Users can save and load code snippets per page which is stored through Supabase <br>
 
 ### Theme Support
 Dark and light themes are available with full Tailwind support <br>
