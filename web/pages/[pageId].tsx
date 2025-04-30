@@ -18,6 +18,7 @@ import { usePathname } from "next/navigation";
 import router from "next/router";
 import { useState, useEffect, SetStateAction, useRef } from "react";
 import { toast } from "sonner";
+import { RealtimeAvatarStack } from "@/components/realtime-avatar-stack";
 
 export default function PublishedPage() {
   const pathname = usePathname();
@@ -140,6 +141,7 @@ export default function PublishedPage() {
             <p className="text-lg absolute left-1/2 -translate-x-1/2 text-center">
               {headerPath}
             </p>
+            <RealtimeAvatarStack roomName="break_room" />
           </div>
         )}
         {/* Content Layout */}
