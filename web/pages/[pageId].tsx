@@ -35,6 +35,7 @@ import { Heart } from "lucide-react";
 import { HeartOff } from "lucide-react";
 import { Star } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function PublishedPage() {
   const pathname = usePathname();
@@ -51,6 +52,7 @@ export default function PublishedPage() {
   const [activePageId, setActivePageId] = useState("");
   const [authorId, setAuthorId] = useState<string | null>(null);
   const [authorName, setAuthorName] = useState<string | null>(null);
+  const [authorProfileImage, setAuthorProfileImage] = useState<string | null>(null);
 
   const { data: reactions = [] } = useQuery({
     queryKey: ["page_reactions", pageId],
@@ -156,8 +158,6 @@ export default function PublishedPage() {
       .eq("id", pageId)
       .single();
 
-      console.log("Data", data)
-
       if (error) {
         console.error("Error fetching page:", error);
         return;
@@ -175,25 +175,37 @@ export default function PublishedPage() {
     fetchPageData();
   }, [pageId]);
 
-useEffect(() => {
-  const fetchAuthorName = async () => {
+  useEffect(() => {
+    const fetchAuthorData = async () => {
     if (!authorId || authorId === profileData?.id) return;
 
     const { data, error } = await supabase
       .from("profile")
-      .select("display_name")
+      .select("display_name, avatar_url")
       .eq("id", authorId)
       .single();
 
     if (error) {
-      console.error("Failed to fetch author's display name:", error);
+      console.error("Failed to fetch author's profile:", error);
+      return;
+    }
+
+    setAuthorName(data?.display_name ?? null);
+
+    if (data?.avatar_url) {
+      const { data: publicUrlData } = supabase
+        .storage
+        .from("avatars")
+        .getPublicUrl(data.avatar_url);
+
+      setAuthorProfileImage(publicUrlData.publicUrl);
     } else {
-      setAuthorName(data?.display_name ?? null);
+      setAuthorProfileImage(null);
     }
   };
 
-  fetchAuthorName();
-}, [authorId, profileData]);
+    fetchAuthorData();
+  }, [authorId, profileData]);
 
   useEffect(() => {
     if (pageId && notebookTree) {
@@ -285,10 +297,29 @@ useEffect(() => {
               ? `${authorName}'s Page`
               : "Shared Page"}
           </p>
+          <div className="flex items-center p-4 gap-6">
+            {/* Viewers */}
+            <div className="flex items-center gap-2">
+              <p className="text-sm font-bold">Viewers</p>
+              <RealtimeAvatarStack roomName={`page_${pageId}`} />
+            </div>
 
-          {/* Right: Avatars */}
-          <div className="flex items-center">
-            <RealtimeAvatarStack roomName={`page_${pageId}`} />
+            {/* Author (only shows up for viewers)*/}
+            {!isAuthor && (
+              <div className="flex items-center gap-2 relative group">
+                <p className="text-sm font-bold">Author</p>
+                <Avatar className="w-9 h-9">
+                  <AvatarImage
+                    className="object-cover"
+                    src={authorProfileImage ?? ""}
+                    alt={`${authorName ?? "Author"} avatar`}
+                  />
+                  <AvatarFallback>
+                    {authorName?.[0]?.toUpperCase() ?? "A"}
+                  </AvatarFallback>
+                </Avatar>
+              </div>
+            )}
           </div>
         </div>
 
