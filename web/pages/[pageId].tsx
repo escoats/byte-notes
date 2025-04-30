@@ -260,36 +260,39 @@ useEffect(() => {
         </header>
         {/* Subheader */}
         {pageId && markdownEditorValue !== "" && (
-          <div className="relative flex items-center h-[60px] px-6 border-b border-border bg-sidebar">
-            {/* Centered text */}
-            <div className="flex items-center gap-4 p-4">
-              <Button variant="ghost" onClick={() => onReactionToggle("heart")}>
-                <Heart className="text-foreground" />
-                <p>{heartCount}</p>
-              </Button>
+        <div className="relative flex items-center justify-between h-[60px] px-6 border-b border-border bg-sidebar">
+          {/* Left: Reactions */}
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" onClick={() => onReactionToggle("heart")}>
+              <Heart className="text-foreground" />
+              <p>{heartCount}</p>
+            </Button>
+            <Button variant="ghost" onClick={() => onReactionToggle("dislike")}>
+              <HeartOff className="text-foreground" />
+              <p>{dislikeCount}</p>
+            </Button>
+            <Button variant="ghost" onClick={() => onReactionToggle("star")}>
+              <Star className="text-foreground" />
+              <p>{starCount}</p>
+            </Button>
+          </div>
 
-              <Button
-                variant="ghost"
-                onClick={() => onReactionToggle("dislike")}
-              >
-                <HeartOff className="text-foreground" />
-                <p>{dislikeCount}</p>
-              </Button>
+          {/* Center: Page Title */}
+          <p className="absolute left-1/2 transform -translate-x-1/2 text-lg text-center">
+            {isAuthor
+              ? headerPath || "Untitled Page"
+              : authorName
+              ? `${authorName}'s Page`
+              : "Shared Page"}
+          </p>
 
-              <Button variant="ghost" onClick={() => onReactionToggle("star")}>
-                <Star className="text-foreground" />
-                <p>{starCount}</p>
-              </Button>
-            </div>
-            <p className="text-lg absolute left-1/2 -translate-x-1/2 text-center">
-              {isAuthor
-                ? headerPath || "Untitled Page"
-                : authorName
-                ? `${authorName}'s Page`
-                : "Shared Page"}
-            </p>
+          {/* Right: Avatars */}
+          <div className="flex items-center">
             <RealtimeAvatarStack roomName={`page_${pageId}`} />
           </div>
+        </div>
+
+
         )}
         {/* Content Layout */}
         <Layout
