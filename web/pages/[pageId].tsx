@@ -120,7 +120,7 @@ export default function PublishedPage() {
         (payload) => {
           if (payload.eventType === "INSERT") {
             const reaction = Reaction.parse(payload.new);
-            if (reaction.profile_id !== profileData?.id) {
+            if (reaction.profile_id != profileData?.id) {
               addReactionToCache(reaction);
             }
           }
