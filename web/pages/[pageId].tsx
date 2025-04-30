@@ -118,6 +118,12 @@ export default function PublishedPage() {
     }
   };
 
+  function hasReacted(type: "heart" | "dislike" | "star") {
+    return reactions.some(
+      (r) => r.profile_id === profileData?.id && r.reaction_type === type
+    );
+  }
+
   const { data: profileData } = useQuery({
     queryKey: ["user_profile"],
     queryFn: async () => {
@@ -224,7 +230,13 @@ export default function PublishedPage() {
             {/* Centered text */}
             <div className="flex items-center gap-4 p-4">
               <Button variant="ghost" onClick={() => onReactionToggle("heart")}>
-                <Heart className="text-foreground" />
+                <Heart
+                  className={
+                    hasReacted("heart")
+                      ? "text-blue-400 fill-blue-400"
+                      : "text-foreground"
+                  }
+                />
                 <p>{heartCount}</p>
               </Button>
 
@@ -232,12 +244,24 @@ export default function PublishedPage() {
                 variant="ghost"
                 onClick={() => onReactionToggle("dislike")}
               >
-                <HeartOff className="text-foreground" />
+                <HeartOff
+                  className={
+                    hasReacted("dislike")
+                      ? "text-foreground fill-foreground"
+                      : "text-foreground"
+                  }
+                />
                 <p>{dislikeCount}</p>
               </Button>
 
               <Button variant="ghost" onClick={() => onReactionToggle("star")}>
-                <Star className="text-foreground" />
+                <Star
+                  className={
+                    hasReacted("star")
+                      ? "text-yellow-500 fill-yellow-500"
+                      : "text-foreground"
+                  }
+                />
                 <p>{starCount}</p>
               </Button>
             </div>
