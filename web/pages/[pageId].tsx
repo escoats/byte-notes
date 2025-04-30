@@ -103,9 +103,7 @@ export default function PublishedPage() {
         (payload) => {
           if (payload.eventType === "INSERT") {
             const reaction = Reaction.parse(payload.new);
-            {
-              addReactionToCache(reaction);
-            }
+            if (reaction.profile_id !== profileData?.id) {addReactionToCache(reaction)}
           }
           if (payload.eventType === "DELETE") {
             const reaction = payload.old;
@@ -114,6 +112,7 @@ export default function PublishedPage() {
         }
       )
       .subscribe();
+    console.log("Hello Lizzie");
 
     return () => {
       dbChangesChannel.unsubscribe();
@@ -134,6 +133,7 @@ export default function PublishedPage() {
 
     if (existingReaction) {
       removeReactionFromCache(existingReaction.id);
+      
 
       const { error } = await supabase
         .from("reaction")
