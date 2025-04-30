@@ -87,6 +87,36 @@ export default function PublishedPage() {
     [queryClient, pageId]
   );
 
+  useEffect(() => {
+    const dbChangesChannel = supabase
+      .channel("reaction-db-changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "reaction",
+        },
+        (payload) => {
+          if (payload.eventType === "INSERT") {
+            const reaction = Reaction.parse(payload.new);
+            {
+              addReactionToCache(reaction);
+            }
+          }
+          if (payload.eventType === "DELETE") {
+            const reaction = payload.old;
+            removeReactionFromCache(reaction.id);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      dbChangesChannel.unsubscribe();
+    };
+  }, [addReactionToCache, removeReactionFromCache, supabase]);
+
   const onReactionToggle = async (
     reactionType: "heart" | "dislike" | "star"
   ) => {
