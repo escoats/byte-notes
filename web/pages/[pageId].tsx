@@ -1,7 +1,7 @@
 import { CodeCompiler } from "@/components/content/code-compiler";
 import { MarkdownEditor } from "@/components/content/markdown-editor";
 import Viewer from "@/components/content/rich-text/viewer";
-import Profile from "@/components/profile";
+import Profile from "@/components/header/profile";
 import ThemeToggle from "@/components/theme/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { getPageHierarchyById } from "@/utils/find-page-hierarchy";
