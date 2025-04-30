@@ -20,7 +20,7 @@ Server-side rendering (SSR) for protected routes <br>
 ### Hierarchical Notes
 Users can create Notebooks → Chapters → Pages <br>
 Designed for structured learning and modular documentation <br>
-![File Hierarchy](https://github.com/comp426-25s/final-project-team-03/blob/main/docs/images/file-hierarchy.png)
+<img src="https://github.com/comp426-25s/final-project-team-03/blob/main/docs/images/file-hierarchy.png" width="150">
 
 ### Markdown Editor
 Live editing with support for headings, lists, bold/italic, links, and more <br>
