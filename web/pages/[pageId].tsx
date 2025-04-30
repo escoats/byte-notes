@@ -24,6 +24,7 @@ import {
   useCallback,
 } from "react";
 import { toast } from "sonner";
+import { RealtimeAvatarStack } from "@/components/realtime-avatar-stack";
 import {
   addReactionToCacheFn,
   removeReactionFromCacheFn,
@@ -34,6 +35,7 @@ import { Heart } from "lucide-react";
 import { HeartOff } from "lucide-react";
 import { Star } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function PublishedPage() {
   const pathname = usePathname();
@@ -48,6 +50,9 @@ export default function PublishedPage() {
   const [files, setFiles] = useState<Record<string, string> | null>(null);
   const vmRef = useRef<any>(null);
   const [activePageId, setActivePageId] = useState("");
+  const [authorId, setAuthorId] = useState<string | null>(null);
+  const [authorName, setAuthorName] = useState<string | null>(null);
+  const [authorProfileImage, setAuthorProfileImage] = useState<string | null>(null);
 
   const { data: reactions = [] } = useQuery({
     queryKey: ["page_reactions", pageId],
@@ -133,15 +138,25 @@ export default function PublishedPage() {
     queryFn: async () => await getNotebookTreeByUser(supabase, profileData!.id),
   });
 
+  const isAuthor = profileData?.id === authorId;
+
   useEffect(() => {
     const fetchPageData = async () => {
       if (!pageId) return;
 
-      const { data, error } = await supabase
-        .from("page")
-        .select("markdown, code_content")
-        .eq("id", pageId)
-        .single();
+    const { data, error } = await supabase
+      .from("page")
+      .select(`
+        markdown,
+        code_content,
+        chapter:chapter_id (
+          notebook:notebook_id (
+            author_id
+          )
+        )
+      `)
+      .eq("id", pageId)
+      .single();
 
       if (error) {
         console.error("Error fetching page:", error);
@@ -150,10 +165,47 @@ export default function PublishedPage() {
 
       if (data?.markdown) setMarkdownEditorValue(data.markdown);
       if (data?.code_content) setFiles(data.code_content);
+      
+      const fetchedAuthorId = data?.chapter?.notebook?.author_id;
+      console.log("Fetched author ID:", fetchedAuthorId);
+      setAuthorId(fetchedAuthorId ?? null);
+
     };
 
     fetchPageData();
   }, [pageId]);
+
+  useEffect(() => {
+    const fetchAuthorData = async () => {
+    if (!authorId || authorId === profileData?.id) return;
+
+    const { data, error } = await supabase
+      .from("profile")
+      .select("display_name, avatar_url")
+      .eq("id", authorId)
+      .single();
+
+    if (error) {
+      console.error("Failed to fetch author's profile:", error);
+      return;
+    }
+
+    setAuthorName(data?.display_name ?? null);
+
+    if (data?.avatar_url) {
+      const { data: publicUrlData } = supabase
+        .storage
+        .from("avatars")
+        .getPublicUrl(data.avatar_url);
+
+      setAuthorProfileImage(publicUrlData.publicUrl);
+    } else {
+      setAuthorProfileImage(null);
+    }
+  };
+
+    fetchAuthorData();
+  }, [authorId, profileData]);
 
   useEffect(() => {
     if (pageId && notebookTree) {
@@ -220,31 +272,58 @@ export default function PublishedPage() {
         </header>
         {/* Subheader */}
         {pageId && markdownEditorValue !== "" && (
-          <div className="relative flex items-center h-[60px] px-6 border-b border-border bg-sidebar">
-            {/* Centered text */}
-            <div className="flex items-center gap-4 p-4">
-              <Button variant="ghost" onClick={() => onReactionToggle("heart")}>
-                <Heart className="text-foreground" />
-                <p>{heartCount}</p>
-              </Button>
-
-              <Button
-                variant="ghost"
-                onClick={() => onReactionToggle("dislike")}
-              >
-                <HeartOff className="text-foreground" />
-                <p>{dislikeCount}</p>
-              </Button>
-
-              <Button variant="ghost" onClick={() => onReactionToggle("star")}>
-                <Star className="text-foreground" />
-                <p>{starCount}</p>
-              </Button>
-            </div>
-            <p className="text-lg absolute left-1/2 -translate-x-1/2 text-center">
-              {headerPath}
-            </p>
+        <div className="relative flex items-center justify-between h-[60px] px-6 border-b border-border bg-sidebar">
+          {/* Left: Reactions */}
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" onClick={() => onReactionToggle("heart")}>
+              <Heart className="text-foreground" />
+              <p>{heartCount}</p>
+            </Button>
+            <Button variant="ghost" onClick={() => onReactionToggle("dislike")}>
+              <HeartOff className="text-foreground" />
+              <p>{dislikeCount}</p>
+            </Button>
+            <Button variant="ghost" onClick={() => onReactionToggle("star")}>
+              <Star className="text-foreground" />
+              <p>{starCount}</p>
+            </Button>
           </div>
+
+          {/* Center: Page Title */}
+          <p className="absolute left-1/2 transform -translate-x-1/2 text-lg text-center">
+            {isAuthor
+              ? headerPath || "Untitled Page"
+              : authorName
+              ? `${authorName}'s Page`
+              : "Shared Page"}
+          </p>
+          <div className="flex items-center p-4 gap-6">
+            {/* Viewers */}
+            <div className="flex items-center gap-2">
+              <p className="text-sm font-bold">Viewers</p>
+              <RealtimeAvatarStack roomName={`page_${pageId}`} />
+            </div>
+
+            {/* Author (only shows up for viewers)*/}
+            {!isAuthor && (
+              <div className="flex items-center gap-2 relative group">
+                <p className="text-sm font-bold">Author</p>
+                <Avatar className="w-9 h-9">
+                  <AvatarImage
+                    className="object-cover"
+                    src={authorProfileImage ?? ""}
+                    alt={`${authorName ?? "Author"} avatar`}
+                  />
+                  <AvatarFallback>
+                    {authorName?.[0]?.toUpperCase() ?? "A"}
+                  </AvatarFallback>
+                </Avatar>
+              </div>
+            )}
+          </div>
+        </div>
+
+
         )}
         {/* Content Layout */}
         <Layout
