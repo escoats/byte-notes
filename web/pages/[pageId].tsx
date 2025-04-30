@@ -261,25 +261,21 @@ export default function PublishedPage() {
             </Button>
           </div>
           <div className="flex flex-row items-center gap-x-3">
-            {/* Theme Toggle */}
             <ThemeToggle theme={theme} setTheme={setTheme} />
-            {/* Profile */}
             <Profile
               profileData={profileData}
               supabase={supabase}
               onSignOut={handleSignOut}
               onProfileUpdate={async () =>
-                await queryClient.refetchQueries({
-                  queryKey: ["user_profile"],
-                })
+                await queryClient.refetchQueries({ queryKey: ["user_profile"] })
               }
             />
           </div>
         </header>
+
         {/* Subheader */}
         {pageId && markdownEditorValue !== "" && (
-          <div className="relative flex items-center h-[60px] px-6 border-b border-border bg-sidebar">
-            {/* Centered text */}
+          <div className="relative flex items-center h-[60px] px-6 border-b border-border bg-sidebar justify-between">
             <div className="flex items-center gap-4 p-4">
               <Button variant="ghost" onClick={() => onReactionToggle("heart")}>
                 <Heart
@@ -292,10 +288,7 @@ export default function PublishedPage() {
                 <p>{heartCount}</p>
               </Button>
 
-              <Button
-                variant="ghost"
-                onClick={() => onReactionToggle("dislike")}
-              >
+              <Button variant="ghost" onClick={() => onReactionToggle("dislike")}>
                 <HeartOff
                   className={
                     hasReacted("dislike")
@@ -318,27 +311,43 @@ export default function PublishedPage() {
               </Button>
             </div>
 
-            {/* Author (only shows up for viewers)*/}
-            {!isAuthor && (
-              <div className="flex items-center gap-2 relative group">
-                <p className="text-sm font-bold">Author</p>
-                <Avatar className="w-9 h-9">
-                  <AvatarImage
-                    className="object-cover"
-                    src={authorProfileImage ?? ""}
-                    alt={`${authorName ?? "Author"} avatar`}
-                  />
-                  <AvatarFallback>
-                    {authorName?.[0]?.toUpperCase() ?? "A"}
-                  </AvatarFallback>
-                </Avatar>
+            {/* Center: Page Title */}
+            <p className="absolute left-1/2 transform -translate-x-1/2 text-lg text-center">
+              {isAuthor
+                ? headerPath || "Untitled Page"
+                : authorName
+                ? `${authorName}'s Page`
+                : "Shared Page"}
+            </p>
+
+            <div className="flex items-center gap-6 p-4">
+              {/* Viewers */}
+              <div className="flex items-center gap-2">
+                <p className="text-sm font-bold">Viewers</p>
+                <RealtimeAvatarStack roomName={`page_${pageId}`} />
               </div>
-            )}
+
+              {/* Author */}
+              {!isAuthor && (
+                <div className="flex items-center gap-2 relative group">
+                  <p className="text-sm font-bold">Author</p>
+                  <Avatar className="w-9 h-9">
+                    <AvatarImage
+                      className="object-cover"
+                      src={authorProfileImage ?? ""}
+                      alt={`${authorName ?? "Author"} avatar`}
+                    />
+                    <AvatarFallback>
+                      {authorName?.[0]?.toUpperCase() ?? "A"}
+                    </AvatarFallback>
+                  </Avatar>
+                </div>
+              )}
+            </div>
           </div>
-
-
         )}
-        {/* Content Layout */}
+
+        {/* Content */}
         <Layout
           activePageId={activePageId}
           setActivePageId={setActivePageId}
@@ -356,5 +365,5 @@ export default function PublishedPage() {
         </Layout>
       </div>
     </ThemeProvider>
-  );
+    );
 }
