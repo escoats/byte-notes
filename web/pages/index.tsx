@@ -17,11 +17,11 @@ import { MarkdownEditor } from "@/components/content/markdown-editor";
 import { NoActivePage } from "@/components/content/no-active-page";
 import { getPageHierarchyById } from "@/utils/find-page-hierarchy";
 import { ThemeProvider } from "@/components/theme/theme-provider";
-import { useTheme } from "next-themes";
 import ThemeToggle from "@/components/theme/theme-toggle";
 import Profile from "@/components/header/profile";
 import { CodeCompiler } from "@/components/content/code-compiler";
 import { ProjectFiles, VM } from "@stackblitz/sdk";
+import { useTheme } from "next-themes";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,6 +32,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import SendButton from "@/components/subheader/send-button";
+
 
 export default function HomePage() {
   // Create necessary hooks for clients and providers.
@@ -184,14 +185,14 @@ export default function HomePage() {
           {/* Logo */}
           <div className="flex justify-center mr-2.5 -mt-0.5">
             <Button
-              variant="ghost"
-              className="p-0 m-0 hover:bg-transparent"
+              variant="link"
+              className="p-0 m-0 hover:bg-transparent focus:outline-none active:bg-transparent"
               onClick={() => setActivePageId("")}
             >
               <img
                 src="/ByteNotesLogo.png"
                 alt="Byte Notes"
-                className="w-[186px] h-[181px]"
+                className="w-[186px] h-[181px] hover:bg-transparent pointer-events-none"
               />
             </Button>
           </div>
@@ -238,29 +239,27 @@ export default function HomePage() {
         )}
 
         {/* Content Layout */}
-        <Layout activePageId={activePageId} setActivePageId={setActivePageId}>
+        <Layout
+          activePageId={activePageId}
+          setActivePageId={setActivePageId}
+          showSidebar={true}
+        >
           {activePageId !== "" ? (
             <>
-              {activePageId !== "" ? (
-                <>
-                  {
-                    <MarkdownEditor
-                      value={markdownEditorValue}
-                      setValue={setMarkdownEditorValue}
-                    />
-                  }
-                  <CodeCompiler
-                    key={resolvedTheme}
-                    pageId={activePageId}
-                    theme={theme}
-                    files={files}
-                    setFiles={setFiles}
-                    vmRef={vmRef}
-                  />
-                </>
-              ) : (
-                <NoActivePage />
-              )}
+              {
+                <MarkdownEditor
+                  value={markdownEditorValue}
+                  setValue={setMarkdownEditorValue}
+                />
+              }
+              <CodeCompiler
+                key={resolvedTheme}
+                pageId={activePageId}
+                theme={theme}
+                files={files}
+                setFiles={setFiles}
+                vmRef={vmRef}
+              />
             </>
           ) : (
             <NoActivePage />

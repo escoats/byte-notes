@@ -23,7 +23,7 @@ const Editor = ({ content, placeholder, onChange }: EditorProps) => {
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML());
     },
-    immediatelyRender: false,
+    immediatelyRender: false, // Tiptap Error: SSR has been detected, please set `immediatelyRender` explicitly to `false` to avoid hydration mismatches
   });
 
   // This useEffect renders the markdown content into editor box using TipTap's setContent command for <EditorContent>
@@ -42,7 +42,7 @@ const Editor = ({ content, placeholder, onChange }: EditorProps) => {
   if (!editor) return null;
 
   return (
-    <div className="m-0 p-0 prose max-w-none w-full h-full border-[2] bg-background dark:prose-invert flex flex-col rounded-md">
+    <div className="m-0 p-0 prose max-w-none w-full h-full border-[2] bg-background dark:prose-invert flex flex-col rounded-2xl">
       <EditorToolbar editor={editor} />
       <div className="editor flex-1 overflow-y-auto px-2">
         <EditorContent editor={editor} placeholder={placeholder} />
