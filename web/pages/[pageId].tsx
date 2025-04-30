@@ -55,8 +55,18 @@ export default function PublishedPage() {
   const [starCount, setStarCount] = useState(0);
   const [authorId, setAuthorId] = useState<string | null>(null);
   const [authorName, setAuthorName] = useState<string | null>(null);
-  const [authorProfileImage, setAuthorProfileImage] = useState<string | null>(null);
+  const [authorProfileImage, setAuthorProfileImage] = useState<string | null>(
+    null
+  );
 
+  const { data: profileData } = useQuery({
+    queryKey: ["user_profile"],
+    queryFn: async () => {
+      const { data } = await supabase.auth.getUser();
+      if (!data) return null;
+      return await getProfileData(supabase, data.user!.id);
+    },
+  });
 
   const { data: reactions = [] } = useQuery({
     queryKey: ["page_reactions", pageId],
@@ -97,6 +107,7 @@ export default function PublishedPage() {
   );
 
   useEffect(() => {
+    if (!profileData) return;
     const dbChangesChannel = supabase
       .channel("reaction-db-changes")
       .on(
@@ -109,7 +120,9 @@ export default function PublishedPage() {
         (payload) => {
           if (payload.eventType === "INSERT") {
             const reaction = Reaction.parse(payload.new);
-            if (reaction.profile_id !== profileData?.id) {addReactionToCache(reaction)}
+            if (reaction.profile_id !== profileData?.id) {
+              addReactionToCache(reaction);
+            }
           }
           if (payload.eventType === "DELETE") {
             const reaction = payload.old;
@@ -118,12 +131,11 @@ export default function PublishedPage() {
         }
       )
       .subscribe();
-    console.log("Hello Lizzie");
 
     return () => {
       dbChangesChannel.unsubscribe();
     };
-  }, [addReactionToCache, removeReactionFromCache, supabase]);
+  }, [addReactionToCache, removeReactionFromCache, profileData?.id, supabase]);
 
   const onReactionToggle = async (
     reactionType: "heart" | "dislike" | "star"
@@ -139,7 +151,6 @@ export default function PublishedPage() {
 
     if (existingReaction) {
       removeReactionFromCache(existingReaction.id);
-      
 
       const { error } = await supabase
         .from("reaction")
@@ -166,15 +177,6 @@ export default function PublishedPage() {
     );
   }
 
-  const { data: profileData } = useQuery({
-    queryKey: ["user_profile"],
-    queryFn: async () => {
-      const { data } = await supabase.auth.getUser();
-      if (!data) return null;
-      return await getProfileData(supabase, data.user!.id);
-    },
-  });
-
   const { data: notebookTree } = useQuery({
     queryKey: ["notebook_tree"],
     enabled: !!profileData?.id,
@@ -187,9 +189,10 @@ export default function PublishedPage() {
     const fetchPageData = async () => {
       if (!pageId) return;
 
-    const { data, error } = await supabase
-      .from("page")
-      .select(`
+      const { data, error } = await supabase
+        .from("page")
+        .select(
+          `
         markdown,
         code_content,
         chapter:chapter_id (
@@ -197,17 +200,18 @@ export default function PublishedPage() {
             author_id
           )
         )
-      `)
-      .eq("id", pageId)
-      .single<{
-        markdown: string;
-        code_content: Record<string, string>;
-        chapter: {
-          notebook: {
-            author_id: string;
+      `
+        )
+        .eq("id", pageId)
+        .single<{
+          markdown: string;
+          code_content: Record<string, string>;
+          chapter: {
+            notebook: {
+              author_id: string;
+            };
           };
-        };
-      }>();
+        }>();
 
       if (error) {
         console.error("Error fetching page:", error);
@@ -216,7 +220,7 @@ export default function PublishedPage() {
 
       if (data?.markdown) setMarkdownEditorValue(data.markdown);
       if (data?.code_content) setFiles(data.code_content);
-      
+
       const fetchedAuthorId = data?.chapter?.notebook?.author_id;
       console.log("Fetched author ID:", fetchedAuthorId);
       setAuthorId(fetchedAuthorId ?? null);
@@ -227,32 +231,31 @@ export default function PublishedPage() {
 
   useEffect(() => {
     const fetchAuthorData = async () => {
-    if (!authorId || authorId === profileData?.id) return;
+      if (!authorId || authorId === profileData?.id) return;
 
-    const { data, error } = await supabase
-      .from("profile")
-      .select("display_name, avatar_url")
-      .eq("id", authorId)
-      .single();
+      const { data, error } = await supabase
+        .from("profile")
+        .select("display_name, avatar_url")
+        .eq("id", authorId)
+        .single();
 
-    if (error) {
-      console.error("Failed to fetch author's profile:", error);
-      return;
-    }
+      if (error) {
+        console.error("Failed to fetch author's profile:", error);
+        return;
+      }
 
-    setAuthorName(data?.display_name ?? null);
+      setAuthorName(data?.display_name ?? null);
 
-    if (data?.avatar_url) {
-      const { data: publicUrlData } = supabase
-        .storage
-        .from("avatars")
-        .getPublicUrl(data.avatar_url);
+      if (data?.avatar_url) {
+        const { data: publicUrlData } = supabase.storage
+          .from("avatars")
+          .getPublicUrl(data.avatar_url);
 
-      setAuthorProfileImage(publicUrlData.publicUrl);
-    } else {
-      setAuthorProfileImage(null);
-    }
-  };
+        setAuthorProfileImage(publicUrlData.publicUrl);
+      } else {
+        setAuthorProfileImage(null);
+      }
+    };
 
     fetchAuthorData();
   }, [authorId, profileData]);
@@ -332,7 +335,10 @@ export default function PublishedPage() {
                 <p>{heartCount}</p>
               </Button>
 
-              <Button variant="ghost" onClick={() => onReactionToggle("dislike")}>
+              <Button
+                variant="ghost"
+                onClick={() => onReactionToggle("dislike")}
+              >
                 <HeartOff
                   className={
                     hasReacted("dislike")
@@ -409,5 +415,5 @@ export default function PublishedPage() {
         </Layout>
       </div>
     </ThemeProvider>
-    );
+  );
 }
