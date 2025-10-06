@@ -11,6 +11,8 @@
 
 ByteNotes is a full-stack web application created by Computer Science for Computer Science students to facilitate efficient and organized note-taking in higher-level courses.
 
+Check out our demo video [here!](https://youtu.be/GibujDpABd8)
+
 ## Features
 
 ### Authentication
